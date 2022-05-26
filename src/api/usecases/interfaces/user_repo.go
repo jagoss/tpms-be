@@ -1,6 +1,6 @@
 package interfaces
 
-import "github.com/tesis/be-tpms/src/api/domain/model"
+import "be-tpms/src/api/domain/model"
 
 type UserRepository interface {
 	Read(string) (*model.User, error)
