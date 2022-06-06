@@ -1,5 +1,7 @@
 package model
 
+import "gorm.io/gorm"
+
 const (
 	Bulldog Breed = iota
 	GermanShepherd
@@ -19,10 +21,13 @@ const (
 )
 
 type Dog struct {
-	Name  string
-	Breed Breed
-	Age   Age
-	Size  Size
+	gorm.Model
+	Name    string
+	Breed   Breed
+	Age     Age
+	Size    Size
+	OwnerID string
+	HostID  string
 }
 
 type Breed int16
@@ -76,4 +81,9 @@ func (a Age) String() string {
 	default:
 		return "desconocido"
 	}
+}
+
+type DogResponse struct {
+	ID  string
+	img string
 }

@@ -1,0 +1,8 @@
+database:
+  driver: "mysql"
+  host: "localhost"
+  username: "root"
+  password: "root"
+  db_name: "tpms"
+
+cv_model_url: "localhost:8081"

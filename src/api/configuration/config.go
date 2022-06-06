@@ -1,4 +1,4 @@
-package config
+package configuration
 
 import (
 	"fmt"
@@ -10,12 +10,24 @@ const (
 	ConfigFileName = "config.yml"
 	ConfigFilePath = "configfiles/"
 	DefaultPort    = "8080"
+	Prod           = "prod"
+	Test           = "test"
 )
 
 type GeneralConfiguration struct {
+	Database   DBConfig `yaml:"database"`
+	CVModelURL string   `yaml:"cv_model_url"`
 }
 
-func (c *GeneralConfiguration) ReadConfiguration(filePath string) error {
+type DBConfig struct {
+	Driver   string `yaml:"driver"`
+	Host     string `yaml:"host"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Database string `yaml:"db_name"`
+}
+
+func (c *GeneralConfiguration) LoadConfiguration(filePath string) error {
 	var source []byte
 	var err error
 	if source, err = ioutil.ReadFile(filePath); err != nil {

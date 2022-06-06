@@ -1,7 +1,13 @@
 package environment
 
-import "be-tpms/src/api/io/router"
+import (
+	"be-tpms/src/api/usecases/interfaces"
+	"github.com/go-resty/resty/v2"
+)
 
-type Environment struct {
-	Handler router.HandlerService
+type Env struct {
+	RestClient        resty.Client
+	CVModelRestClient interfaces.CVModelRestClient
+	UserPersister     interfaces.UserPersister
+	DogPersister      interfaces.DogPersiter
 }
