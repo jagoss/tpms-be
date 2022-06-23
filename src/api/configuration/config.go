@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	ConfigFileName = "config.yml"
-	ConfigFilePath = "configfiles/"
+	ConfigFileName = "test_config.yml"
+	ConfigFilePath = "configfiles"
 	DefaultPort    = "8080"
 	Prod           = "prod"
 	Test           = "test"

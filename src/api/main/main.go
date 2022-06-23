@@ -28,7 +28,7 @@ func InitRouter(env *environment.Env, port string) {
 
 func initializeDependencies(configurationPackagePath string) (*environment.Env, error) {
 	scope := os.Getenv("SCOPE")
-	path := configurationPackagePath + "/" + scope + ".yml"
+	path := configurationPackagePath + "/" + scope + "_config.yml"
 	conf := configuration.GeneralConfiguration{}
 	err := conf.LoadConfiguration(path)
 	if err != nil {
