@@ -8,48 +8,40 @@ import (
 	"github.com/go-resty/resty/v2"
 	"io/ioutil"
 	"log"
-	"net/http"
 )
 
 const (
-	pingPath         = "/ping"
-	registerUserPath = "/user"
+	pingPath = "/ping"
+	userPath = "/user"
 )
 
 var (
-	Router *gin.Engine
+	router *gin.Engine
 )
 
 func Run(env environment.Env, port string) error {
 	SetupRunEnv(env)
-	err := Router.Run(":" + port)
+	err := router.Run(":" + port)
 	return err
 }
 
+func mapHandlers(env environment.Env) {
+	mapPingRoutes()
+	mapUserRoutes(env)
+}
+
 func SetupRunEnv(env environment.Env) {
-	health := HealthChecker{}
 	log.Print("[package:router] Configuring routes...")
-	ConfigureRoute(env, health)
+	ConfigureRoute(env)
 	log.Printf(fmt.Sprintf("[package:router] Listening on routes: %s", pingPath))
 }
 
-func ConfigureRoute(env environment.Env, health HealthChecker) *gin.Engine {
+func ConfigureRoute(env environment.Env) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	gin.DefaultWriter = ioutil.Discard
-	Router = gin.Default()
-	mapRoutes(Router, health, env)
-	return Router
-}
-
-func mapRoutes(r *gin.Engine, health HealthChecker, env environment.Env) {
-	r.GET(pingPath, health.PingHandler)
-	r.POST(registerUserPath, RegisterNewUser)
-}
-
-type HealthChecker struct{}
-
-func (h HealthChecker) PingHandler(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
+	router = gin.Default()
+	mapHandlers(env)
+	return router
 }
 
 func CreateRestClientConfig(profile string) *resty.Client {
@@ -58,4 +50,17 @@ func CreateRestClientConfig(profile string) *resty.Client {
 		restClient.Header.Add("test", "true")
 	}
 	return restClient
+}
+
+func mapUserRoutes(env environment.Env) {
+	router.POST(userPath, func(context *gin.Context) {
+		RegisterNewUser(context, env)
+	})
+	router.PATCH(userPath, func(context *gin.Context) {
+		UpdateUser(context, env)
+	})
+}
+
+func mapPingRoutes() {
+	router.GET(pingPath, PingHandler)
 }
