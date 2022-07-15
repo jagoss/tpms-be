@@ -28,6 +28,9 @@ func InitRouter(env *environment.Env, port string) {
 
 func initializeDependencies(configurationPackagePath string) (*environment.Env, error) {
 	scope := os.Getenv("SCOPE")
+	if scope == "" {
+		scope = "test"
+	}
 	path := configurationPackagePath + "/" + scope + "_config.yml"
 	conf := configuration.GeneralConfiguration{}
 	err := conf.LoadConfiguration(path)
@@ -52,8 +55,8 @@ func initializeDependencies(configurationPackagePath string) (*environment.Env, 
 	}, nil
 }
 
-func initializeDatabase(config configuration.GeneralConfiguration, profile string) (*db.DataBase, error) {
-	database, err := db.Init(config.Database, profile)
+func initializeDatabase(config configuration.GeneralConfiguration, scope string) (*db.DataBase, error) {
+	database, err := db.Init(config.Database, scope)
 	if err != nil {
 		return nil, fmt.Errorf("unable to init database configuration")
 	}

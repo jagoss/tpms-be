@@ -18,7 +18,7 @@ func Init(config configuration.DBConfig, profile string) (*DataBase, error) {
 	password := config.Password
 	database := config.Database
 	var connectionString string
-	if profile == configuration.Prod {
+	if profile == configuration.Test {
 		connectionString = fmt.Sprintf("h2://%s@%s/%s?mem=true", username, host, database)
 	} else {
 		connectionString = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", username, password, host, database)

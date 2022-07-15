@@ -9,10 +9,3 @@ repos:
     rev: 21.12b0
     hooks:
       - id: black
-  - repo: https://github.com/dnephin/pre-commit-golang
-    rev: master
-    hooks:
-      - id: golangci-lint
-      - id: go-unit-tests
-      - id: go-build
-      - id: go-mod-tidy
