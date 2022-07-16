@@ -38,7 +38,7 @@ func initializeDependencies(configurationPackagePath string) (*environment.Env, 
 		return nil, fmt.Errorf("error initializing dependencies: %v", err)
 	}
 
-	database, err := initializeDatabase(conf, scope)
+	database, err := initializeDatabase(conf)
 	if err != nil {
 		return nil, err
 	}
@@ -55,8 +55,8 @@ func initializeDependencies(configurationPackagePath string) (*environment.Env, 
 	}, nil
 }
 
-func initializeDatabase(config configuration.GeneralConfiguration, scope string) (*db.DataBase, error) {
-	database, err := db.Init(config.Database, scope)
+func initializeDatabase(config configuration.GeneralConfiguration) (*db.DataBase, error) {
+	database, err := db.Init(config.Database)
 	if err != nil {
 		return nil, fmt.Errorf("unable to init database configuration")
 	}

@@ -3,6 +3,6 @@ database:
   host: "localhost:3306"
   username: "root"
   password: "admin"
-  db_name: "tpms"
+  db_name: "tpms_test"
 
 cv_model_url: "localhost:8081"
