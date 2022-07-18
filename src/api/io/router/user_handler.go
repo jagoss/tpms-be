@@ -24,7 +24,7 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 		log.Printf("error unmarshalling user body: %v", err)
 		c.String(http.StatusUnprocessableEntity, "error reading user body!")
 	}
-	userManager := users.NewUserManager(&env.UserPersister)
+	userManager := users.NewUserManager(env.UserPersister)
 	user, err := userManager.Register(newUser)
 	if err != nil {
 		log.Printf("%v", err)
@@ -45,7 +45,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 		log.Printf("error unmarshalling user body: %v", err)
 		c.String(http.StatusUnprocessableEntity, "error reading user body!")
 	}
-	userManager := users.NewUserManager(&env.UserPersister)
+	userManager := users.NewUserManager(env.UserPersister)
 	updatedUser, err := userManager.Modify(user)
 	if err != nil {
 		log.Printf("error updating user %s: %v ", user.ID, err)

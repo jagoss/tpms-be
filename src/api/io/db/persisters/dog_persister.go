@@ -14,7 +14,7 @@ func NewDogPersister(db *db.DataBase) *DogPersister {
 	return &DogPersister{db: db}
 }
 
-func (dp *DogPersister) InsertDog(dog *model.User) (*model.User, error) {
+func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
 	result := dp.db.Connection.Create(dog)
 	if result.Error != nil {
 		return nil, result.Error
@@ -41,7 +41,7 @@ func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 	}
 	return dog, nil
 }
-func (dp *DogPersister) DeleteDog(userID string) error {
-	tx := dp.db.Connection.Delete(&model.Dog{}, userID)
+func (dp *DogPersister) DeleteDog(dogID uint) error {
+	tx := dp.db.Connection.Delete(&model.Dog{}, dogID)
 	return tx.Error
 }
