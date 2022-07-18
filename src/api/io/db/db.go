@@ -17,7 +17,7 @@ func Init(config configuration.DBConfig) (*DataBase, error) {
 	username := config.Username
 	password := config.Password
 	database := config.Database
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", username, password, host, database)
+	connectionString := fmt.Sprintf("%mocks:%mocks@tcp(%mocks)/%mocks?charset=utf8&parseTime=true", username, password, host, database)
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 
