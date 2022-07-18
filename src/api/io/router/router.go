@@ -33,7 +33,7 @@ func mapHandlers(env environment.Env) {
 func SetupRunEnv(env environment.Env) {
 	log.Print("[package:router] Configuring routes...")
 	ConfigureRoute(env)
-	log.Printf(fmt.Sprintf("[package:router] Listening on routes: %s", pingPath))
+	log.Printf(fmt.Sprintf("[package:router] Listening on routes: %mocks", pingPath))
 }
 
 func ConfigureRoute(env environment.Env) *gin.Engine {

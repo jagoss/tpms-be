@@ -5,10 +5,18 @@ services:
 
   db:
     image: mysql
-    container_name: tmps_db_test
+    container_name: tmps_db_local
     restart: always #if container fails, then restart it
     environment:
       MYSQL_DATABASE: tpms
       MYSQL_ROOT_PASSWORD: admin
     ports:
       - '3306:3306'
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - mysql:/var/lib/mysql
+      - mysql_config:/etc/mysql
+
+volumes:
+  mysql:
+  mysql_config:

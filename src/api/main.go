@@ -14,7 +14,7 @@ import (
 func main() {
 	env, err := initializeDependencies(configuration.ConfigFilePath)
 	if err != nil {
-		panic(any(fmt.Errorf("error Init Main: %v", err)))
+		panic(any(fmt.Errorf("error Init Main: %w", err)))
 	}
 	InitRouter(env, "8080")
 }
@@ -22,20 +22,23 @@ func main() {
 func InitRouter(env *environment.Env, port string) {
 	err := router.Run(*env, port)
 	if err != nil {
-		panic(any(fmt.Errorf("error Running router: %v", err)))
+		panic(any(fmt.Errorf("error Running router: %w", err)))
 	}
 }
 
 func initializeDependencies(configurationPackagePath string) (*environment.Env, error) {
 	scope := os.Getenv("SCOPE")
+	if scope == "" {
+		scope = "test"
+	}
 	path := configurationPackagePath + "/" + scope + "_config.yml"
 	conf := configuration.GeneralConfiguration{}
 	err := conf.LoadConfiguration(path)
 	if err != nil {
-		return nil, fmt.Errorf("error initializing dependencies: %v", err)
+		return nil, fmt.Errorf("error initializing dependencies: %w", err)
 	}
 
-	database, err := initializeDatabase(conf, scope)
+	database, err := initializeDatabase(conf)
 	if err != nil {
 		return nil, err
 	}
@@ -43,17 +46,12 @@ func initializeDependencies(configurationPackagePath string) (*environment.Env, 
 	dogPersister := persisters.NewDogPersister(database)
 	restClient := *router.CreateRestClientConfig(scope)
 	cvModelClient := restclient.NewCVModelRestClient(&restClient)
-
-	return &environment.Env{
-		RestClient:        restClient,
-		CVModelRestClient: cvModelClient,
-		UserPersister:     userPersister,
-		DogPersister:      dogPersister,
-	}, nil
+	env := environment.InitEnv(restClient, cvModelClient, userPersister, dogPersister)
+	return env, nil
 }
 
-func initializeDatabase(config configuration.GeneralConfiguration, profile string) (*db.DataBase, error) {
-	database, err := db.Init(config.Database, profile)
+func initializeDatabase(config configuration.GeneralConfiguration) (*db.DataBase, error) {
+	database, err := db.Init(config.Database)
 	if err != nil {
 		return nil, fmt.Errorf("unable to init database configuration")
 	}

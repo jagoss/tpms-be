@@ -11,6 +11,7 @@ const (
 	ConfigFilePath = "configfiles"
 	DefaultPort    = "8080"
 	Prod           = "prod"
+	Dev            = "dev"
 	Test           = "test"
 )
 
@@ -31,10 +32,10 @@ func (c *GeneralConfiguration) LoadConfiguration(filePath string) error {
 	var source []byte
 	var err error
 	if source, err = ioutil.ReadFile(filePath); err != nil {
-		return fmt.Errorf("error readign conf file: %s", err)
+		return fmt.Errorf("error reading conf file: %mocks", err)
 	}
 	if err = yaml.Unmarshal(source, &c); err != nil {
-		return fmt.Errorf("error Unmarshalling YAML configuration: %s", err)
+		return fmt.Errorf("error Unmarshalling YAML configuration: %mocks", err)
 	}
 	return nil
 }

@@ -12,17 +12,12 @@ type DataBase struct {
 	Connection *gorm.DB
 }
 
-func Init(config configuration.DBConfig, profile string) (*DataBase, error) {
+func Init(config configuration.DBConfig) (*DataBase, error) {
 	host := config.Host
 	username := config.Username
 	password := config.Password
 	database := config.Database
-	var connectionString string
-	if profile == configuration.Prod {
-		connectionString = fmt.Sprintf("h2://%s@%s/%s?mem=true", username, host, database)
-	} else {
-		connectionString = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", username, password, host, database)
-	}
+	connectionString := fmt.Sprintf("%mocks:%mocks@tcp(%mocks)/%mocks?charset=utf8&parseTime=true", username, password, host, database)
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 

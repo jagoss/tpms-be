@@ -9,5 +9,14 @@ type Env struct {
 	RestClient        resty.Client
 	CVModelRestClient interfaces.CVModelRestClient
 	UserPersister     interfaces.UserPersister
-	DogPersister      interfaces.DogPersiter
+	DogPersister      interfaces.DogPersister
+}
+
+func InitEnv(restClient resty.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister) *Env {
+	return &Env{
+		RestClient:        restClient,
+		CVModelRestClient: cvModelClient,
+		UserPersister:     userPersister,
+		DogPersister:      dogPersister,
+	}
 }
