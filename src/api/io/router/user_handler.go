@@ -48,7 +48,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	userManager := users.NewUserManager(env.UserPersister)
 	updatedUser, err := userManager.Modify(user)
 	if err != nil {
-		log.Printf("error updating user %s mocks: %v ", user.ID, err)
+		log.Printf("error updating user with ID %s: %v ", user.ID, err)
 		c.String(http.StatusInternalServerError, "error updating user")
 	}
 	c.JSON(http.StatusOK, updatedUser)

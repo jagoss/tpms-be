@@ -13,3 +13,12 @@ func DeserializeUser(input []byte) (*model.User, error) {
 	}
 	return &user, nil
 }
+
+func DeserializeDog(input []byte) (*model.Dog, error) {
+	var dog model.Dog
+	err := json.Unmarshal(input, &dog)
+	if err != nil {
+		return nil, err
+	}
+	return &dog, nil
+}

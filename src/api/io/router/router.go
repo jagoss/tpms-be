@@ -13,6 +13,7 @@ import (
 const (
 	pingPath = "/ping"
 	userPath = "/user"
+	dogPath  = "/dog"
 )
 
 var (
@@ -58,6 +59,12 @@ func mapUserRoutes(env environment.Env) {
 	})
 	router.PATCH(userPath, func(context *gin.Context) {
 		UpdateUser(context, env)
+	})
+	router.POST(dogPath, func(context *gin.Context) {
+		RegisterNewDog(context, env)
+	})
+	router.PATCH(dogPath, func(context *gin.Context) {
+		UpdateDog(context, env)
 	})
 }
 
