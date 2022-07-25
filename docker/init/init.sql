@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS tpms;
 USE tpms;
-CREATE TABLE IF NOT EXISTS `user`
+CREATE TABLE IF NOT EXISTS `users`
 (
     `id`         VARCHAR(255) PRIMARY KEY,
     `first_name` VARCHAR(50)  NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `user`
     `phone`      VARCHAR(40)  NOT NULL,
     `city`       VARCHAR(255) NOT NULL
 );
-CREATE TABLE IF NOT EXISTS `dog`
+CREATE TABLE IF NOT EXISTS `dogs`
 (
     `id`         VARCHAR(255),
     `name`       VARCHAR(50) NOT NULL,
@@ -24,13 +24,13 @@ CREATE TABLE IF NOT EXISTS `dog`
     `updated_at` DATETIME    NOT NULL,
     `deleted_at` DATETIME    NOT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES user (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES user (`id`) ON UPDATE CASCADE ON DELETE SET NULL
+    CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
+    CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE DATABASE IF NOT EXISTS tpms_test;
 USE tpms_test;
-CREATE TABLE IF NOT EXISTS `user`
+CREATE TABLE IF NOT EXISTS users
 (
     `id`         VARCHAR(255) PRIMARY KEY,
     `first_name` VARCHAR(50)  NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `user`
     `phone`      VARCHAR(40)  NOT NULL,
     `city`       VARCHAR(255) NOT NULL
 );
-CREATE TABLE IF NOT EXISTS `dog`
+CREATE TABLE IF NOT EXISTS `dogs`
 (
     `id`         VARCHAR(255),
     `name`       VARCHAR(50) NOT NULL,
@@ -52,6 +52,6 @@ CREATE TABLE IF NOT EXISTS `dog`
     `updated_at` DATETIME    NOT NULL,
     `deleted_at` DATETIME    NOT NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES user (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES user (`id`) ON UPDATE CASCADE ON DELETE SET NULL
+    CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
+    CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
 );

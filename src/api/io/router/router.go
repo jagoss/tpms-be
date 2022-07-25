@@ -1,9 +1,9 @@
 package router
 
 import (
+	"be-tpms/middleware"
 	"be-tpms/src/api/configuration"
 	"be-tpms/src/api/environment"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
 	"io/ioutil"
@@ -33,14 +33,17 @@ func mapHandlers(env environment.Env) {
 
 func SetupRunEnv(env environment.Env) {
 	log.Print("[package:router] Configuring routes...")
-	ConfigureRoute(env)
-	log.Printf(fmt.Sprintf("[package:router] Listening on routes: %s, %s", pingPath, userPath))
+	configureRoute(env)
+	log.Printf("[package:router] Listening on routes: %s, %s", pingPath, userPath)
 }
 
-func ConfigureRoute(env environment.Env) *gin.Engine {
+func configureRoute(env environment.Env) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	gin.DefaultWriter = ioutil.Discard
 	router = gin.Default()
+	router.Use(func(c *gin.Context) {
+		c.Set("firebaseAuth", &env.FirebaseAuth)
+	})
 	mapHandlers(env)
 	return router
 }
@@ -55,19 +58,35 @@ func CreateRestClientConfig(profile string) *resty.Client {
 
 func mapUserRoutes(env environment.Env) {
 	router.POST(userPath, func(context *gin.Context) {
+		middleware.AuthMiddleware(context)
 		RegisterNewUser(context, env)
 	})
 	router.PATCH(userPath, func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
 		UpdateUser(context, env)
 	})
 	router.POST(dogPath, func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
 		RegisterNewDog(context, env)
 	})
 	router.PATCH(dogPath, func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
 		UpdateDog(context, env)
 	})
 }
 
 func mapPingRoutes() {
 	router.GET(pingPath, PingHandler)
+}
+
+func validUser(c *gin.Context) bool {
+	middleware.AuthMiddleware(c)
+	_, exists := c.Get("UUID")
+	return exists
 }

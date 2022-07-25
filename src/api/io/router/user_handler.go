@@ -39,17 +39,20 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	if err != nil {
 		log.Printf("error reading request body: %v", err)
 		c.String(http.StatusUnprocessableEntity, "error reading request body!")
+		return
 	}
 	user, err := io.DeserializeUser(jsonBody)
 	if err != nil {
 		log.Printf("error unmarshalling user body: %v", err)
 		c.String(http.StatusUnprocessableEntity, "error reading user body!")
+		return
 	}
 	userManager := users.NewUserManager(env.UserPersister)
 	updatedUser, err := userManager.Modify(user)
 	if err != nil {
 		log.Printf("error updating user with ID %s: %v ", user.ID, err)
 		c.String(http.StatusInternalServerError, "error updating user")
+		return
 	}
 	c.JSON(http.StatusOK, updatedUser)
 }

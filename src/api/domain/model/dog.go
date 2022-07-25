@@ -26,8 +26,8 @@ type Dog struct {
 	Breed     Breed
 	Age       Age
 	Size      Size
-	OwnerID   string
-	HostID    string
+	Owner     User
+	Host      User
 	Latitude  float32
 	Longitude float32
 }
