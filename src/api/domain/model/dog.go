@@ -22,12 +22,14 @@ const (
 
 type Dog struct {
 	gorm.Model
-	Name    string
-	Breed   Breed
-	Age     Age
-	Size    Size
-	OwnerID string
-	HostID  string
+	Name      string
+	Breed     Breed
+	Age       Age
+	Size      Size
+	OwnerID   string
+	HostID    string
+	Latitude  float32
+	Longitude float32
 }
 
 type Breed int16
