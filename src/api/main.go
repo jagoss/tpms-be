@@ -38,6 +38,7 @@ func initializeDependencies(configurationPackagePath string) (*environment.Env, 
 		return nil, fmt.Errorf("error initializing dependencies: %w", err)
 	}
 
+	firebaseAuth := *configuration.SetupFirebase()
 	database, err := initializeDatabase(conf)
 	if err != nil {
 		return nil, err
@@ -46,7 +47,7 @@ func initializeDependencies(configurationPackagePath string) (*environment.Env, 
 	dogPersister := persisters.NewDogPersister(database)
 	restClient := *router.CreateRestClientConfig(scope)
 	cvModelClient := restclient.NewCVModelRestClient(&restClient)
-	env := environment.InitEnv(restClient, cvModelClient, userPersister, dogPersister)
+	env := environment.InitEnv(firebaseAuth, restClient, cvModelClient, userPersister, dogPersister)
 	return env, nil
 }
 

@@ -7,6 +7,4 @@ type User struct {
 	Email     string
 	Phone     string
 	City      string
-	OwnedDogs []Dog `gorm:"foreignKey:OwnerID,constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	HostDogs  []Dog `gorm:"foreignKey:HostID,constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
