@@ -17,4 +17,4 @@ repos:
       - id: go-lint
       - id: go-unit-tests
       - id: golangci-lint # requires github.com/golangci/golangci-lint
-        args: [--config=.github/linters/.golangci.yml]
+        #args: [--config=.github/linters/.golangci.yml]
