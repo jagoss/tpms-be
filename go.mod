@@ -3,6 +3,8 @@ module be-tpms
 go 1.18
 
 require (
+	firebase.google.com/go v3.13.0+incompatible
+	firebase.google.com/go/v4 v4.8.0
 	github.com/gin-gonic/gin v1.7.7
 	google.golang.org/api v0.73.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -11,10 +13,14 @@ require (
 )
 
 require (
+	cloud.google.com/go v0.100.2 // indirect
 	cloud.google.com/go/compute v1.5.0 // indirect
-	firebase.google.com/go/v4 v4.8.0 // indirect
+	cloud.google.com/go/firestore v1.6.1 // indirect
+	cloud.google.com/go/iam v0.1.1 // indirect
+	cloud.google.com/go/storage v1.21.0 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/googleapis/gax-go/v2 v2.1.1 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a // indirect
