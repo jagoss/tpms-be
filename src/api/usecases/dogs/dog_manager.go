@@ -44,3 +44,8 @@ func (d *DogManager) Delete(dogID uint) (bool, error) {
 	}
 	return true, nil
 }
+
+func (d *DogManager) ReportLostDog(dog *model.Dog) (*model.Dog, error) {
+
+	return nil, nil
+}

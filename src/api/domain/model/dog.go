@@ -26,10 +26,11 @@ type Dog struct {
 	Breed     Breed
 	Age       Age
 	Size      Size
-	Owner     User
-	Host      User
+	Owner     *User
+	Host      *User
 	Latitude  float32
 	Longitude float32
+	ImgUrl    string
 }
 
 type Breed int16
@@ -87,5 +88,18 @@ func (a Age) String() string {
 
 type DogResponse struct {
 	ID  string
-	img string
+	Img []byte
+}
+
+type DogRequest struct {
+	gorm.Model
+	Name      string
+	Breed     Breed
+	Age       Age
+	Size      Size
+	Owner     User
+	Host      User
+	Latitude  float32
+	Longitude float32
+	Img       [][]byte
 }
