@@ -1,6 +1,8 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 const (
 	Bulldog Breed = iota
@@ -29,6 +31,7 @@ type Dog struct {
 	Breed     Breed
 	Age       Age
 	Size      Size
+	IsLost    bool
 	Owner     *User
 	Host      *User
 	Latitude  float32

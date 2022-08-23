@@ -23,6 +23,9 @@ func (d *DogManager) Get(dogID uint) (*model.Dog, error) {
 }
 
 func (d *DogManager) Register(dog *model.Dog) (*model.Dog, error) {
+	if d.dogPersister.DogExisitsByNameAndOwner(dog.Name, dog.Owner.ID) {
+		return nil, fmt.Errorf("dog with name %s and ownerID %s already exists", dog.Name, dog.Owner.ID)
+	}
 	dog, err := d.dogPersister.InsertDog(dog)
 	if err != nil {
 		return nil, fmt.Errorf("[dogmanager.Register] error registing dog: %v", err)
@@ -43,9 +46,4 @@ func (d *DogManager) Delete(dogID uint) (bool, error) {
 		return false, fmt.Errorf("[dogmanager.Delete] error registing dog with id %d: %v", dogID, err)
 	}
 	return true, nil
-}
-
-func (d *DogManager) ReportLostDog(dog *model.Dog) (*model.Dog, error) {
-
-	return nil, nil
 }

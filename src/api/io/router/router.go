@@ -29,6 +29,7 @@ func Run(env environment.Env, port string) error {
 func mapHandlers(env environment.Env) {
 	mapPingRoutes()
 	mapUserRoutes(env)
+	mapDogRoutes(env)
 }
 
 func SetupRunEnv(env environment.Env) {
@@ -56,17 +57,7 @@ func CreateRestClientConfig(profile string) *resty.Client {
 	return restClient
 }
 
-func mapUserRoutes(env environment.Env) {
-	router.POST(userPath, func(context *gin.Context) {
-		middleware.AuthMiddleware(context)
-		RegisterNewUser(context, env)
-	})
-	router.PATCH(userPath, func(context *gin.Context) {
-		if !validUser(context) {
-			return
-		}
-		UpdateUser(context, env)
-	})
+func mapDogRoutes(env environment.Env) {
 	router.POST(dogPath, func(context *gin.Context) {
 		if !validUser(context) {
 			return
@@ -78,6 +69,25 @@ func mapUserRoutes(env environment.Env) {
 			return
 		}
 		UpdateDog(context, env)
+	})
+	router.PATCH(dogPath+"/found", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		DogReUnited(context, env)
+	})
+}
+
+func mapUserRoutes(env environment.Env) {
+	router.POST(userPath, func(context *gin.Context) {
+		middleware.AuthMiddleware(context)
+		RegisterNewUser(context, env)
+	})
+	router.PATCH(userPath, func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		UpdateUser(context, env)
 	})
 }
 
