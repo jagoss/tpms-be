@@ -41,7 +41,14 @@ func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 	}
 	return dog, nil
 }
+
 func (dp *DogPersister) DeleteDog(dogID uint) error {
 	tx := dp.db.Connection.Delete(&model.Dog{}, dogID)
 	return tx.Error
+}
+
+func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string) bool {
+	var dog model.Dog
+	dp.db.Connection.Where("name = ? AND owner_id = ?", dogName, ownerID).First(&dog)
+	return dog.ID != 0
 }

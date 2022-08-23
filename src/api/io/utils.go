@@ -14,11 +14,25 @@ func DeserializeUser(input []byte) (*model.User, error) {
 	return &user, nil
 }
 
-func DeserializeDog(input []byte) (*model.Dog, error) {
-	var dog model.Dog
+func DeserializeDog(input []byte) (*model.DogRequest, error) {
+	var dog model.DogRequest
 	err := json.Unmarshal(input, &dog)
 	if err != nil {
 		return nil, err
 	}
 	return &dog, nil
+}
+
+func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
+	return &model.Dog{
+		Name:      "",
+		Breed:     0,
+		Age:       0,
+		Size:      0,
+		Owner:     nil,
+		Host:      nil,
+		Latitude:  0,
+		Longitude: 0,
+		ImgUrl:    "",
+	}, reqDog.Img
 }
