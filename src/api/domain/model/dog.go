@@ -10,11 +10,14 @@ const (
 	FrenchBulldog
 	Pug
 	BorderCollie
-
+)
+const (
 	Small Size = iota
+
 	Medium
 	Large
-
+)
+const (
 	Puppy Age = iota
 	Adult
 	Senior
