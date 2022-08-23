@@ -11,12 +11,26 @@ services:
       MYSQL_DATABASE: tpms
       MYSQL_ROOT_PASSWORD: admin
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
-      - ./init:/docker-entrypoint-initdb.d
+      - ./sql:/docker-entrypoint-initdb.d
       - mysql:/var/lib/mysql
       - mysql_config:/etc/mysql
+
+  web:
+    build: .
+    container_name: "tpms-be"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - fullstack
 
 volumes:
   mysql:
   mysql_config:
+
+networks:
+  fullstack:
+    driver: bridge
