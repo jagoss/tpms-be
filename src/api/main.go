@@ -31,7 +31,7 @@ func initializeDependencies(configurationPackagePath string) (*environment.Env, 
 	if scope == "" {
 		scope = "test"
 	}
-	path := configurationPackagePath + "/" + scope + "_config.yml"
+	path := "./" + configurationPackagePath + "/" + scope + "_config.yml"
 	conf := configuration.GeneralConfiguration{}
 	err := conf.LoadConfiguration(path)
 	if err != nil {
