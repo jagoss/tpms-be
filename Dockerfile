@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Select golang version
-FROM golang:1.18
+FROM golang:1.18 AS build
 
 RUN mkdir /app
 ADD . /app
@@ -14,8 +14,18 @@ RUN go mod download
 
 COPY *.go .
 
-RUN go build -o /src/api/main .
+
+RUN go build -o /tpms-be ./src/api/main.go
+
+## Deploy
+FROM gcr.io/distroless/base-debian10
+
+WORKDIR /
+
+COPY --from=build /tpms-be /tpms-be
 
 EXPOSE 8080
 
-CMD [ "/tmps-be" ]
+USER nonroot:nonroot
+
+ENTRYPOINT ["/tpms-be"]

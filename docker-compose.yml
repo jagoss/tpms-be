@@ -19,7 +19,7 @@ services:
   web:
     image: golang
     build: .
-    container_name: tpms_be
+    container_name: tpms-be
     ports:
       - "8080:8080"
     depends_on:

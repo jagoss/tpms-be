@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS tpms;
-USE tpms;
+CREATE DATABASE IF NOT EXISTS tpms_prod;
+USE tpms_prod;
 CREATE TABLE IF NOT EXISTS `users`
 (
     `id`         VARCHAR(255) PRIMARY KEY,
