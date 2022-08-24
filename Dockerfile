@@ -23,6 +23,7 @@ FROM gcr.io/distroless/base-debian10
 WORKDIR /
 
 COPY --from=build /tpms-be /tpms-be
+COPY serviceAccountKey.json .
 
 EXPOSE 8080
 

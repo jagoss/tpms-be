@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	env, err := initializeDependencies(configuration.ConfigFilePath)
+	env, err := initializeDependencies()
 	if err != nil {
 		panic(any(fmt.Errorf("error Init Main: %w", err)))
 	}
@@ -26,16 +26,14 @@ func InitRouter(env *environment.Env, port string) {
 	}
 }
 
-func initializeDependencies(configurationPackagePath string) (*environment.Env, error) {
+func initializeDependencies() (*environment.Env, error) {
 	scope := os.Getenv("SCOPE")
-	if scope == "" {
-		scope = "test"
-	}
-	path := "./" + configurationPackagePath + "/" + scope + "_config.yml"
-	conf := configuration.GeneralConfiguration{}
-	err := conf.LoadConfiguration(path)
-	if err != nil {
-		return nil, fmt.Errorf("error initializing dependencies: %w", err)
+
+	var conf configuration.GeneralConfiguration
+	if scope == "" || scope == configuration.Test {
+		conf = configuration.LoadTestConfiguration()
+	} else {
+		conf = configuration.LoadConfiguration()
 	}
 
 	firebaseAuth := *configuration.SetupFirebase()
