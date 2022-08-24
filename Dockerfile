@@ -14,8 +14,8 @@ RUN go mod download
 
 COPY *.go .
 
-RUN go build -o src/api/main .
+RUN go build -o /src/api/main .
 
-EXPOSE 8082
+EXPOSE 8080
 
 CMD [ "/tmps-be" ]

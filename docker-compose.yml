@@ -1,5 +1,5 @@
 # Use root/example as user/password credentials
-version: '3.1'
+version: '3.8'
 
 services:
 
@@ -15,11 +15,11 @@ services:
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
       - mysql:/var/lib/mysql
-      - mysql_config:/etc/mysql
 
   web:
+    image: golang
     build: .
-    container_name: "tpms-be"
+    container_name: tpms_be
     ports:
       - "8080:8080"
     depends_on:
@@ -29,7 +29,6 @@ services:
 
 volumes:
   mysql:
-  mysql_config:
 
 networks:
   fullstack:
