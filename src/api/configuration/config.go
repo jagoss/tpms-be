@@ -26,6 +26,8 @@ type DBConfig struct {
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	Database string `yaml:"db_name"`
+	Port     string `yaml:"port"`
+	SSLMode  string `yaml:"ssl_mode"`
 }
 
 func (c *GeneralConfiguration) LoadConfiguration(filePath string) error {

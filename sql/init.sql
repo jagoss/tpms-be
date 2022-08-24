@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS tpms;
-USE tpms;
+CREATE DATABASE IF NOT EXISTS tpms_prod;
+USE tpms_prod;
 CREATE TABLE IF NOT EXISTS `users`
 (
     `id`         VARCHAR(255) PRIMARY KEY,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `breed`      int         NOT NULL,
     `age`        int         NOT NULL,
     `size`       int         NOT NULL,
-    'is_lost'    boolean,
+    `is_lost`    boolean,
     `owner_id`   VARCHAR(255),
     `host_id`    VARCHAR(255),
     `latitude`   DECIMAL,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `breed`      int         NOT NULL,
     `age`        int         NOT NULL,
     `size`       int         NOT NULL,
-    'is_lost'    boolean,
+    `is_lost`    boolean,
     `owner_id`   VARCHAR(255),
     `host_id`    VARCHAR(255),
     `latitude`   DECIMAL,
