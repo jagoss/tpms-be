@@ -2,8 +2,10 @@ package dogs
 
 import (
 	"be-tpms/src/api/domain/model"
+	"be-tpms/src/api/io/storage"
 	"be-tpms/src/api/usecases/interfaces"
 	"fmt"
+	"log"
 )
 
 type DogManager struct {
@@ -46,4 +48,14 @@ func (d *DogManager) Delete(dogID uint) (bool, error) {
 		return false, fmt.Errorf("[dogmanager.Delete] error registing dog with id %d: %v", dogID, err)
 	}
 	return true, nil
+}
+
+func (d *DogManager) AddImg(imgBuff []byte) error {
+	bucket := storage.NewBucket()
+	imgName, err := bucket.SaveImgs([][]byte{imgBuff})
+	if err != nil {
+		return err
+	}
+	log.Printf("img name: %s", imgName)
+	return nil
 }

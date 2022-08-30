@@ -5,10 +5,10 @@ go 1.18
 require (
 	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.8.0
+	github.com/aws/aws-sdk-go v1.44.86
 	github.com/gin-gonic/gin v1.7.7
 	github.com/google/uuid v1.1.2
 	google.golang.org/api v0.73.0
-	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.3.4
 	gorm.io/gorm v1.23.5
 )
@@ -22,6 +22,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/googleapis/gax-go/v2 v2.1.1 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a // indirect
@@ -30,6 +31,7 @@ require (
 	google.golang.org/appengine/v2 v2.0.1 // indirect
 	google.golang.org/genproto v0.0.0-20220310185008-1973136f34c6 // indirect
 	google.golang.org/grpc v1.45.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (

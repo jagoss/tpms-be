@@ -2,7 +2,10 @@ package io
 
 import (
 	"be-tpms/src/api/domain/model"
+	"be-tpms/src/api/usecases/interfaces"
 	"encoding/json"
+	"strconv"
+	"strings"
 )
 
 func DeserializeUser(input []byte) (*model.User, error) {
@@ -35,4 +38,14 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
 		Longitude: 0,
 		ImgUrl:    "",
 	}, reqDog.Img
+}
+
+func MapToDogResponse(dogs []model.Dog, bucket interfaces.Storage) []model.DogResponse {
+	var dogsResp []model.DogResponse
+	for _, dog := range dogs {
+		firstImg := strings.Split(dog.ImgUrl, ";")[0]
+		imgArray, _ := bucket.GetImgs(firstImg)
+		dogsResp = append(dogsResp, model.DogResponse{ID: strconv.Itoa(int(dog.ID)), Dog: dog, Img: imgArray[0]})
+	}
+	return dogsResp
 }

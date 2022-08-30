@@ -94,6 +94,7 @@ func (a Age) String() string {
 
 type DogResponse struct {
 	ID  string
+	Dog Dog
 	Img []byte
 }
 

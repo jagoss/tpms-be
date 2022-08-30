@@ -3,7 +3,6 @@ package router
 import (
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io"
-	"be-tpms/src/api/io/fileio"
 	"be-tpms/src/api/usecases/dogs"
 	"be-tpms/src/api/usecases/lostandfound"
 	"fmt"
@@ -32,7 +31,8 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 	}
 	dogManager := dogs.NewDogManager(env.DogPersister)
 	newDog, img := io.MapFromDogRequest(reqDog)
-	imgURL, err := fileio.SaveImgs(img)
+	bucket := env.Storage
+	imgURL, err := bucket.SaveImgs(img)
 	if err != nil {
 		log.Printf("%v", err)
 		c.String(http.StatusInternalServerError, fmt.Sprintf("error saving img: %v", err))
@@ -84,4 +84,11 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 		return
 	}
 	c.JSON(http.StatusOK, dog)
+}
+
+func GetMissingDogsList(c *gin.Context, env environment.Env) {
+	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
+	dogList := lfDogs.GetMissingDogsList()
+	dogRespList := io.MapToDogResponse(dogList, env.Storage)
+	c.JSON(http.StatusOK, dogRespList)
 }

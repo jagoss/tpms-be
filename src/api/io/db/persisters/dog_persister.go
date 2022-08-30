@@ -52,3 +52,9 @@ func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string)
 	dp.db.Connection.Where("name = ? AND owner_id = ?", dogName, ownerID).First(&dog)
 	return dog.ID != 0
 }
+
+func (dp *DogPersister) GetMissingDogs() []model.Dog {
+	var dogs []model.Dog
+	dp.db.Connection.Where("is_lost = ?", "true").Find(&dogs)
+	return dogs
+}
