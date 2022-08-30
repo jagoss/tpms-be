@@ -10,4 +10,5 @@ type DogPersister interface {
 	UpdateDog(dog *model.Dog) (*model.Dog, error)
 	DeleteDog(dogID uint) error
 	DogExisitsByNameAndOwner(string, string) bool
+	GetMissingDogs() []model.Dog
 }

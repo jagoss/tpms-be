@@ -6,7 +6,8 @@ FROM golang:1.18 AS build
 RUN mkdir /app
 ADD . /app
 WORKDIR /app
-
+RUN mkdir /imgs
+ADD . /imgs
 # Download necessary Go modules
 COPY go.mod ./
 COPY go.sum ./
@@ -27,6 +28,6 @@ COPY serviceAccountKey.json .
 
 EXPOSE 8080
 
-USER nonroot:nonroot
+USER root:root
 
 ENTRYPOINT ["/tpms-be"]

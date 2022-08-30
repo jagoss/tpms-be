@@ -14,6 +14,7 @@ const (
 	pingPath = "/ping"
 	userPath = "/user"
 	dogPath  = "/dog"
+	imgPath  = "/img"
 )
 
 var (
@@ -30,12 +31,13 @@ func mapHandlers(env environment.Env) {
 	mapPingRoutes()
 	mapUserRoutes(env)
 	mapDogRoutes(env)
+	mapImgsRoutes(env)
 }
 
 func SetupRunEnv(env environment.Env) {
 	log.Print("[package:router] Configuring routes...")
 	configureRoute(env)
-	log.Printf("[package:router] Listening on routes: %s, %s", pingPath, userPath)
+	log.Printf("[package:router] Listening on routes: %s, %s, %s, %s", pingPath, userPath, dogPath, imgPath)
 }
 
 func configureRoute(env environment.Env) *gin.Engine {
@@ -76,6 +78,12 @@ func mapDogRoutes(env environment.Env) {
 		}
 		DogReUnited(context, env)
 	})
+	router.GET(dogPath+"/missing", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetMissingDogsList(context, env)
+	})
 }
 
 func mapUserRoutes(env environment.Env) {
@@ -88,6 +96,15 @@ func mapUserRoutes(env environment.Env) {
 			return
 		}
 		UpdateUser(context, env)
+	})
+}
+
+func mapImgsRoutes(env environment.Env) {
+	router.POST(imgPath, func(context *gin.Context) {
+		//if !validUser(context) {
+		//	return
+		//}
+		AddImg(context, env)
 	})
 }
 

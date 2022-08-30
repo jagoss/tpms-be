@@ -12,14 +12,16 @@ type Env struct {
 	CVModelRestClient interfaces.CVModelRestClient
 	UserPersister     interfaces.UserPersister
 	DogPersister      interfaces.DogPersister
+	Storage           interfaces.Storage
 }
 
-func InitEnv(firebaseAuth auth.Client, restClient resty.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister) *Env {
+func InitEnv(firebaseAuth auth.Client, restClient resty.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister, storage interfaces.Storage) *Env {
 	return &Env{
 		FirebaseAuth:      firebaseAuth,
 		RestClient:        restClient,
 		CVModelRestClient: cvModelClient,
 		UserPersister:     userPersister,
 		DogPersister:      dogPersister,
+		Storage:           storage,
 	}
 }

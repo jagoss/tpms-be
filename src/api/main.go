@@ -7,6 +7,7 @@ import (
 	"be-tpms/src/api/io/db/persisters"
 	"be-tpms/src/api/io/restclient"
 	"be-tpms/src/api/io/router"
+	storage "be-tpms/src/api/io/storage"
 	"fmt"
 	"os"
 )
@@ -45,7 +46,8 @@ func initializeDependencies() (*environment.Env, error) {
 	dogPersister := persisters.NewDogPersister(database)
 	restClient := *router.CreateRestClientConfig(scope)
 	cvModelClient := restclient.NewCVModelRestClient(&restClient)
-	env := environment.InitEnv(firebaseAuth, restClient, cvModelClient, userPersister, dogPersister)
+	bucket := storage.NewBucket()
+	env := environment.InitEnv(firebaseAuth, restClient, cvModelClient, userPersister, dogPersister, bucket)
 	return env, nil
 }
 

@@ -2,40 +2,38 @@ package lostandfound
 
 import (
 	"be-tpms/src/api/domain/model"
-	"be-tpms/src/api/usecases/dogs"
 	"be-tpms/src/api/usecases/interfaces"
-	"be-tpms/src/api/usecases/users"
 	"fmt"
 )
 
 type LostFoundDogs struct {
-	dogManager  interfaces.DogManager
-	userManager interfaces.UserManager
+	dogPersister  interfaces.DogPersister
+	userPersister interfaces.UserPersister
 }
 
 func NewLostFoundDogs(dogPersister interfaces.DogPersister, userPersister interfaces.UserPersister) LostFoundDogs {
 	return LostFoundDogs{
-		dogManager:  dogs.NewDogManager(dogPersister),
-		userManager: users.NewUserManager(userPersister),
+		dogPersister:  dogPersister,
+		userPersister: userPersister,
 	}
 }
 
 func (l *LostFoundDogs) ReuniteDog(dogID uint, ownerID string, hosterID string) (*model.Dog, error) {
 	if ownerID == hosterID {
-		dog, _ := l.dogManager.Get(dogID)
+		dog, _ := l.dogPersister.GetDog(dogID)
 		return dog, nil
 	}
-	dog, err := l.dogManager.Get(dogID)
+	dog, err := l.dogPersister.GetDog(dogID)
 	if err != nil {
 		return nil, fmt.Errorf("[lostfounddogs.ReuniteDog] %v", err)
 	}
-	owner, err := l.userManager.Get(ownerID)
+	owner, err := l.userPersister.GetUser(ownerID)
 	if err != nil {
 		return nil, fmt.Errorf("[lostfounddogs.ReuniteDog] %v", err)
 	}
 	dog.Host = owner
 	dog.IsLost = false
-	modifiedDog, err := l.dogManager.Modify(dog)
+	modifiedDog, err := l.dogPersister.UpdateDog(dog)
 	if err != nil {
 		return nil, fmt.Errorf("[lostfounddogs.ReuniteDog] error updating owner: %v", err)
 	}
@@ -44,4 +42,8 @@ func (l *LostFoundDogs) ReuniteDog(dogID uint, ownerID string, hosterID string) 
 	}
 
 	return modifiedDog, nil
+}
+
+func (l *LostFoundDogs) GetMissingDogsList() []model.Dog {
+	return l.dogPersister.GetMissingDogs()
 }
