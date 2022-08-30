@@ -9,14 +9,3 @@ repos:
     rev: 21.12b0
     hooks:
       - id: black
-#  - repo: https://github.com/Bahjat/pre-commit-golang
-#    rev: v1.0.1
-#    run:
-#      go: '1.18'
-#    hooks:
-#      - id: go-fmt-import
-#      - id: go-vet
-#      - id: go-lint
-#      - id: go-unit-tests
-#      - id: golangci-lint # requires github.com/golangci/golangci-lint
-#        #args: [--config=.github/linters/.golangci.yml]
