@@ -30,15 +30,7 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 		return
 	}
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
-	bucket := env.Storage
-	imgURL, err := bucket.SaveImgs(reqDog.Imgs)
-	if err != nil {
-		log.Printf("%v", err)
-		c.String(http.StatusInternalServerError, fmt.Sprintf("error saving img: %v", err))
-		return
-	}
-	reqDog.Dog.ImgUrl = imgURL
-	dog, err := dogManager.Register(&reqDog.Dog) //agregar img
+	dog, err := dogManager.Register(&reqDog.Dog, reqDog.Imgs)
 	if err != nil {
 		log.Printf("%v", err)
 		c.String(http.StatusInternalServerError, fmt.Sprintf("error inserting new dog: %v", err))
