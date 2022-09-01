@@ -27,17 +27,7 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 }
 
 func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
-	return &model.Dog{
-		Name:      "",
-		Breed:     0,
-		Age:       0,
-		Size:      0,
-		Owner:     nil,
-		Host:      nil,
-		Latitude:  0,
-		Longitude: 0,
-		ImgUrl:    "",
-	}, reqDog.Img
+	return &reqDog.Dog, reqDog.Imgs
 }
 
 func MapToDogResponse(dogs []model.Dog, bucket interfaces.Storage) []model.DogResponse {

@@ -99,14 +99,6 @@ type DogResponse struct {
 }
 
 type DogRequest struct {
-	gorm.Model
-	Name      string
-	Breed     Breed
-	Age       Age
-	Size      Size
-	Owner     User
-	Host      User
-	Latitude  float32
-	Longitude float32
-	Img       [][]byte
+	Dog  Dog
+	Imgs [][]byte
 }

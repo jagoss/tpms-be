@@ -29,17 +29,8 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 		c.String(http.StatusUnprocessableEntity, "error reading dog body!")
 		return
 	}
-	dogManager := dogs.NewDogManager(env.DogPersister)
-	newDog, img := io.MapFromDogRequest(reqDog)
-	bucket := env.Storage
-	imgURL, err := bucket.SaveImgs(img)
-	if err != nil {
-		log.Printf("%v", err)
-		c.String(http.StatusInternalServerError, fmt.Sprintf("error saving img: %v", err))
-		return
-	}
-	newDog.ImgUrl = imgURL
-	dog, err := dogManager.Register(newDog) //agregar img
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+	dog, err := dogManager.Register(&reqDog.Dog, reqDog.Imgs)
 	if err != nil {
 		log.Printf("%v", err)
 		c.String(http.StatusInternalServerError, fmt.Sprintf("error inserting new dog: %v", err))
@@ -62,11 +53,10 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 		c.String(http.StatusUnprocessableEntity, "error reading dog body!")
 		return
 	}
-	dogManager := dogs.NewDogManager(env.DogPersister)
-	dog, _ := io.MapFromDogRequest(dogReq)
-	updatedDog, err := dogManager.Modify(dog)
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+	updatedDog, err := dogManager.Modify(&dogReq.Dog, dogReq.Imgs)
 	if err != nil {
-		log.Printf("error updating dog with ID %d: %v ", dog.ID, err)
+		log.Printf("error updating dog with ID %d: %v ", dogReq.Dog.ID, err)
 		c.String(http.StatusInternalServerError, "error updating dog")
 		return
 	}
