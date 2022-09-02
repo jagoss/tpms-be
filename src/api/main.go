@@ -12,6 +12,13 @@ import (
 	"os"
 )
 
+// @title        TPMS-BE Api
+// @version      1.0.1
+// @description  tpms back-end Api docs
+// @license.name TMPS
+
+// @host     localhost:8080
+// @BasePath /
 func main() {
 	env, err := initializeDependencies()
 	if err != nil {

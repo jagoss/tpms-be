@@ -1,28 +1,20 @@
-// Tu perro me suena back-end Api:
-//   version: 0.0.1
-//   title: TPMS-BE Api
-//  Schemes: http, https
-//  Host: localhost:8080
-//  BasePath: /
-//  Produces:
-//    - application/json
-//
-// swagger:meta
 package router
 
 import (
+	"be-tpms/docs"
 	"be-tpms/middleware"
 	"be-tpms/src/api/configuration"
 	"be-tpms/src/api/environment"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
-	swaggerFiles "github.com/swaggo/files"
+	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"io/ioutil"
 	"log"
 )
 
 const (
+	basePath    = "/api/v1"
 	pingPath    = "/ping"
 	userPath    = "/user"
 	dogPath     = "/dog"
@@ -131,8 +123,9 @@ func mapPingRoutes() {
 }
 
 func mapSwaggerRoutes() {
+	docs.SwaggerInfo.BasePath = basePath
 	swaggerRouter := router.Group(swaggerPath)
-	swaggerRouter.GET("/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	swaggerRouter.GET("/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
 
 func validUser(c *gin.Context) bool {
