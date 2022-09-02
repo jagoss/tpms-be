@@ -1,3 +1,4 @@
+basePath: /
 definitions:
     Age:
         format: int64
@@ -137,7 +138,10 @@ definitions:
                 type: string
         type: object
         x-go-package: be-tpms/src/api/domain/model
-info: {}
+host: localhost:8080
+info:
+    title: 'Tu perro me suena back-end Api:'
+    version: 0.0.1
 paths:
     /ping:
         get:
@@ -149,4 +153,9 @@ paths:
             security:
                 - apiKey:
                     - '[]'
+produces:
+    - application/json
+schemes:
+    - http
+    - https
 swagger: "2.0"
