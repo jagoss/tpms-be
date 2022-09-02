@@ -1,3 +1,13 @@
+// Tu perro me suena back-end Api:
+//   version: 0.0.1
+//   title: TPMS-BE Api
+//  Schemes: http, https
+//  Host: localhost:8080
+//  BasePath: /
+//  Produces:
+//    - application/json
+//
+// swagger:meta
 package router
 
 import (
@@ -23,17 +33,6 @@ const (
 var (
 	router *gin.Engine
 )
-
-//  Tu perro me suena back-end Api:
-//   version: 0.0.1
-//   title: TPMS-BE Api
-//  Schemes: http, https
-//  Host: localhost:8080
-//  BasePath: /
-//  Produces:
-//    - application/json
-//
-// swagger:meta
 
 func Run(env environment.Env, port string) error {
 	SetupRunEnv(env)
