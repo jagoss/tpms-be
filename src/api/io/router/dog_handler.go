@@ -20,20 +20,29 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		log.Printf("error reading request body: %v", err)
-		c.String(http.StatusUnprocessableEntity, "error reading request body!")
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading request body!",
+		})
 		return
 	}
 	reqDog, err := io.DeserializeDog(jsonBody)
 	if err != nil {
 		log.Printf("error unmarshalling dog body: %v", err)
-		c.String(http.StatusUnprocessableEntity, "error reading dog body!")
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading dog body!",
+		})
 		return
 	}
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
 	dog, err := dogManager.Register(&reqDog.Dog, reqDog.Imgs)
 	if err != nil {
 		log.Printf("%v", err)
-		c.String(http.StatusInternalServerError, fmt.Sprintf("error inserting new dog: %v", err))
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error inserting new dog: %v", err),
+		})
 		return
 	}
 
@@ -44,20 +53,29 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		log.Printf("error reading request body: %v", err)
-		c.String(http.StatusUnprocessableEntity, "error reading request body!")
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading request body!",
+		})
 		return
 	}
 	dogReq, err := io.DeserializeDog(jsonBody)
 	if err != nil {
 		log.Printf("error unmarshalling dog body: %v", err)
-		c.String(http.StatusUnprocessableEntity, "error reading dog body!")
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading dpg body!",
+		})
 		return
 	}
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
 	updatedDog, err := dogManager.Modify(&dogReq.Dog, dogReq.Imgs)
 	if err != nil {
 		log.Printf("error updating dog with ID %d: %v ", dogReq.Dog.ID, err)
-		c.String(http.StatusInternalServerError, "error updating dog")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error updating dog!",
+		})
 		return
 	}
 	c.JSON(http.StatusOK, updatedDog)
@@ -70,9 +88,13 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
 	dog, err := lfDogs.ReuniteDog(uint(dogIDInt), ownerID, hostID)
 	if err != nil {
-		c.String(http.StatusInternalServerError, "error updating lost dog status")
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error updating lost dog status",
+		})
 		return
 	}
+
 	c.JSON(http.StatusOK, dog)
 }
 

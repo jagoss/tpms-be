@@ -5,6 +5,13 @@ import (
 	"net/http"
 )
 
+// swagger:route GET /ping ping
+// Ping server to check if it's up and running
+//
+// security:
+// - apiKey: []
+// responses:
+//  200: pong
 func PingHandler(c *gin.Context) {
-	c.String(http.StatusOK, "pong")
+	c.JSON(http.StatusOK, "pong")
 }

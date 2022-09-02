@@ -6,20 +6,34 @@ import (
 	"be-tpms/src/api/environment"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"io/ioutil"
 	"log"
 )
 
 const (
-	pingPath = "/ping"
-	userPath = "/user"
-	dogPath  = "/dog"
-	imgPath  = "/img"
+	pingPath    = "/ping"
+	userPath    = "/user"
+	dogPath     = "/dog"
+	imgPath     = "/img"
+	swaggerPath = "/swagger"
 )
 
 var (
 	router *gin.Engine
 )
+
+//  Tu perro me suena back-end Api:
+//   version: 0.0.1
+//   title: TPMS-BE Api
+//  Schemes: http, https
+//  Host: localhost:8080
+//  BasePath: /
+//  Produces:
+//    - application/json
+//
+// swagger:meta
 
 func Run(env environment.Env, port string) error {
 	SetupRunEnv(env)
@@ -27,8 +41,10 @@ func Run(env environment.Env, port string) error {
 	return err
 }
 
+//armar grupos
 func mapHandlers(env environment.Env) {
 	mapPingRoutes()
+	mapSwaggerRoutes()
 	mapUserRoutes(env)
 	mapDogRoutes(env)
 	mapImgsRoutes(env)
@@ -60,25 +76,26 @@ func CreateRestClientConfig(profile string) *resty.Client {
 }
 
 func mapDogRoutes(env environment.Env) {
-	router.POST(dogPath, func(context *gin.Context) {
+	dogRouter := router.Group(dogPath)
+	dogRouter.POST("", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}
 		RegisterNewDog(context, env)
 	})
-	router.PATCH(dogPath, func(context *gin.Context) {
+	dogRouter.PATCH("", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}
 		UpdateDog(context, env)
 	})
-	router.PATCH(dogPath+"/found", func(context *gin.Context) {
+	dogRouter.PATCH("/found", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}
 		DogReUnited(context, env)
 	})
-	router.GET(dogPath+"/missing", func(context *gin.Context) {
+	dogRouter.GET("/missing", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}
@@ -87,11 +104,12 @@ func mapDogRoutes(env environment.Env) {
 }
 
 func mapUserRoutes(env environment.Env) {
-	router.POST(userPath, func(context *gin.Context) {
+	userRouter := router.Group(userPath)
+	userRouter.POST("", func(context *gin.Context) {
 		middleware.AuthMiddleware(context)
 		RegisterNewUser(context, env)
 	})
-	router.PATCH(userPath, func(context *gin.Context) {
+	userRouter.PATCH("", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}
@@ -100,7 +118,8 @@ func mapUserRoutes(env environment.Env) {
 }
 
 func mapImgsRoutes(env environment.Env) {
-	router.POST(imgPath, func(context *gin.Context) {
+	imgsRouter := router.Group(imgPath)
+	imgsRouter.POST("", func(context *gin.Context) {
 		//if !validUser(context) {
 		//	return
 		//}
@@ -110,6 +129,11 @@ func mapImgsRoutes(env environment.Env) {
 
 func mapPingRoutes() {
 	router.GET(pingPath, PingHandler)
+}
+
+func mapSwaggerRoutes() {
+	swaggerRouter := router.Group(swaggerPath)
+	swaggerRouter.GET("/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 func validUser(c *gin.Context) bool {

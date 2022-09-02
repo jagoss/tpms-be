@@ -13,9 +13,9 @@ const (
 	Pug
 	BorderCollie
 )
+
 const (
 	Small Size = iota
-
 	Medium
 	Large
 )
@@ -98,7 +98,18 @@ type DogResponse struct {
 	Img []byte
 }
 
+// swagger:model DogRequest
 type DogRequest struct {
-	Dog  Dog
+	//Dog to create or modify
+	// - name: dog
+	//	in: dog
+	//	description: dog information
+	//	schema:
+	//	type: object
+	//	required: true
+	Dog Dog
+	//Dog images array
+	// - name: Imgs
+	//	in: [][]byte
 	Imgs [][]byte
 }
