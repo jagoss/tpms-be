@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	basePath    = "/api/v1"
 	pingPath    = "/ping"
 	userPath    = "/user"
 	dogPath     = "/dog"
@@ -123,7 +122,7 @@ func mapPingRoutes() {
 }
 
 func mapSwaggerRoutes() {
-	docs.SwaggerInfo.BasePath = basePath
+	docs.SwaggerInfo.BasePath = swaggerPath
 	swaggerRouter := router.Group(swaggerPath)
 	swaggerRouter.GET("/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
