@@ -18,7 +18,7 @@ import (
 // @description  tpms back-end Api docs
 // @license.name TMPS
 
-// @host     localhost:8080
+// @host     sea-lion-app-ggy8w.ondigitalocean.app/tpms-be2
 // @BasePath /api/v1
 func main() {
 	env, err := initializeDependencies()

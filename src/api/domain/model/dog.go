@@ -93,23 +93,31 @@ func (a Age) String() string {
 }
 
 type DogResponse struct {
-	ID  string
-	Dog Dog
-	Img []byte
+	ID        string
+	Name      string
+	Breed     Breed
+	Age       Age
+	Size      Size
+	IsLost    bool
+	Owner     string
+	Host      string
+	Latitude  float32
+	Longitude float32
+	ImgUrl    string
+	Img       []byte
 }
 
-// swagger:model DogRequest
 type DogRequest struct {
-	//Dog to create or modify
-	// - name: dog
-	//	in: dog
-	//	description: dog information
-	//	schema:
-	//	type: object
-	//	required: true
-	Dog Dog
-	//Dog images array
-	// - name: Imgs
-	//	in: [][]byte
-	Imgs [][]byte
+	ID        string
+	Name      string
+	Breed     Breed
+	Age       Age
+	Size      Size
+	IsLost    bool
+	Owner     string
+	Host      string
+	Latitude  float32
+	Longitude float32
+	ImgUrl    string
+	Imgs      [][]byte
 }

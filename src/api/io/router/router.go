@@ -119,7 +119,7 @@ func mapImgsRoutes(env environment.Env) {
 }
 
 func mapPingRoutes() {
-	router.GET(basePath+pingPath, PingHandler)
+	router.GET(basePath+pingPath, Ping)
 }
 
 func mapSwaggerRoutes() {

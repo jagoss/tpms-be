@@ -1,5 +1,99 @@
 basePath: /api/v1
-host: localhost:8080
+definitions:
+  model.DogRequest:
+    properties:
+      age:
+        type: integer
+      breed:
+        type: integer
+      host:
+        type: string
+      id:
+        type: string
+      imgUrl:
+        type: string
+      imgs:
+        items:
+          items:
+            type: integer
+          type: array
+        type: array
+      isLost:
+        type: boolean
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      owner:
+        type: string
+      size:
+        type: integer
+    type: object
+  model.DogResponse:
+    properties:
+      age:
+        type: integer
+      breed:
+        type: integer
+      host:
+        type: string
+      id:
+        type: string
+      img:
+        items:
+          type: integer
+        type: array
+      imgUrl:
+        type: string
+      isLost:
+        type: boolean
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      owner:
+        type: string
+      size:
+        type: integer
+    type: object
+  model.User:
+    properties:
+      city:
+        description: |-
+          City
+          in: string
+        type: string
+      email:
+        description: |-
+          Email
+          in: string
+        type: string
+      firstName:
+        description: |-
+          First name
+          in: string
+        type: string
+      id:
+        description: |-
+          User ID
+          in: string
+        type: string
+      lastName:
+        description: |-
+          Last name
+          in: string
+        type: string
+      phone:
+        description: |-
+          Phone number
+          in: string
+        type: string
+    type: object
+host: sea-lion-app-ggy8w.ondigitalocean.app/tpms-be2
 info:
   contact: {}
   description: tpms back-end Api docs
@@ -8,6 +102,206 @@ info:
   title: TPMS-BE Api
   version: 1.0.1
 paths:
+  /dog:
+    patch:
+      consumes:
+      - application/json
+      description: Updates existing dog
+      parameters:
+      - description: dog
+        in: body
+        name: dog
+        schema:
+          $ref: '#/definitions/model.DogRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DogResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Updates dog
+      tags:
+      - dog
+    post:
+      consumes:
+      - application/json
+      description: Register new dog
+      parameters:
+      - description: dog
+        in: body
+        name: dog
+        schema:
+          $ref: '#/definitions/model.DogRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DogResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties:
+              allOf:
+              - type: object
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: object
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Register new dog
+      tags:
+      - dog
+  /dog/found:
+    patch:
+      consumes:
+      - application/json
+      description: Reunite dog with owner. Making him its only host and removing other
+        hosts
+      parameters:
+      - description: dog ID
+        in: query
+        name: dogID
+        type: string
+      - description: dog owner ID
+        in: query
+        name: ownerID
+        type: string
+      - description: dog host ID
+        in: query
+        name: hostID
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DogResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Reunite dog with owner
+      tags:
+      - dog
+  /dog/missing:
+    get:
+      consumes:
+      - application/json
+      description: List of all missing dogs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DogResponse'
+            type: array
+      summary: All missing dogs
+      tags:
+      - dog
+  /img:
+    post:
+      consumes:
+      - application/json
+      description: Add image to storage
+      parameters:
+      - description: dog img to save
+        in: formData
+        items:
+          type: integer
+        name: img
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: name" saved correctly!
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              allOf:
+              - type: object
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: object
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Add Image
+      tags:
+      - imgs
   /ping:
     get:
       consumes:
@@ -20,7 +314,101 @@ paths:
           description: OK
           schema:
             type: string
-      summary: ping example
+      summary: Ping
       tags:
-      - example
+      - ping
+  /user:
+    patch:
+      consumes:
+      - application/json
+      description: Updates existing user
+      parameters:
+      - description: user to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Updates user
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      parameters:
+      - description: new user
+        in: body
+        name: user
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Register new user
+      tags:
+      - user
 swagger: "2.0"

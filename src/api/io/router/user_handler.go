@@ -13,11 +13,23 @@ import (
 type UserHandler struct {
 }
 
+// RegisterNewUser godoc
+// @Summary Register new user
+// @Schemes
+// @Description Register new user
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param		user body model.User false "new user"
+// @Success     200 {object} model.User
+// @Failure		422 {object} map[string]string{error=string, message=string}
+// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Router      /user [post]
 func RegisterNewUser(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		log.Printf("error reading request body: %v", err)
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, map[string]string{
 			"error":   err.Error(),
 			"message": "error reading request body!",
 		})
@@ -27,7 +39,7 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 	newUser, err := io.DeserializeUser(jsonBody)
 	if err != nil {
 		log.Printf("error unmarshalling user body: %v", err)
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, map[string]string{
 			"error":   err.Error(),
 			"message": "error reading user body!",
 		})
@@ -38,7 +50,7 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 	user, err := userManager.Register(newUser)
 	if err != nil {
 		log.Printf("%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusInternalServerError, map[string]string{
 			"error":   err.Error(),
 			"message": "error inserting new user!",
 		})
@@ -48,11 +60,23 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, user)
 }
 
+// UpdateUser godoc
+// @Summary Updates user
+// @Schemes
+// @Description Updates existing user
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param		user body model.User true "user to update"
+// @Success     200 {object} model.User
+// @Failure		422 {object} map[string]string{error=string, message=string}
+// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Router      /user [patch]
 func UpdateUser(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		log.Printf("error reading request body: %v", err)
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, map[string]string{
 			"error":   err.Error(),
 			"message": "error reading request body!",
 		})
@@ -62,7 +86,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	user, err := io.DeserializeUser(jsonBody)
 	if err != nil {
 		log.Printf("error unmarshalling user body: %v", err)
-		c.JSON(http.StatusUnprocessableEntity, gin.H{
+		c.JSON(http.StatusUnprocessableEntity, map[string]string{
 			"error":   err.Error(),
 			"message": "error reading user body!",
 		})
@@ -73,7 +97,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	updatedUser, err := userManager.Modify(user)
 	if err != nil {
 		log.Printf("error updating user with ID %s: %v ", user.ID, err)
-		c.JSON(http.StatusInternalServerError, gin.H{
+		c.JSON(http.StatusInternalServerError, map[string]string{
 			"error":   err.Error(),
 			"message": "error updating user!",
 		})

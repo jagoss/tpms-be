@@ -21,7 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: server-web
+    container_name: server_web
     ports:
       - "8080:8080"
     env_file: env/test.env
