@@ -1,7 +1,7 @@
 package router
 
 import (
-	"be-tpms/docs"
+	_ "be-tpms/docs"
 	"be-tpms/middleware"
 	"be-tpms/src/api/configuration"
 	"be-tpms/src/api/environment"
@@ -14,6 +14,7 @@ import (
 )
 
 const (
+	basePath    = "/api/v1"
 	pingPath    = "/ping"
 	userPath    = "/user"
 	dogPath     = "/dog"
@@ -66,7 +67,7 @@ func CreateRestClientConfig(profile string) *resty.Client {
 }
 
 func mapDogRoutes(env environment.Env) {
-	dogRouter := router.Group(dogPath)
+	dogRouter := router.Group(basePath + dogPath)
 	dogRouter.POST("", func(context *gin.Context) {
 		if !validUser(context) {
 			return
@@ -94,7 +95,7 @@ func mapDogRoutes(env environment.Env) {
 }
 
 func mapUserRoutes(env environment.Env) {
-	userRouter := router.Group(userPath)
+	userRouter := router.Group(basePath + userPath)
 	userRouter.POST("", func(context *gin.Context) {
 		middleware.AuthMiddleware(context)
 		RegisterNewUser(context, env)
@@ -108,7 +109,7 @@ func mapUserRoutes(env environment.Env) {
 }
 
 func mapImgsRoutes(env environment.Env) {
-	imgsRouter := router.Group(imgPath)
+	imgsRouter := router.Group(basePath + imgPath)
 	imgsRouter.POST("", func(context *gin.Context) {
 		//if !validUser(context) {
 		//	return
@@ -118,11 +119,11 @@ func mapImgsRoutes(env environment.Env) {
 }
 
 func mapPingRoutes() {
-	router.GET(pingPath, PingHandler)
+	router.GET(basePath+pingPath, PingHandler)
 }
 
 func mapSwaggerRoutes() {
-	docs.SwaggerInfo.BasePath = swaggerPath
+	//docs.SwaggerInfo.BasePath = swaggerPath
 	swaggerRouter := router.Group(swaggerPath)
 	swaggerRouter.GET("/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }

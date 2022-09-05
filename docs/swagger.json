@@ -10,7 +10,7 @@
         "version": "1.0.1"
     },
     "host": "localhost:8080",
-    "basePath": "/",
+    "basePath": "/api/v1",
     "paths": {
         "/ping": {
             "get": {

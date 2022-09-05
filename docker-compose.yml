@@ -3,43 +3,30 @@ version: '3.8'
 
 services:
 
-#  db:
-#    image: mysql
-#    container_name: tmps_db_local
-#    restart: always #if container fails, then restart it
-#    environment:
-#      MYSQL_DATABASE: tpms
-#      MYSQL_ROOT_PASSWORD: admin
-#    ports:
-#      - "3306:3306"
-#    volumes:
-#      - ./sql:/docker-entrypoint-initdb.d
-#      - mysql:/var/lib/mysql
+  db:
+    image: mysql
+    container_name: db_local
+    restart: always #if container fails, then restart it
+    environment:
+      MYSQL_DATABASE: tpms_test
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - mysql:/var/lib/mysql
 
   web:
     image: golang
-    build: .
-    container_name: tpms-be
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: server-web
     ports:
       - "8080:8080"
-    env_file: env/prod.env
-#    environment:
-#      SCOPE: prod
-#      DB_DRIVER: mysql
-#      DB_HOST: db-mysql-tpms-do-user-12298200-0.b.db.ondigitalocean.com
-#      DB_PORT: 25060
-#      DB_NAME: tpms_prod
-#      DB_USR: prod_user
-#      DB_PWD: AVNS_rE_h5jJrTZdY5Ki87_l
-#      SSLMODE: REQUIRED
-#      CVMODEL_UR: localhost:8081
-
-    networks:
-      - fullstack
+    env_file: env/test.env
+    depends_on:
+      - db
 
 volumes:
   mysql:
-
-networks:
-  fullstack:
-    driver: bridge

@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "be-tpms/docs"
 	"be-tpms/src/api/configuration"
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io/db"
@@ -18,7 +19,7 @@ import (
 // @license.name TMPS
 
 // @host     localhost:8080
-// @BasePath /
+// @BasePath /api/v1
 func main() {
 	env, err := initializeDependencies()
 	if err != nil {
@@ -61,7 +62,7 @@ func initializeDependencies() (*environment.Env, error) {
 func initializeDatabase(config configuration.GeneralConfiguration) (*db.DataBase, error) {
 	database, err := db.Init(config.Database)
 	if err != nil {
-		return nil, fmt.Errorf("unable to init database configuration")
+		return nil, fmt.Errorf("unable to init database configuration: %v", err)
 	}
 	return database, nil
 }
