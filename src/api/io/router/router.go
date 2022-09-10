@@ -97,7 +97,9 @@ func mapDogRoutes(env environment.Env) {
 func mapUserRoutes(env environment.Env) {
 	userRouter := router.Group(basePath + userPath)
 	userRouter.POST("", func(context *gin.Context) {
-		middleware.AuthMiddleware(context)
+		if !validUser(context) {
+			return
+		}
 		RegisterNewUser(context, env)
 	})
 	userRouter.PATCH("", func(context *gin.Context) {
@@ -111,9 +113,9 @@ func mapUserRoutes(env environment.Env) {
 func mapImgsRoutes(env environment.Env) {
 	imgsRouter := router.Group(basePath + imgPath)
 	imgsRouter.POST("", func(context *gin.Context) {
-		//if !validUser(context) {
-		//	return
-		//}
+		if !validUser(context) {
+			return
+		}
 		AddImg(context, env)
 	})
 }
@@ -123,7 +125,6 @@ func mapPingRoutes() {
 }
 
 func mapSwaggerRoutes() {
-	//docs.SwaggerInfo.BasePath = swaggerPath
 	swaggerRouter := router.Group(swaggerPath)
 	swaggerRouter.GET("/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
