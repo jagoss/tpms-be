@@ -23,37 +23,52 @@ func (d *DogManager) Get(dogID uint) (*model.Dog, error) {
 	if err != nil {
 		return nil, fmt.Errorf("[dogmanager.Get] error getting dog with id %d: %v", dogID, err)
 	}
+
 	return dog, nil
 }
 
-func (d *DogManager) Register(dog *model.Dog, imgBuffArray [][]byte) (*model.Dog, error) {
+func (d *DogManager) Register(dog *model.Dog, imgBuffArray [][]byte, userManager interfaces.UserManager) (*model.Dog, error) {
 	imgsPath, err := d.AddImgs(dog, imgBuffArray)
 	if err != nil {
 		return nil, err
 	}
+
 	dog.ImgUrl = imgsPath
 
 	if d.dogPersister.DogExisitsByNameAndOwner(dog.Name, dog.Owner.ID) {
 		return nil, fmt.Errorf("dog with name %s and ownerID %s already exists", dog.Name, dog.Owner.ID)
 	}
 
+	err = setHostAndOwner(dog, userManager)
+	if err != nil {
+		return nil, err
+	}
+
 	newDog, err := d.dogPersister.InsertDog(dog)
 	if err != nil {
 		return nil, fmt.Errorf("[dogmanager.Register] error registing dog: %v", err)
 	}
+
 	return newDog, nil
 }
 
-func (d *DogManager) Modify(dog *model.Dog, imgBuffArray [][]byte) (*model.Dog, error) {
+func (d *DogManager) Modify(dog *model.Dog, imgBuffArray [][]byte, userManager interfaces.UserManager) (*model.Dog, error) {
 	imgsPath, err := d.AddImgs(dog, imgBuffArray)
 	if err != nil {
 		return nil, err
 	}
 	dog.ImgUrl = dog.ImgUrl + ";" + imgsPath
+
+	err = setHostAndOwner(dog, userManager)
+	if err != nil {
+		return nil, err
+	}
+
 	updatedDog, err := d.dogPersister.UpdateDog(dog)
 	if err != nil {
 		return nil, fmt.Errorf("[dogmanager.Modify] error modifying dog with id %d: %v", dog.ID, err)
 	}
+
 	return updatedDog, nil
 }
 
@@ -61,6 +76,7 @@ func (d *DogManager) Delete(dogID uint) (bool, error) {
 	if err := d.dogPersister.DeleteDog(dogID); err != nil {
 		return false, fmt.Errorf("[dogmanager.Delete] error registing dog with id %d: %v", dogID, err)
 	}
+
 	return true, nil
 }
 
@@ -72,5 +88,22 @@ func (d *DogManager) AddImgs(dog *model.Dog, imgBuffArray [][]byte) (string, err
 		}
 		return imgsPath, nil
 	}
+
 	return "", nil
+}
+
+func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
+	owner, err := userManager.Get(dog.Owner.ID)
+	if err != nil {
+		return fmt.Errorf("error getting dog owner: %v", err)
+	}
+
+	host, err := userManager.Get(dog.Host.ID)
+	if err != nil {
+		return fmt.Errorf("error getting dog host: %v", err)
+	}
+
+	dog.Owner = owner
+	dog.Host = host
+	return nil
 }

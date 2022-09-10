@@ -1,10 +1,23 @@
 package model
 
+// swagger:model User
 type User struct {
-	ID        string `gorm:"primarykey"`
+	// User ID
+	// in: string
+	ID string `gorm:"primarykey"`
+	// First name
+	// in: string
 	FirstName string
-	LastName  string
-	Email     string
-	Phone     string
-	City      string
+	// Last name
+	// in: string
+	LastName string
+	// Email
+	// in: string
+	Email string
+	// Phone number
+	// in: string
+	Phone string
+	// City
+	// in: string
+	City string
 }

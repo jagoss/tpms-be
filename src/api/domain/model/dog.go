@@ -13,9 +13,9 @@ const (
 	Pug
 	BorderCollie
 )
+
 const (
 	Small Size = iota
-
 	Medium
 	Large
 )
@@ -93,12 +93,31 @@ func (a Age) String() string {
 }
 
 type DogResponse struct {
-	ID  string
-	Dog Dog
-	Img []byte
+	ID        string
+	Name      string
+	Breed     Breed
+	Age       Age
+	Size      Size
+	IsLost    bool
+	Owner     string
+	Host      string
+	Latitude  float32
+	Longitude float32
+	ImgUrl    string
+	Img       []byte
 }
 
 type DogRequest struct {
-	Dog  Dog
-	Imgs [][]byte
+	ID        string
+	Name      string
+	Breed     Breed
+	Age       Age
+	Size      Size
+	IsLost    bool
+	Owner     string
+	Host      string
+	Latitude  float32
+	Longitude float32
+	ImgUrl    string
+	Imgs      [][]byte
 }

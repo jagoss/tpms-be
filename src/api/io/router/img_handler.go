@@ -9,6 +9,18 @@ import (
 	"net/http"
 )
 
+// AddImg godoc
+// @Summary Add Image
+// @Schemes
+// @Description Add image to storage
+// @Tags        imgs
+// @Param 		img formData []byte false "dog img to save"
+// @Accept      json
+// @Produce     json
+// @Success     200 {string} img "name" saved correctly!
+// @Failure		400 {object} map[string]any{error=string, message=string}
+// @Failure		500 {object} map[string]any{error=string, message=string}
+// @Router      /img [post]
 func AddImg(c *gin.Context, env environment.Env) {
 	_, fileHeader, err := c.Request.FormFile("img")
 	if err != nil {

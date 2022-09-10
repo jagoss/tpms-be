@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "be-tpms/docs"
 	"be-tpms/src/api/configuration"
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io/db"
@@ -12,6 +13,13 @@ import (
 	"os"
 )
 
+// @title        TPMS-BE Api
+// @version      1.0.1
+// @description  tpms back-end Api docs
+// @license.name TMPS
+
+// @host     sea-lion-app-ggy8w.ondigitalocean.app/tpms-be2
+// @BasePath /api/v1
 func main() {
 	env, err := initializeDependencies()
 	if err != nil {
@@ -54,7 +62,7 @@ func initializeDependencies() (*environment.Env, error) {
 func initializeDatabase(config configuration.GeneralConfiguration) (*db.DataBase, error) {
 	database, err := db.Init(config.Database)
 	if err != nil {
-		return nil, fmt.Errorf("unable to init database configuration")
+		return nil, fmt.Errorf("unable to init database configuration: %v", err)
 	}
 	return database, nil
 }

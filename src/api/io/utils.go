@@ -27,15 +27,49 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 }
 
 func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
-	return &reqDog.Dog, reqDog.Imgs
+	dog := &model.Dog{
+		Name:      reqDog.Name,
+		Breed:     reqDog.Breed,
+		Age:       reqDog.Age,
+		Size:      reqDog.Size,
+		IsLost:    reqDog.IsLost,
+		Owner:     &model.User{ID: reqDog.Owner},
+		Host:      &model.User{ID: reqDog.Host},
+		Latitude:  reqDog.Latitude,
+		Longitude: reqDog.Longitude,
+		ImgUrl:    reqDog.ImgUrl,
+	}
+	unitID, err := strconv.ParseUint(reqDog.ID, 10, 64)
+	if err != nil {
+		return nil, nil
+	}
+	dog.ID = uint(unitID)
+	return dog, reqDog.Imgs
 }
 
-func MapToDogResponse(dogs []model.Dog, bucket interfaces.Storage) []model.DogResponse {
+func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogResponse {
+	firstImg := strings.Split(dog.ImgUrl, ";")[0]
+	imgArray, _ := bucket.GetImgs(firstImg)
+	return &model.DogResponse{
+		ID:        strconv.Itoa(int(dog.ID)),
+		Name:      dog.Name,
+		Breed:     dog.Breed,
+		Age:       dog.Age,
+		Size:      dog.Size,
+		IsLost:    dog.IsLost,
+		Owner:     dog.Owner.ID,
+		Host:      dog.Host.ID,
+		Latitude:  dog.Latitude,
+		Longitude: dog.Longitude,
+		ImgUrl:    dog.ImgUrl,
+		Img:       imgArray[0],
+	}
+}
+
+func MapToDogResponseList(dogs []model.Dog, bucket interfaces.Storage) []model.DogResponse {
 	var dogsResp []model.DogResponse
 	for _, dog := range dogs {
-		firstImg := strings.Split(dog.ImgUrl, ";")[0]
-		imgArray, _ := bucket.GetImgs(firstImg)
-		dogsResp = append(dogsResp, model.DogResponse{ID: strconv.Itoa(int(dog.ID)), Dog: dog, Img: imgArray[0]})
+		dogsResp = append(dogsResp, *MapToDogResponse(&dog, bucket))
 	}
 	return dogsResp
 }
