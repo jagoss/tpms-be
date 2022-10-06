@@ -2,7 +2,7 @@ package environment
 
 import (
 	"be-tpms/src/api/usecases/interfaces"
-	"firebase.google.com/go/auth"
+	"firebase.google.com/go/v4/auth"
 	"github.com/go-resty/resty/v2"
 )
 

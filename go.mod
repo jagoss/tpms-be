@@ -3,7 +3,6 @@ module be-tpms
 go 1.18
 
 require (
-	firebase.google.com/go v3.13.0+incompatible
 	firebase.google.com/go/v4 v4.8.0
 	github.com/aws/aws-sdk-go v1.44.86
 	github.com/gin-gonic/gin v1.8.1
