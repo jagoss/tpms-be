@@ -125,7 +125,7 @@ func mapPingRoutes() {
 }
 
 func mapSwaggerRoutes() {
-	swaggerRouter := router.Group(swaggerPath)
+	swaggerRouter := router.Group(basePath + swaggerPath)
 	swaggerRouter.GET("/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
 
