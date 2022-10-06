@@ -9,7 +9,7 @@
         },
         "version": "1.0.1"
     },
-    "host": "sea-lion-app-ggy8w.ondigitalocean.app/tpms-be2",
+    "host": "tpms.ondigitalocean.app/tpms-be",
     "basePath": "/api/v1",
     "paths": {
         "/dog": {
