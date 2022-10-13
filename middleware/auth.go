@@ -4,6 +4,7 @@ import (
 	"context"
 	"firebase.google.com/go/v4/auth"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -21,6 +22,7 @@ func AuthMiddleware(c *gin.Context) {
 	// verify token
 	token, err := firebaseAuth.VerifyIDToken(context.Background(), idToken)
 	if err != nil {
+		log.Printf("[middleware.AuthMiddleware] error getting token for token id %s: %v", idToken, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid token"})
 		c.Abort()
 		return
