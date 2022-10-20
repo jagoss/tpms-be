@@ -4,6 +4,7 @@ import (
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io"
 	"be-tpms/src/api/usecases/users"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"
@@ -105,4 +106,20 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	}
 
 	c.JSON(http.StatusOK, updatedUser)
+}
+
+func SendNotif(c *gin.Context, env environment.Env) {
+	token, exists := c.Get("UUID")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   "token doesnt exist",
+			"message": "token doesnt exist",
+		})
+		return
+	}
+	data := map[string]string{
+		"title": "Hola!",
+		"body":  "Entra a nuestra app!",
+	}
+	env.NotificationSender.SendMessage(fmt.Sprintf("%v", token), data)
 }

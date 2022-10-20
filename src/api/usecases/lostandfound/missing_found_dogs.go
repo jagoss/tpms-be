@@ -47,3 +47,21 @@ func (l *LostFoundDogs) ReuniteDog(dogID uint, ownerID string, hosterID string) 
 func (l *LostFoundDogs) GetMissingDogsList() []model.Dog {
 	return l.dogPersister.GetMissingDogs()
 }
+
+func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, matchingDogIDs []uint, userManager interfaces.UserManager, messaging interfaces.Messaging) error {
+	for _, id := range matchingDogIDs {
+		dog, err := l.dogPersister.GetDog(id)
+		if err != nil {
+			return err
+		}
+
+		data := map[string]string{
+			"title": fmt.Sprintf("Puede que alguien viera a %s!", dog.Name),
+			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
+		}
+		if err := userManager.SendPushToOwner(dog.Owner.Email, data, messaging); err != nil {
+			return err
+		}
+	}
+	return nil
+}

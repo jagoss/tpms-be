@@ -6,9 +6,11 @@ import (
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io/db"
 	"be-tpms/src/api/io/db/persisters"
+	"be-tpms/src/api/io/push_notif"
 	"be-tpms/src/api/io/restclient"
 	"be-tpms/src/api/io/router"
 	storage "be-tpms/src/api/io/storage"
+	"context"
 	"fmt"
 	"os"
 )
@@ -45,7 +47,8 @@ func initializeDependencies() (*environment.Env, error) {
 		conf = configuration.LoadConfiguration()
 	}
 
-	firebaseAuth := *configuration.SetupFirebase()
+	firebaseApp, firebaseAuth := configuration.SetupFirebase()
+	notifSender := push_notif.NewNotificationSender(context.Background(), firebaseApp)
 	database, err := initializeDatabase(conf)
 	if err != nil {
 		return nil, err
@@ -55,7 +58,7 @@ func initializeDependencies() (*environment.Env, error) {
 	restClient := *router.CreateRestClientConfig(scope)
 	cvModelClient := restclient.NewCVModelRestClient(&restClient)
 	bucket := storage.NewBucket()
-	env := environment.InitEnv(firebaseAuth, restClient, cvModelClient, userPersister, dogPersister, bucket)
+	env := environment.InitEnv(firebaseApp, *firebaseAuth, notifSender, restClient, cvModelClient, userPersister, dogPersister, bucket)
 	return env, nil
 }
 

@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type DogHandler struct {
@@ -177,4 +178,37 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 	dogRespList := io.MapToDogResponseList(dogList, env.Storage)
 
 	c.JSON(http.StatusOK, dogRespList)
+}
+
+// ClaimFoundMissingDog godoc
+// @Summary Claim that missing dog was found
+// @Schemes
+// @Description	Claim that missing dog is found
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dogID query string false "dog ID"
+// @Param		matchingDogs query array[string] false "possible matching dogs"
+// @Success     200 string
+// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Router      /dog/claim_found [patch]
+func ClaimFoundMissingDog(c *gin.Context, env environment.Env) {
+	q := c.Request.URL.Query()
+	dogID, matchingDogsArr := q.Get("dogID"), q.Get("matchingDogs")
+	dogIDInt, _ := strconv.Atoi(dogID)
+	var matchingDogIDs []uint
+	for _, matchingDogID := range strings.Split(matchingDogsArr, ",") {
+		id, _ := strconv.Atoi(matchingDogID)
+		matchingDogIDs = append(matchingDogIDs, uint(id))
+	}
+	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
+	err := lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, users.NewUserManager(env.UserPersister), env.NotificationSender)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error matching possible missing dogs",
+		})
+		return
+	}
+	c.String(http.StatusOK, "users notified!")
 }
