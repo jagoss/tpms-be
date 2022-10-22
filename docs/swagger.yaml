@@ -3,9 +3,13 @@ definitions:
   model.DogRequest:
     properties:
       age:
-        type: integer
+        type: string
       breed:
-        type: integer
+        type: string
+      coatColor:
+        type: string
+      coatLength:
+        type: string
       host:
         type: string
       id:
@@ -29,14 +33,18 @@ definitions:
       owner:
         type: string
       size:
-        type: integer
+        type: string
     type: object
   model.DogResponse:
     properties:
       age:
-        type: integer
+        type: string
       breed:
-        type: integer
+        type: string
+      coatColor:
+        type: string
+      coatLength:
+        type: string
       host:
         type: string
       id:
@@ -58,7 +66,7 @@ definitions:
       owner:
         type: string
       size:
-        type: integer
+        type: string
     type: object
   model.User:
     properties:
@@ -93,7 +101,7 @@ definitions:
           in: string
         type: string
     type: object
-host: tpms.ondigitalocean.app/tpms-be
+host: https://tpms-fdwva.ondigitalocean.app/tpms-be2
 info:
   contact: {}
   description: tpms back-end Api docs
@@ -241,7 +249,22 @@ paths:
     get:
       consumes:
       - application/json
-      description: List of all missing dogs
+      description: If no argument is given it returns all missing dogs. If user location
+        and a search radius is sent, then it returns all missing dogs within that
+        radius.
+      parameters:
+      - description: user latitude
+        in: query
+        name: userLatitude
+        type: number
+      - description: user longitude
+        in: query
+        name: userLongitude
+        type: number
+      - description: radio to look for dogs
+        in: query
+        name: radius
+        type: number
       produces:
       - application/json
       responses:
@@ -251,7 +274,20 @@ paths:
             items:
               $ref: '#/definitions/model.DogResponse'
             type: array
-      summary: All missing dogs
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: string
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Brings list of missing dogs
       tags:
       - dog
   /img:

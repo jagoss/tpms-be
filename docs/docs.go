@@ -248,7 +248,7 @@ const docTemplate = `{
         },
         "/dog/missing": {
             "get": {
-                "description": "List of all missing dogs",
+                "description": "If no argument is given it returns all missing dogs. If user location and a search radius is sent, then it returns all missing dogs within that radius.",
                 "consumes": [
                     "application/json"
                 ],
@@ -258,7 +258,27 @@ const docTemplate = `{
                 "tags": [
                     "dog"
                 ],
-                "summary": "All missing dogs",
+                "summary": "Brings list of missing dogs",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "user latitude",
+                        "name": "userLatitude",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "user longitude",
+                        "name": "userLongitude",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "radio to look for dogs",
+                        "name": "radius",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -266,6 +286,30 @@ const docTemplate = `{
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/model.DogResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "allOf": [
+                                    {
+                                        "type": "string"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            " message": {
+                                                "type": "string"
+                                            },
+                                            "error": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     }
@@ -544,10 +588,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "age": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "breed": {
-                    "type": "integer"
+                    "type": "string"
+                },
+                "coatColor": {
+                    "type": "string"
+                },
+                "coatLength": {
+                    "type": "string"
                 },
                 "host": {
                     "type": "string"
@@ -583,7 +633,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "size": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -591,10 +641,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "age": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "breed": {
-                    "type": "integer"
+                    "type": "string"
+                },
+                "coatColor": {
+                    "type": "string"
+                },
+                "coatLength": {
+                    "type": "string"
                 },
                 "host": {
                     "type": "string"
@@ -627,7 +683,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "size": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -666,7 +722,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.1",
-	Host:             "tpms.ondigitalocean.app/tpms-be",
+	Host:             "https://tpms-fdwva.ondigitalocean.app/tpms-be2",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "TPMS-BE Api",
