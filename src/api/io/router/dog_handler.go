@@ -27,8 +27,8 @@ type DogHandler struct {
 // @Produce     json
 // @Param		dog body model.DogRequest false  "dog"
 // @Success     200 {object} model.DogResponse
-// @Failure		422 {object} map[string]any{error=string, message=string}
-// @Failure		500 {object} map[string]any{error=string, message=string}
+// @Failure		422 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog [post]
 func RegisterNewDog(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -83,8 +83,8 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		dog path string false  "dog ID"
 // @Success     200 {object} model.DogResponse
-// @Failure		400 {object} map[string]any{error=string, message=string}
-// @Failure		500 {object} map[string]any{error=string, message=string}
+// @Failure		400 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog/:id [get]
 func GetDog(c *gin.Context, env environment.Env) {
 	dogID, exists := c.Get("id")
@@ -117,8 +117,8 @@ func GetDog(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		dog body model.DogRequest false  "dog"
 // @Success     200 {object} model.DogResponse
-// @Failure		422 {object} map[string]string{error=string, message=string}
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Failure		422 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog [patch]
 func UpdateDog(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -177,7 +177,7 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Param		ownerID query string false "dog owner ID"
 // @Param		hostID query string false "dog host ID"
 // @Success     200 {object} model.DogResponse
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog/found [patch]
 func DogReUnited(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
@@ -208,7 +208,7 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 // @Param		userLongitude query float64 false "user longitude"
 // @Param		radius query float64 false "radio to look for dogs"
 // @Success     200 {object} []model.DogResponse
-// @Failure		400 {object} map[string]string{error=string, message=string}
+// @Failure		400 {object} object{error=string, message=string}
 // @Router      /dog/missing [get]
 func GetMissingDogsList(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()

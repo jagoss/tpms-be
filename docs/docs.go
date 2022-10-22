@@ -52,49 +52,43 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 }
@@ -131,49 +125,43 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 }
@@ -210,49 +198,43 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 }
@@ -301,25 +283,22 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 }
@@ -371,25 +350,22 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 }
@@ -429,49 +405,43 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "object"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 }
@@ -533,49 +503,43 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 }
@@ -613,49 +577,119 @@ const docTemplate = `{
                     "422": {
                         "description": "Unprocessable Entity",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
-                                            }
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "allOf": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            " message": {
-                                                "type": "string"
-                                            },
-                                            "error": {
-                                                "type": "string"
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/dog": {
+            "get": {
+                "description": "Gets 2 lists of dogs, one with dogs owned by de user and another with dogs found by the user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get all user dogs",
+                "parameters": [
+                    {
+                        "description": "user to update",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " foundDogs": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.DogResponse"
+                                            }
+                                        },
+                                        "ownedDogs": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.DogResponse"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        " message": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }

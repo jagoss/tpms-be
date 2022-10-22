@@ -131,29 +131,25 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Updates dog
       tags:
       - dog
@@ -177,29 +173,25 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Register new dog
       tags:
       - dog
@@ -223,29 +215,25 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Get dog given its ID
       tags:
       - dog
@@ -278,16 +266,14 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Reunite dog with owner
       tags:
       - dog
@@ -323,16 +309,14 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Brings list of missing dogs
       tags:
       - dog
@@ -358,29 +342,25 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Add Image
       tags:
       - imgs
@@ -421,29 +401,25 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Updates user
       tags:
       - user
@@ -467,30 +443,71 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Register new user
+      tags:
+      - user
+  /user/dog:
+    get:
+      consumes:
+      - application/json
+      description: Gets 2 lists of dogs, one with dogs owned by de user and another
+        with dogs found by the user
+      parameters:
+      - description: user to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' foundDogs':
+                  items:
+                    $ref: '#/definitions/model.DogResponse'
+                  type: array
+                ownedDogs:
+                  items:
+                    $ref: '#/definitions/model.DogResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Get all user dogs
       tags:
       - user
 swagger: "2.0"

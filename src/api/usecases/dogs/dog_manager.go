@@ -92,6 +92,21 @@ func (d *DogManager) AddImgs(dog *model.Dog, imgBuffArray [][]byte) (string, err
 	return "", nil
 }
 
+func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, error) {
+	missingDogs := d.dogPersister.GetDogsByUser(userID)
+	var foundDogs []model.Dog
+	var userOwnedDogs []model.Dog
+	for _, dog := range missingDogs {
+		if dog.Owner == nil {
+			foundDogs = append(foundDogs, dog)
+		} else {
+			userOwnedDogs = append(userOwnedDogs, dog)
+		}
+	}
+
+	return foundDogs, userOwnedDogs, nil
+}
+
 func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
 	owner, err := userManager.Get(dog.Owner.ID)
 	if err != nil {

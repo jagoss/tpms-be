@@ -114,6 +114,12 @@ func mapUserRoutes(env environment.Env) {
 		}
 		UpdateUser(context, env)
 	})
+	userRouter.GET("/dog", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUserDogs(context, env)
+	})
 }
 
 func mapImgsRoutes(env environment.Env) {
