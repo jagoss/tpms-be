@@ -172,6 +172,85 @@
                 }
             }
         },
+        "/dog/:id": {
+            "get": {
+                "description": "Get dog given its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dog"
+                ],
+                "summary": "Get dog given its ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "dog ID",
+                        "name": "dog",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.DogResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "allOf": [
+                                    {
+                                        "type": "object"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            " message": {
+                                                "type": "string"
+                                            },
+                                            "error": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "allOf": [
+                                    {
+                                        "type": "object"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            " message": {
+                                                "type": "string"
+                                            },
+                                            "error": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/dog/found": {
             "patch": {
                 "description": "Reunite dog with owner. Making him its only host and removing other hosts",
@@ -282,8 +361,8 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {

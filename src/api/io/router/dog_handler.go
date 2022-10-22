@@ -74,6 +74,40 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
 }
 
+// GetDog godoc
+// @Summary Get dog given its ID
+// @Schemes
+// @Description Get dog given its ID
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dog path string false  "dog ID"
+// @Success     200 {object} model.DogResponse
+// @Failure		400 {object} map[string]any{error=string, message=string}
+// @Failure		500 {object} map[string]any{error=string, message=string}
+// @Router      /dog/:id [get]
+func GetDog(c *gin.Context, env environment.Env) {
+	dogID, exists := c.Get("id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+
+	dog, err := dogManager.Get(io.ParseToUint(dogID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
+}
+
 // UpdateDog godoc
 // @Summary Updates dog
 // @Schemes
@@ -174,7 +208,7 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 // @Param		userLongitude query float64 false "user longitude"
 // @Param		radius query float64 false "radio to look for dogs"
 // @Success     200 {object} []model.DogResponse
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Failure		400 {object} map[string]string{error=string, message=string}
 // @Router      /dog/missing [get]
 func GetAllMissingDogsList(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()

@@ -4,6 +4,7 @@ import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/usecases/interfaces"
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -76,4 +77,10 @@ func MapToDogResponseList(dogs []model.Dog, bucket interfaces.Storage) []model.D
 		dogsResp = append(dogsResp, *MapToDogResponse(&dog, bucket))
 	}
 	return dogsResp
+}
+
+func ParseToUint(val any) uint {
+	stringVal := fmt.Sprintf("%s", val)
+	res, _ := strconv.ParseUint(stringVal, 10, 64)
+	return uint(res)
 }

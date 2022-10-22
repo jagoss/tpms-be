@@ -203,6 +203,52 @@ paths:
       summary: Register new dog
       tags:
       - dog
+  /dog/:id:
+    get:
+      consumes:
+      - application/json
+      description: Get dog given its ID
+      parameters:
+      - description: dog ID
+        in: path
+        name: dog
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              allOf:
+              - type: object
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              allOf:
+              - type: object
+              - properties:
+                  ' message':
+                    type: string
+                  error:
+                    type: string
+                type: object
+            type: object
+      summary: Get dog given its ID
+      tags:
+      - dog
   /dog/found:
     patch:
       consumes:
@@ -274,8 +320,8 @@ paths:
             items:
               $ref: '#/definitions/model.DogResponse'
             type: array
-        "500":
-          description: Internal Server Error
+        "400":
+          description: Bad Request
           schema:
             additionalProperties:
               allOf:
