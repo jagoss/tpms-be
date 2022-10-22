@@ -90,7 +90,7 @@ func mapDogRoutes(env environment.Env) {
 		if !validUser(context) {
 			return
 		}
-		GetMissingDogsList(context, env)
+		GetAllMissingDogsList(context, env)
 	})
 }
 
