@@ -58,3 +58,9 @@ func (dp *DogPersister) GetMissingDogs() []model.Dog {
 	dp.db.Connection.Where("is_lost = ?", "true").Find(&dogs)
 	return dogs
 }
+
+func (dp *DogPersister) GetDogsByUser(userID string) []model.Dog {
+	var dogs []model.Dog
+	dp.db.Connection.Where("host_id = ?", userID).Find(dogs)
+	return dogs
+}

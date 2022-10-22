@@ -74,6 +74,12 @@ func mapDogRoutes(env environment.Env) {
 		}
 		RegisterNewDog(context, env)
 	})
+	dogRouter.GET("/:id", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetDog(context, env)
+	})
 	dogRouter.PATCH("", func(context *gin.Context) {
 		if !validUser(context) {
 			return
@@ -107,6 +113,12 @@ func mapUserRoutes(env environment.Env) {
 			return
 		}
 		UpdateUser(context, env)
+	})
+	userRouter.GET("/dog", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUserDogs(context, env)
 	})
 }
 

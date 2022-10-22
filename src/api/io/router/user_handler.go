@@ -3,7 +3,9 @@ package router
 import (
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io"
+	"be-tpms/src/api/usecases/dogs"
 	"be-tpms/src/api/usecases/users"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"
@@ -22,8 +24,8 @@ type UserHandler struct {
 // @Produce     json
 // @Param		user body model.User false "new user"
 // @Success     200 {object} model.User
-// @Failure		422 {object} map[string]string{error=string, message=string}
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Failure		422 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /user [post]
 func RegisterNewUser(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -69,8 +71,8 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		user body model.User true "user to update"
 // @Success     200 {object} model.User
-// @Failure		422 {object} map[string]string{error=string, message=string}
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Failure		422 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /user [patch]
 func UpdateUser(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -105,4 +107,43 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	}
 
 	c.JSON(http.StatusOK, updatedUser)
+}
+
+// GetUserDogs godoc
+// @Summary Get all user dogs
+// @Schemes
+// @Description Gets 2 lists of dogs, one with dogs owned by de user and another with dogs found by the user
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param		user body model.User true "user to update"
+// @Success     200 {object} object{ownedDogs=[]model.DogResponse, foundDogs=[]model.DogResponse}
+// @Failure		500 {object} object{error=string, message=string}
+// @Router      /user/dog [get]
+func GetUserDogs(c *gin.Context, env environment.Env) {
+	userID := c.Request.Header.Get("id")
+	if userID == "" {
+		log.Printf("missing user id")
+		c.JSON(http.StatusBadRequest, map[string]string{
+			"error":   "Missing header value",
+			"message": "Missing user ID",
+		})
+		return
+	}
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+	userOwnedDogs, foundDogs, err := dogManager.GetAllUserDogs(userID)
+	if err != nil {
+		msg := fmt.Sprintf("Error getting dogs for user %s", userID)
+		log.Printf(msg)
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   err.Error(),
+			"message": msg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"ownedDogs": io.MapToDogResponseList(userOwnedDogs, env.Storage),
+		"foundDogs": io.MapToDogResponseList(foundDogs, env.Storage),
+	})
 }
