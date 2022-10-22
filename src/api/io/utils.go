@@ -28,16 +28,18 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 
 func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
 	dog := &model.Dog{
-		Name:      reqDog.Name,
-		Breed:     reqDog.Breed,
-		Age:       reqDog.Age,
-		Size:      reqDog.Size,
-		IsLost:    reqDog.IsLost,
-		Owner:     &model.User{ID: reqDog.Owner},
-		Host:      &model.User{ID: reqDog.Host},
-		Latitude:  reqDog.Latitude,
-		Longitude: reqDog.Longitude,
-		ImgUrl:    reqDog.ImgUrl,
+		Name:       reqDog.Name,
+		Breed:      model.ParseBreed(reqDog.Breed),
+		Age:        model.ParseAge(reqDog.Age),
+		Size:       model.ParseSize(reqDog.Size),
+		CoatColor:  model.ParseCoatColor(reqDog.CoatColor),
+		CoatLength: model.ParseCoatLength(reqDog.CoatLength),
+		IsLost:     reqDog.IsLost,
+		Owner:      &model.User{ID: reqDog.Owner},
+		Host:       &model.User{ID: reqDog.Host},
+		Latitude:   reqDog.Latitude,
+		Longitude:  reqDog.Longitude,
+		ImgUrl:     reqDog.ImgUrl,
 	}
 	unitID, err := strconv.ParseUint(reqDog.ID, 10, 64)
 	if err != nil {
@@ -51,18 +53,20 @@ func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogRespo
 	firstImg := strings.Split(dog.ImgUrl, ";")[0]
 	imgArray, _ := bucket.GetImgs(firstImg)
 	return &model.DogResponse{
-		ID:        strconv.Itoa(int(dog.ID)),
-		Name:      dog.Name,
-		Breed:     dog.Breed,
-		Age:       dog.Age,
-		Size:      dog.Size,
-		IsLost:    dog.IsLost,
-		Owner:     dog.Owner.ID,
-		Host:      dog.Host.ID,
-		Latitude:  dog.Latitude,
-		Longitude: dog.Longitude,
-		ImgUrl:    dog.ImgUrl,
-		Img:       imgArray[0],
+		ID:         strconv.Itoa(int(dog.ID)),
+		Name:       dog.Name,
+		Breed:      dog.Breed.String(),
+		Age:        dog.Age.String(),
+		Size:       dog.Size.String(),
+		CoatColor:  dog.CoatColor.String(),
+		CoatLength: dog.CoatLength.String(),
+		IsLost:     dog.IsLost,
+		Owner:      dog.Owner.ID,
+		Host:       dog.Host.ID,
+		Latitude:   dog.Latitude,
+		Longitude:  dog.Longitude,
+		ImgUrl:     dog.ImgUrl,
+		Img:        imgArray[0],
 	}
 }
 
