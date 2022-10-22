@@ -44,3 +44,16 @@ func (u *UserManager) Delete(userID string) (bool, error) {
 	}
 	return true, nil
 }
+
+func (u *UserManager) UpdateFCMToken(id string, token string) error {
+	user, err := u.userRepo.GetUser(id)
+	if err != nil {
+		return fmt.Errorf("error getting user %s", id)
+	}
+	user.FCMToken = token
+	user, err = u.userRepo.UpdateUser(user)
+	if err != nil {
+		return fmt.Errorf("error updating user token for user %s", id)
+	}
+	return nil
+}

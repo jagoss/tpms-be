@@ -20,4 +20,7 @@ type User struct {
 	// City
 	// in: string
 	City string
+	// FCMToken
+	// in: string
+	FCMToken string
 }

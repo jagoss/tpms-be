@@ -5,6 +5,7 @@ import (
 	"be-tpms/src/api/io"
 	"be-tpms/src/api/usecases/dogs"
 	"be-tpms/src/api/usecases/users"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
@@ -39,6 +40,7 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 	}
 
 	newUser, err := io.DeserializeUser(jsonBody)
+	newUser.ID = c.Request.Header.Get("user_id")
 	if err != nil {
 		log.Printf("error unmarshalling user body: %v", err)
 		c.JSON(http.StatusUnprocessableEntity, map[string]string{
@@ -86,6 +88,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	}
 
 	user, err := io.DeserializeUser(jsonBody)
+	user.ID = c.Request.Header.Get("user_id")
 	if err != nil {
 		log.Printf("error unmarshalling user body: %v", err)
 		c.JSON(http.StatusUnprocessableEntity, map[string]string{
@@ -121,15 +124,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /user/dog [get]
 func GetUserDogs(c *gin.Context, env environment.Env) {
-	userID := c.Request.Header.Get("id")
-	if userID == "" {
-		log.Printf("missing user id")
-		c.JSON(http.StatusBadRequest, map[string]string{
-			"error":   "Missing header value",
-			"message": "Missing user ID",
-		})
-		return
-	}
+	userID := c.GetHeader("user_id")
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
 	userOwnedDogs, foundDogs, err := dogManager.GetAllUserDogs(userID)
 	if err != nil {
@@ -145,5 +140,57 @@ func GetUserDogs(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, gin.H{
 		"ownedDogs": io.MapToDogResponseList(userOwnedDogs, env.Storage),
 		"foundDogs": io.MapToDogResponseList(foundDogs, env.Storage),
+	})
+}
+
+// UpdateFCMToken godoc
+// @Summary Updates FCM token for given user
+// @Schemes
+// @Description Updates FCM token to allow server to send direct notifications to users at any time
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param		user body object{token=string} true "FCM token"
+// @Success     200 {object} object{result=string}
+// @Failure		422 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
+// @Router      /user/fcmtoken [put]
+func UpdateFCMToken(c *gin.Context, env environment.Env) {
+	userID := c.GetHeader("user_id")
+	jsonBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Printf("error reading request body: %v", err)
+		c.JSON(http.StatusUnprocessableEntity, map[string]string{
+			"error":   err.Error(),
+			"message": "error reading request body!",
+		})
+		return
+	}
+
+	var body map[string]string
+	err = json.Unmarshal(jsonBody, &body)
+	if err != nil {
+		log.Printf("error reading request body: %v", err)
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   err.Error(),
+			"message": "error unmarshalling request body!",
+		})
+		return
+	}
+
+	userManager := users.NewUserManager(env.UserPersister)
+	err = userManager.UpdateFCMToken(userID, body["token"])
+	if err != nil {
+		msg := fmt.Sprintf("error saving fcm token for user %s", userID)
+		log.Printf(msg+": %v", err)
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   err.Error(),
+			"message": msg,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": "OK",
 	})
 }

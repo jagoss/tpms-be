@@ -28,6 +28,6 @@ func AuthMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	c.Set("UUID", token.UID)
+	c.Request.Header.Set("user_id", token.UID)
 	c.Next()
 }

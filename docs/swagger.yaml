@@ -80,6 +80,11 @@ definitions:
           Email
           in: string
         type: string
+      fcmtoken:
+        description: |-
+          FCMToken
+          in: string
+        type: string
       firstName:
         description: |-
           First name
@@ -508,6 +513,61 @@ paths:
                   type: string
               type: object
       summary: Get all user dogs
+      tags:
+      - user
+  /user/fcmtoken:
+    put:
+      consumes:
+      - application/json
+      description: Updates FCM token to allow server to send direct notifications
+        to users at any time
+      parameters:
+      - description: FCM token
+        in: body
+        name: user
+        required: true
+        schema:
+          allOf:
+          - type: object
+          - properties:
+              token:
+                type: string
+            type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                result:
+                  type: string
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Updates FCM token for given user
       tags:
       - user
 swagger: "2.0"
