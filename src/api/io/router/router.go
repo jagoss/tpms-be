@@ -74,6 +74,12 @@ func mapDogRoutes(env environment.Env) {
 		}
 		RegisterNewDog(context, env)
 	})
+	dogRouter.GET("/:id", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetDog(context, env)
+	})
 	dogRouter.PATCH("", func(context *gin.Context) {
 		if !validUser(context) {
 			return
@@ -90,7 +96,7 @@ func mapDogRoutes(env environment.Env) {
 		if !validUser(context) {
 			return
 		}
-		GetAllMissingDogsList(context, env)
+		GetMissingDogsList(context, env)
 	})
 }
 

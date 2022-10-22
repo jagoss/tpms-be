@@ -197,7 +197,7 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
 }
 
-// GetAllMissingDogsList godoc
+// GetMissingDogsList godoc
 // @Summary Brings list of missing dogs
 // @Schemes
 // @Description	If no argument is given it returns all missing dogs. If user location and a search radius is sent, then it returns all missing dogs within that radius.
@@ -210,7 +210,7 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 // @Success     200 {object} []model.DogResponse
 // @Failure		400 {object} map[string]string{error=string, message=string}
 // @Router      /dog/missing [get]
-func GetAllMissingDogsList(c *gin.Context, env environment.Env) {
+func GetMissingDogsList(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
 	userLat, userLng, radius := q.Get("userLatitude"), q.Get("userLongitude"), q.Get("radius")
 	if (userLat == "" || userLng == "" || radius == "") && (userLat != "" || userLng != "" || radius != "") {
