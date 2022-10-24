@@ -132,7 +132,7 @@ func mapUserRoutes(env environment.Env) {
 		}
 		GetUser(context, env)
 	})
-	userRouter.GET("", func(context *gin.Context) {
+	userRouter.GET("/:id", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}
