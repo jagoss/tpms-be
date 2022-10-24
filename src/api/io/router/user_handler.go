@@ -1,6 +1,7 @@
 package router
 
 import (
+	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io"
 	"be-tpms/src/api/usecases/dogs"
@@ -40,7 +41,7 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 	}
 
 	newUser, err := io.DeserializeUser(jsonBody)
-	newUser.ID = c.Request.Header.Get("user_id")
+	newUser.ID = c.Request.Header.Get("x-user-id")
 	if err != nil {
 		log.Printf("error unmarshalling user body: %v", err)
 		c.JSON(http.StatusUnprocessableEntity, map[string]string{
@@ -88,7 +89,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	}
 
 	user, err := io.DeserializeUser(jsonBody)
-	user.ID = c.Request.Header.Get("user_id")
+	user.ID = c.Request.Header.Get("x-user-id")
 	if err != nil {
 		log.Printf("error unmarshalling user body: %v", err)
 		c.JSON(http.StatusUnprocessableEntity, map[string]string{
@@ -112,6 +113,75 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, updatedUser)
 }
 
+// GetUser godoc
+// @Summary Get user
+// @Schemes
+// @Description Get user from given ID
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param		x-user-id header string true "user id"
+// @Success     200 {object} model.User
+// @Failure		500 {object} object{error=string, message=string}
+// @Router      /user [get]
+func GetUser(c *gin.Context, env environment.Env) {
+	userID := c.GetHeader("x-user-id")
+
+	userManager := users.NewUserManager(env.UserPersister)
+	user, err := userManager.Get(userID)
+	if err != nil {
+		log.Printf("error getting user with ID %s: %v ", userID, err)
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   err.Error(),
+			"message": "error getting user!",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+// GetUserContactInfo godoc
+// @Summary Get user contact info
+// @Schemes
+// @Description Get user from given ID
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param		id path string true "user id"
+// @Success     200 {object} model.UserContactInfo
+// @Failure		400 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
+// @Router      /user/:id [get]
+func GetUserContactInfo(c *gin.Context, env environment.Env) {
+	userID, exists := c.Get("id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing user ID",
+		})
+		return
+	}
+	userManager := users.NewUserManager(env.UserPersister)
+	user, err := userManager.Get(fmt.Sprintf("%v", userID))
+	if err != nil {
+		log.Printf("error getting user with ID %s: %v ", userID, err)
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   err.Error(),
+			"message": "error getting user!",
+		})
+		return
+	}
+
+	userContactInfo := &model.UserContactInfo{
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		Phone:     user.Phone}
+
+	c.JSON(http.StatusOK, userContactInfo)
+}
+
 // GetUserDogs godoc
 // @Summary Get all user dogs
 // @Schemes
@@ -124,7 +194,7 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /user/dog [get]
 func GetUserDogs(c *gin.Context, env environment.Env) {
-	userID := c.GetHeader("user_id")
+	userID := c.GetHeader("x-user-id")
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
 	userOwnedDogs, foundDogs, err := dogManager.GetAllUserDogs(userID)
 	if err != nil {
@@ -156,7 +226,7 @@ func GetUserDogs(c *gin.Context, env environment.Env) {
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /user/fcmtoken [put]
 func UpdateFCMToken(c *gin.Context, env environment.Env) {
-	userID := c.GetHeader("user_id")
+	userID := c.GetHeader("x-user-id")
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil {
 		log.Printf("error reading request body: %v", err)

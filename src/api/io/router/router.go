@@ -126,6 +126,18 @@ func mapUserRoutes(env environment.Env) {
 		}
 		UpdateFCMToken(context, env)
 	})
+	userRouter.GET("", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUser(context, env)
+	})
+	userRouter.GET("", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUserContactInfo(context, env)
+	})
 }
 
 func mapImgsRoutes(env environment.Env) {
@@ -149,5 +161,5 @@ func mapSwaggerRoutes() {
 
 func validUser(c *gin.Context) bool {
 	middleware.AuthMiddleware(c)
-	return c.GetHeader("user_id") != ""
+	return c.GetHeader("x-user-id") != ""
 }
