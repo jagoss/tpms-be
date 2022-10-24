@@ -120,6 +120,24 @@ func mapUserRoutes(env environment.Env) {
 		}
 		GetUserDogs(context, env)
 	})
+	userRouter.PUT("/fcmtoken", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		UpdateFCMToken(context, env)
+	})
+	userRouter.GET("", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUser(context, env)
+	})
+	userRouter.GET("", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUserContactInfo(context, env)
+	})
 }
 
 func mapImgsRoutes(env environment.Env) {
@@ -143,6 +161,5 @@ func mapSwaggerRoutes() {
 
 func validUser(c *gin.Context) bool {
 	middleware.AuthMiddleware(c)
-	_, exists := c.Get("UUID")
-	return exists
+	return c.GetHeader("x-user-id") != ""
 }

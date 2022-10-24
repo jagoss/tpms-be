@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `users`
     `last_name`  VARCHAR(50)  NOT NULL,
     `email`      VARCHAR(255) NOT NULL,
     `phone`      VARCHAR(40)  NOT NULL,
-    `city`       VARCHAR(255) NOT NULL
+    `city`       VARCHAR(255) NOT NULL,
+    `fmt_token`  VARCHAR(255)
 );
 CREATE TABLE IF NOT EXISTS `dogs`
 (
@@ -41,7 +42,8 @@ CREATE TABLE IF NOT EXISTS users
     `last_name`  VARCHAR(50)  NOT NULL,
     `email`      VARCHAR(255) NOT NULL,
     `phone`      VARCHAR(40)  NOT NULL,
-    `city`       VARCHAR(255) NOT NULL
+    `city`       VARCHAR(255) NOT NULL,
+    `fcm_token`  VARCHAR(255)
 );
 CREATE TABLE IF NOT EXISTS `dogs`
 (
