@@ -20,4 +20,21 @@ type User struct {
 	// City
 	// in: string
 	City string
+	// FCMToken
+	// in: string
+	FCMToken string
+}
+
+// swagger:model UserContactInfo
+type UserContactInfo struct {
+	FirstName string
+	// Last name
+	// in: string
+	LastName string
+	// Email
+	// in: string
+	Email string
+	// Phone number
+	// in: string
+	Phone string
 }

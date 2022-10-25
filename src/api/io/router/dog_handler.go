@@ -27,8 +27,8 @@ type DogHandler struct {
 // @Produce     json
 // @Param		dog body model.DogRequest false  "dog"
 // @Success     200 {object} model.DogResponse
-// @Failure		422 {object} map[string]any{error=string, message=string}
-// @Failure		500 {object} map[string]any{error=string, message=string}
+// @Failure		422 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog [post]
 func RegisterNewDog(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -74,6 +74,40 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
 }
 
+// GetDog godoc
+// @Summary Get dog given its ID
+// @Schemes
+// @Description Get dog given its ID
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dog path string false  "dog ID"
+// @Success     200 {object} model.DogResponse
+// @Failure		400 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
+// @Router      /dog/:id [get]
+func GetDog(c *gin.Context, env environment.Env) {
+	dogID, exists := c.Get("id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+
+	dog, err := dogManager.Get(io.ParseToUint(dogID))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
+}
+
 // UpdateDog godoc
 // @Summary Updates dog
 // @Schemes
@@ -83,8 +117,8 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		dog body model.DogRequest false  "dog"
 // @Success     200 {object} model.DogResponse
-// @Failure		422 {object} map[string]string{error=string, message=string}
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Failure		422 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog [patch]
 func UpdateDog(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -143,7 +177,7 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Param		ownerID query string false "dog owner ID"
 // @Param		hostID query string false "dog host ID"
 // @Success     200 {object} model.DogResponse
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog/found [patch]
 func DogReUnited(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
@@ -164,17 +198,50 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 }
 
 // GetMissingDogsList godoc
-// @Summary All missing dogs
+// @Summary Brings list of missing dogs
 // @Schemes
-// @Description	List of all missing dogs
+// @Description	If no argument is given it returns all missing dogs. If user location and a search radius is sent, then it returns all missing dogs within that radius.
 // @Tags        dog
 // @Accept      json
 // @Produce     json
+// @Param		userLatitude query float64 false "user latitude"
+// @Param		userLongitude query float64 false "user longitude"
+// @Param		radius query float64 false "radio to look for dogs"
 // @Success     200 {object} []model.DogResponse
+// @Failure		400 {object} object{error=string, message=string}
 // @Router      /dog/missing [get]
 func GetMissingDogsList(c *gin.Context, env environment.Env) {
+	q := c.Request.URL.Query()
+	userLat, userLng, radius := q.Get("userLatitude"), q.Get("userLongitude"), q.Get("radius")
+	if (userLat == "" || userLng == "" || radius == "") && (userLat != "" || userLng != "" || radius != "") {
+		var missingArgs []string
+		if userLat == "" {
+			missingArgs = append(missingArgs, "UserLat")
+		}
+		if userLng == "" {
+			missingArgs = append(missingArgs, "userLng")
+		}
+		if radius == "" {
+			missingArgs = append(missingArgs, "radius")
+		}
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Missing argument",
+			"message": fmt.Sprintf("There are missing arguments: %s", strings.Join(missingArgs, ",")),
+		})
+		return
+	}
+
 	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
-	dogList := lfDogs.GetMissingDogsList()
+	if userLat == "" && userLng == "" && radius == "" {
+		dogList := lfDogs.GetAllMissingDogsList()
+		dogRespList := io.MapToDogResponseList(dogList, env.Storage)
+		c.JSON(http.StatusOK, dogRespList)
+		return
+	}
+	userLatF, _ := strconv.ParseFloat(userLat, 64)
+	userLngF, _ := strconv.ParseFloat(userLng, 64)
+	radiusF, _ := strconv.ParseFloat(radius, 64)
+	dogList := lfDogs.GetMissingDogsInRadius(userLatF, userLngF, radiusF)
 	dogRespList := io.MapToDogResponseList(dogList, env.Storage)
 
 	c.JSON(http.StatusOK, dogRespList)

@@ -11,4 +11,5 @@ type DogPersister interface {
 	DeleteDog(dogID uint) error
 	DogExisitsByNameAndOwner(string, string) bool
 	GetMissingDogs() []model.Dog
+	GetDogsByUser(userID string) []model.Dog
 }

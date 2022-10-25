@@ -74,6 +74,12 @@ func mapDogRoutes(env environment.Env) {
 		}
 		RegisterNewDog(context, env)
 	})
+	dogRouter.GET("/:id", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetDog(context, env)
+	})
 	dogRouter.PATCH("", func(context *gin.Context) {
 		if !validUser(context) {
 			return
@@ -108,6 +114,30 @@ func mapUserRoutes(env environment.Env) {
 		}
 		UpdateUser(context, env)
 	})
+	userRouter.GET("/dog", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUserDogs(context, env)
+	})
+	userRouter.PUT("/fcmtoken", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		UpdateFCMToken(context, env)
+	})
+	userRouter.GET("", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUser(context, env)
+	})
+	userRouter.GET("/:id", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetUserContactInfo(context, env)
+	})
 	userRouter.POST("/notif", func(context *gin.Context) {
 		if !validUser(context) {
 			return
@@ -137,6 +167,5 @@ func mapSwaggerRoutes() {
 
 func validUser(c *gin.Context) bool {
 	middleware.AuthMiddleware(c)
-	_, exists := c.Get("UUID")
-	return exists
+	return c.GetHeader("x-user-id") != ""
 }

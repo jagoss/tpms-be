@@ -3,9 +3,13 @@ definitions:
   model.DogRequest:
     properties:
       age:
-        type: integer
+        type: string
       breed:
-        type: integer
+        type: string
+      coatColor:
+        type: string
+      coatLength:
+        type: string
       host:
         type: string
       id:
@@ -29,14 +33,18 @@ definitions:
       owner:
         type: string
       size:
-        type: integer
+        type: string
     type: object
   model.DogResponse:
     properties:
       age:
-        type: integer
+        type: string
       breed:
-        type: integer
+        type: string
+      coatColor:
+        type: string
+      coatLength:
+        type: string
       host:
         type: string
       id:
@@ -58,7 +66,7 @@ definitions:
       owner:
         type: string
       size:
-        type: integer
+        type: string
     type: object
   model.User:
     properties:
@@ -70,6 +78,11 @@ definitions:
       email:
         description: |-
           Email
+          in: string
+        type: string
+      fcmtoken:
+        description: |-
+          FCMToken
           in: string
         type: string
       firstName:
@@ -93,7 +106,27 @@ definitions:
           in: string
         type: string
     type: object
-host: tpms.ondigitalocean.app/tpms-be
+  model.UserContactInfo:
+    properties:
+      email:
+        description: |-
+          Email
+          in: string
+        type: string
+      firstName:
+        type: string
+      lastName:
+        description: |-
+          Last name
+          in: string
+        type: string
+      phone:
+        description: |-
+          Phone number
+          in: string
+        type: string
+    type: object
+host: https://tpms-fdwva.ondigitalocean.app/tpms-be2
 info:
   contact: {}
   description: tpms back-end Api docs
@@ -123,29 +156,25 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Updates dog
       tags:
       - dog
@@ -169,30 +198,68 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Register new dog
+      tags:
+      - dog
+  /dog/:id:
+    get:
+      consumes:
+      - application/json
+      description: Get dog given its ID
+      parameters:
+      - description: dog ID
+        in: path
+        name: dog
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Get dog given its ID
       tags:
       - dog
   /dog/found:
@@ -224,16 +291,14 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Reunite dog with owner
       tags:
       - dog
@@ -241,7 +306,22 @@ paths:
     get:
       consumes:
       - application/json
-      description: List of all missing dogs
+      description: If no argument is given it returns all missing dogs. If user location
+        and a search radius is sent, then it returns all missing dogs within that
+        radius.
+      parameters:
+      - description: user latitude
+        in: query
+        name: userLatitude
+        type: number
+      - description: user longitude
+        in: query
+        name: userLongitude
+        type: number
+      - description: radio to look for dogs
+        in: query
+        name: radius
+        type: number
       produces:
       - application/json
       responses:
@@ -251,7 +331,18 @@ paths:
             items:
               $ref: '#/definitions/model.DogResponse'
             type: array
-      summary: All missing dogs
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Brings list of missing dogs
       tags:
       - dog
   /img:
@@ -276,29 +367,25 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: object
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Add Image
       tags:
       - imgs
@@ -318,6 +405,37 @@ paths:
       tags:
       - ping
   /user:
+    get:
+      consumes:
+      - application/json
+      description: Get user from given ID
+      parameters:
+      - description: user id
+        in: header
+        name: x-user-id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Get user
+      tags:
+      - user
     patch:
       consumes:
       - application/json
@@ -339,29 +457,25 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Updates user
       tags:
       - user
@@ -385,30 +499,169 @@ paths:
         "422":
           description: Unprocessable Entity
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              allOf:
-              - type: string
-              - properties:
-                  ' message':
-                    type: string
-                  error:
-                    type: string
-                type: object
-            type: object
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
       summary: Register new user
+      tags:
+      - user
+  /user/:id:
+    get:
+      consumes:
+      - application/json
+      description: Get user from given ID
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserContactInfo'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Get user contact info
+      tags:
+      - user
+  /user/dog:
+    get:
+      consumes:
+      - application/json
+      description: Gets 2 lists of dogs, one with dogs owned by de user and another
+        with dogs found by the user
+      parameters:
+      - description: user to update
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' foundDogs':
+                  items:
+                    $ref: '#/definitions/model.DogResponse'
+                  type: array
+                ownedDogs:
+                  items:
+                    $ref: '#/definitions/model.DogResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Get all user dogs
+      tags:
+      - user
+  /user/fcmtoken:
+    put:
+      consumes:
+      - application/json
+      description: Updates FCM token to allow server to send direct notifications
+        to users at any time
+      parameters:
+      - description: FCM token
+        in: body
+        name: user
+        required: true
+        schema:
+          allOf:
+          - type: object
+          - properties:
+              token:
+                type: string
+            type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                result:
+                  type: string
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                ' message':
+                  type: string
+                error:
+                  type: string
+              type: object
+      summary: Updates FCM token for given user
       tags:
       - user
 swagger: "2.0"
