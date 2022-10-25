@@ -27,6 +27,8 @@ type DogHandler struct {
 // @Produce     json
 // @Param		dog body model.DogRequest false  "dog"
 // @Success     200 {object} model.DogResponse
+// @Failure		400 {object} object{error=string, message=string}
+// @Failure		401 {object} object{error=string, message=string}
 // @Failure		422 {object} object{error=string, message=string}
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog [post]
@@ -84,6 +86,7 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 // @Param		dog path string false  "dog ID"
 // @Success     200 {object} model.DogResponse
 // @Failure		400 {object} object{error=string, message=string}
+// @Failure		401 {object} object{error=string, message=string}
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog/:id [get]
 func GetDog(c *gin.Context, env environment.Env) {
@@ -117,6 +120,8 @@ func GetDog(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		dog body model.DogRequest false  "dog"
 // @Success     200 {object} model.DogResponse
+// @Failure		400 {object} object{error=string, message=string}
+// @Failure		401 {object} object{error=string, message=string}
 // @Failure		422 {object} object{error=string, message=string}
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog [patch]
@@ -177,6 +182,8 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Param		ownerID query string false "dog owner ID"
 // @Param		hostID query string false "dog host ID"
 // @Success     200 {object} model.DogResponse
+// @Failure		400 {object} object{error=string, message=string}
+// @Failure		401 {object} object{error=string, message=string}
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /dog/found [patch]
 func DogReUnited(c *gin.Context, env environment.Env) {
@@ -209,6 +216,7 @@ func DogReUnited(c *gin.Context, env environment.Env) {
 // @Param		radius query float64 false "radio to look for dogs"
 // @Success     200 {object} []model.DogResponse
 // @Failure		400 {object} object{error=string, message=string}
+// @Failure		401 {object} object{error=string, message=string}
 // @Router      /dog/missing [get]
 func GetMissingDogsList(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
@@ -255,9 +263,11 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 // @Accept      json
 // @Produce     json
 // @Param		dogID query string false "dog ID"
-// @Param		matchingDogs query array[string] false "possible matching dogs"
-// @Success     200 string
-// @Failure		500 {object} map[string]string{error=string, message=string}
+// @Param		matchingDogs query []string false "possible matching dogs"
+// @Failure		400 {object} object{error=string, message=string}
+// @Failure		401 {object} object{error=string, message=string}
+// @Failure		500 {object} object{error=string, message=string}
+// @Success     200 {object} object{message=string}
 // @Router      /dog/claim_found [patch]
 func ClaimFoundMissingDog(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
@@ -277,5 +287,5 @@ func ClaimFoundMissingDog(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	c.String(http.StatusOK, "users notified!")
+	c.JSON(http.StatusOK, gin.H{"message": "users notified!"})
 }

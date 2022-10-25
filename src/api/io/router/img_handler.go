@@ -19,6 +19,7 @@ import (
 // @Produce     json
 // @Success     200 {string} img "name" saved correctly!
 // @Failure		400 {object} object{error=string, message=string}
+// @Failure		401 {object} object{error=string, message=string}
 // @Failure		500 {object} object{error=string, message=string}
 // @Router      /img [post]
 func AddImg(c *gin.Context, env environment.Env) {
