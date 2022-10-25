@@ -58,10 +58,17 @@ func (u *UserManager) UpdateFCMToken(id string, token string) error {
 	return nil
 }
 
-func (u *UserManager) SendPushToOwner(email string, data map[string]string, messaging interfaces.Messaging) error {
-	err := messaging.SendMessageFromEmail(email, data)
+func (u *UserManager) SendPushToOwner(userID string, data map[string]string, messaging interfaces.Messaging) error {
+	user, err := u.Get(userID)
 	if err != nil {
-		return fmt.Errorf("error sending message to user %s: %v", email, err)
+		return err
+	}
+	if user.FCMToken == "" {
+		return fmt.Errorf("user %s does not have a FCM token", userID)
+	}
+	err = messaging.SendMessage(user.FCMToken, data)
+	if err != nil {
+		return fmt.Errorf("error sending message to user %s: %v", userID, err)
 	}
 	return nil
 }

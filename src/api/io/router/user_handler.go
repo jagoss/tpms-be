@@ -266,17 +266,21 @@ func UpdateFCMToken(c *gin.Context, env environment.Env) {
 }
 
 func SendNotif(c *gin.Context, env environment.Env) {
-	token, exists := c.Get("UUID")
-	if !exists {
-		c.JSON(http.StatusInternalServerError, map[string]string{
-			"error":   "token doesnt exist",
-			"message": "token doesnt exist",
-		})
-		return
-	}
+	userID, _ := c.Get("x-user-id")
+
 	data := map[string]string{
 		"title": "Hola!",
 		"body":  "Entra a nuestra app!",
 	}
-	env.NotificationSender.SendMessage(fmt.Sprintf("%v", token), data)
+	userManager := users.NewUserManager(env.UserPersister)
+	err := userManager.SendPushToOwner(fmt.Sprintf("%v", userID), data, env.NotificationSender)
+	if err != nil {
+		msg := fmt.Sprintf("[userHandler.SendNotif] error sending token to user %v", userID)
+		log.Printf(msg)
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   err.Error(),
+			"message": msg,
+		})
+		return
+	}
 }
