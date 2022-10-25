@@ -229,7 +229,7 @@ func GetUserDogs(c *gin.Context, env environment.Env) {
 // @Tags        user
 // @Accept      json
 // @Produce     json
-// @Param		user body object{token=string} true "FCM token"
+// @Param		token body object{token=string} true "FCM token"
 // @Success     200 {object} object{result=string}
 // @Failure		400 {object} object{error=string, message=string}
 // @Failure		401 {object} object{error=string, message=string}
