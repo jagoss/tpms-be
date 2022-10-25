@@ -3,6 +3,7 @@ package router
 import (
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io/storage"
+	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -40,8 +41,12 @@ func AddImg(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
-	imgs, err := env.Storage.SaveImgs(imgBuffArray)
+	var encodedImgs []string
+	for _, img := range imgBuffArray {
+		encoded := base64.StdEncoding.EncodeToString(img)
+		encodedImgs = append(encodedImgs, encoded)
+	}
+	imgs, err := env.Storage.SaveImgs(encodedImgs)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
