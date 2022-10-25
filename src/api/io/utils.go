@@ -67,7 +67,7 @@ func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogRespo
 		Latitude:   dog.Latitude,
 		Longitude:  dog.Longitude,
 		ImgsUrl:    dog.ImgUrl,
-		Img:        imgArray[0],
+		ProfileImg: imgArray[0],
 	}
 }
 

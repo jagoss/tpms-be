@@ -1627,12 +1627,6 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "img": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
                 "imgsUrl": {
                     "type": "string"
                 },
@@ -1650,6 +1644,12 @@ const docTemplate = `{
                 },
                 "owner": {
                     "type": "string"
+                },
+                "profileImg": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "size": {
                     "type": "string"

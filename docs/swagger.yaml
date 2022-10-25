@@ -49,10 +49,6 @@ definitions:
         type: string
       id:
         type: string
-      img:
-        items:
-          type: integer
-        type: array
       imgsUrl:
         type: string
       isLost:
@@ -65,6 +61,10 @@ definitions:
         type: string
       owner:
         type: string
+      profileImg:
+        items:
+          type: integer
+        type: array
       size:
         type: string
     type: object
