@@ -921,7 +921,7 @@ type DogResponse struct {
 	Latitude   float32
 	Longitude  float32
 	ImgsUrl    string
-	ProfileImg []byte
+	ProfileImg string
 }
 
 type DogRequest struct {
@@ -938,5 +938,5 @@ type DogRequest struct {
 	Latitude   float32
 	Longitude  float32
 	ImgUrl     string
-	Imgs       [][]byte
+	Imgs       []string
 }

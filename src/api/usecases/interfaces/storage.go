@@ -1,7 +1,7 @@
 package interfaces
 
 type Storage interface {
-	SaveImgs(imgs [][]byte) (string, error)
+	SaveImgs(imgs []string) (string, error)
 	GetAllImgsName() ([]string, error)
-	GetImgs(filePaths string) ([][]byte, error)
+	GetImgs(filePaths string) ([]string, error)
 }

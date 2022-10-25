@@ -1580,10 +1580,7 @@ const docTemplate = `{
                 "imgs": {
                     "type": "array",
                     "items": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
+                        "type": "string"
                     }
                 },
                 "isLost": {
@@ -1646,10 +1643,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "profileImg": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
                 },
                 "size": {
                     "type": "string"

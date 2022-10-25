@@ -27,7 +27,7 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 	return &dog, nil
 }
 
-func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
+func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 	dog := &model.Dog{
 		Name:       reqDog.Name,
 		Breed:      model.ParseBreed(reqDog.Breed),
@@ -47,6 +47,7 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
 		return nil, nil
 	}
 	dog.ID = uint(unitID)
+
 	return dog, reqDog.Imgs
 }
 

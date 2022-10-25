@@ -2,6 +2,7 @@ package storage
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -37,12 +38,13 @@ func NewBucket() *Storage {
 	return &Storage{s3.New(newSession), os.Getenv("BUCKET")}
 }
 
-func (s *Storage) SaveImgs(imgs [][]byte) (string, error) {
+func (s *Storage) SaveImgs(imgs []string) (string, error) {
 	imgPaths := ""
 	uuidNbr, _ := uuid.NewRandom()
 	for i, imgByte := range imgs {
+		unbasedImg, _ := base64.StdEncoding.DecodeString(imgByte)
 		filePath := fmt.Sprintf("dog_%s_%d%s", uuidNbr.String(), i, extension)
-		err := s.saveFile(filePath, imgByte)
+		err := s.saveFile(filePath, unbasedImg)
 		if err != nil {
 			return "", err
 		}
@@ -68,14 +70,16 @@ func (s *Storage) GetAllImgsName() ([]string, error) {
 	return fileList, nil
 }
 
-func (s *Storage) GetImgs(filePaths string) ([][]byte, error) {
-	var buffArray [][]byte
+func (s *Storage) GetImgs(filePaths string) ([]string, error) {
+	var buffArray []string
+	var imgEncoded string
 	for _, path := range strings.Split(filePaths, ";") {
 		buffImg, err := s.getFile(path)
 		if err != nil {
 			return nil, err
 		}
-		buffArray = append(buffArray, buffImg)
+		imgEncoded = base64.StdEncoding.EncodeToString(buffImg)
+		buffArray = append(buffArray, imgEncoded)
 	}
 	log.Printf("len buffArray: %d", len(buffArray))
 	return buffArray, nil

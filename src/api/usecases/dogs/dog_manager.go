@@ -27,7 +27,7 @@ func (d *DogManager) Get(dogID uint) (*model.Dog, error) {
 	return dog, nil
 }
 
-func (d *DogManager) Register(dog *model.Dog, imgBuffArray [][]byte, userManager interfaces.UserManager) (*model.Dog, error) {
+func (d *DogManager) Register(dog *model.Dog, imgBuffArray []string, userManager interfaces.UserManager) (*model.Dog, error) {
 	imgsPath, err := d.AddImgs(dog, imgBuffArray)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (d *DogManager) Register(dog *model.Dog, imgBuffArray [][]byte, userManager
 	return newDog, nil
 }
 
-func (d *DogManager) Modify(dog *model.Dog, imgBuffArray [][]byte, userManager interfaces.UserManager) (*model.Dog, error) {
+func (d *DogManager) Modify(dog *model.Dog, imgBuffArray []string, userManager interfaces.UserManager) (*model.Dog, error) {
 	imgsPath, err := d.AddImgs(dog, imgBuffArray)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (d *DogManager) Delete(dogID uint) (bool, error) {
 	return true, nil
 }
 
-func (d *DogManager) AddImgs(dog *model.Dog, imgBuffArray [][]byte) (string, error) {
+func (d *DogManager) AddImgs(dog *model.Dog, imgBuffArray []string) (string, error) {
 	if len(imgBuffArray) > 0 {
 		imgsPath, err := d.DOBucket.SaveImgs(imgBuffArray)
 		if err != nil {

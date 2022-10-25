@@ -3,6 +3,7 @@ package storage
 import (
 	"bufio"
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -53,7 +54,7 @@ func DeleteImg(path string) error {
 	return os.Remove(path)
 }
 
-func GetAllImgs() ([][]byte, error) {
+func GetAllImgs() ([]string, error) {
 	filesInfo, err := ioutil.ReadDir(Dir)
 	if err != nil {
 		return nil, err
@@ -66,7 +67,26 @@ func GetAllImgs() ([][]byte, error) {
 	return GetImgs(imgFileNames)
 }
 
-func GetImgs(filePaths string) ([][]byte, error) {
+func GetImgs(filePaths string) ([]string, error) {
+	var f *os.File
+	var imgsArray []string
+	var imgEncoded string
+	for _, path := range strings.Split(filePaths, ";") {
+		imgBytes, err := getSingleImg(f, path)
+		if err != nil {
+			return nil, err
+		}
+		imgEncoded = base64.StdEncoding.EncodeToString(imgBytes)
+		imgsArray = append(imgsArray, imgEncoded)
+	}
+	defer func(f *os.File) {
+		_ = f.Close()
+	}(f)
+
+	return imgsArray, nil
+}
+
+func getImgsNotEncoded(filePaths string) ([][]byte, error) {
 	var f *os.File
 	var imgsArray [][]byte
 	for _, path := range strings.Split(filePaths, ";") {
@@ -74,7 +94,6 @@ func GetImgs(filePaths string) ([][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		imgsArray = append(imgsArray, imgBytes)
 	}
 	defer func(f *os.File) {
@@ -111,7 +130,7 @@ func SaveTempImg(c *gin.Context, fileHeader *multipart.FileHeader) ([][]byte, st
 		return nil, "", err
 	}
 
-	imgBuffer, err := GetImgs(path)
+	imgBuffer, err := getImgsNotEncoded(path)
 	if err != nil {
 		return nil, "", err
 	}

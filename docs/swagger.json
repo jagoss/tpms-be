@@ -1573,10 +1573,7 @@
                 "imgs": {
                     "type": "array",
                     "items": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
+                        "type": "string"
                     }
                 },
                 "isLost": {
@@ -1639,10 +1636,7 @@
                     "type": "string"
                 },
                 "profileImg": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
+                    "type": "string"
                 },
                 "size": {
                     "type": "string"

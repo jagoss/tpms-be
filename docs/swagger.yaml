@@ -18,9 +18,7 @@ definitions:
         type: string
       imgs:
         items:
-          items:
-            type: integer
-          type: array
+          type: string
         type: array
       isLost:
         type: boolean
@@ -62,9 +60,7 @@ definitions:
       owner:
         type: string
       profileImg:
-        items:
-          type: integer
-        type: array
+        type: string
       size:
         type: string
     type: object
