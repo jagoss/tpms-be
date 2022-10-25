@@ -1329,7 +1329,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "FCM token",
-                        "name": "user",
+                        "name": "token",
                         "in": "body",
                         "required": true,
                         "schema": {

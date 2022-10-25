@@ -880,7 +880,7 @@ paths:
       parameters:
       - description: FCM token
         in: body
-        name: user
+        name: token
         required: true
         schema:
           allOf:
