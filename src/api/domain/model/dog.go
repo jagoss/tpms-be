@@ -920,7 +920,7 @@ type DogResponse struct {
 	Host       string
 	Latitude   float32
 	Longitude  float32
-	ImgUrl     string
+	ImgsUrl    string
 	Img        []byte
 }
 

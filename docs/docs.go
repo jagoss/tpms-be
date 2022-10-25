@@ -59,10 +59,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -80,10 +80,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -101,10 +101,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -122,10 +122,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -174,10 +174,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -195,10 +195,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -216,10 +216,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -237,10 +237,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -289,10 +289,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -310,10 +310,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -331,10 +331,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -404,10 +404,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -425,10 +425,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -446,10 +446,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -510,10 +510,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -531,10 +531,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -552,10 +552,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -619,10 +619,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -640,10 +640,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -695,10 +695,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -716,10 +716,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -737,10 +737,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -813,10 +813,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -834,10 +834,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -855,10 +855,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -907,10 +907,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -928,10 +928,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -949,10 +949,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -970,10 +970,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1023,10 +1023,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1044,10 +1044,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1065,10 +1065,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1086,10 +1086,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1139,10 +1139,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1160,10 +1160,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1181,10 +1181,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1257,10 +1257,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1278,10 +1278,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1299,10 +1299,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1378,10 +1378,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1399,10 +1399,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1420,10 +1420,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1441,10 +1441,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1495,10 +1495,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1516,10 +1516,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1537,10 +1537,10 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        " message": {
+                                        "error": {
                                             "type": "string"
                                         },
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -1633,7 +1633,7 @@ const docTemplate = `{
                         "type": "integer"
                     }
                 },
-                "imgUrl": {
+                "imgsUrl": {
                     "type": "string"
                 },
                 "isLost": {

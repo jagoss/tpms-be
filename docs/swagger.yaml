@@ -53,7 +53,7 @@ definitions:
         items:
           type: integer
         type: array
-      imgUrl:
+      imgsUrl:
         type: string
       isLost:
         type: boolean
@@ -159,9 +159,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -170,9 +170,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "422":
@@ -181,9 +181,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -192,9 +192,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Updates dog
@@ -223,9 +223,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -234,9 +234,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "422":
@@ -245,9 +245,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -256,9 +256,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Register new dog
@@ -287,9 +287,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -298,9 +298,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -309,9 +309,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get dog given its ID
@@ -351,9 +351,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -362,9 +362,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -373,9 +373,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Claim that missing dog was found
@@ -413,9 +413,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -424,9 +424,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -435,9 +435,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Reunite dog with owner
@@ -478,9 +478,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -489,9 +489,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Brings list of missing dogs
@@ -522,9 +522,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -533,9 +533,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -544,9 +544,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Add Image
@@ -591,9 +591,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -602,9 +602,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -613,9 +613,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get user
@@ -645,9 +645,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -656,9 +656,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "422":
@@ -667,9 +667,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -678,9 +678,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Updates user
@@ -709,9 +709,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -720,9 +720,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "422":
@@ -731,9 +731,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -742,9 +742,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Register new user
@@ -774,9 +774,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -785,9 +785,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -796,9 +796,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get user contact info
@@ -841,9 +841,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -852,9 +852,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -863,9 +863,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get all user dogs
@@ -907,9 +907,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -918,9 +918,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "422":
@@ -929,9 +929,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -940,9 +940,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Updates FCM token for given user
@@ -972,9 +972,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "401":
@@ -983,9 +983,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -994,9 +994,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Register new user
