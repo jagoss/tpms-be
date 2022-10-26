@@ -5,21 +5,21 @@ type User struct {
 	// User ID
 	// in: string
 	ID string `gorm:"primarykey"`
-	// First name
+	// Name
 	// in: string
-	FirstName string
-	// Last name
-	// in: string
-	LastName string
+	Name string
 	// Email
 	// in: string
 	Email string
 	// Phone number
 	// in: string
 	Phone string
-	// City
-	// in: string
-	City string
+	// Latitude
+	// in: float64
+	Latitude float64
+	// Longitude
+	// in: float64
+	Longitude float64
 	// FCMToken
 	// in: string
 	FCMToken string
@@ -27,10 +27,9 @@ type User struct {
 
 // swagger:model UserContactInfo
 type UserContactInfo struct {
-	FirstName string
-	// Last name
+	// Name
 	// in: string
-	LastName string
+	Name string
 	// Email
 	// in: string
 	Email string

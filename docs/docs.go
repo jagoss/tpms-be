@@ -1653,10 +1653,6 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
-                "city": {
-                    "description": "City\nin: string",
-                    "type": "string"
-                },
                 "email": {
                     "description": "Email\nin: string",
                     "type": "string"
@@ -1665,16 +1661,20 @@ const docTemplate = `{
                     "description": "FCMToken\nin: string",
                     "type": "string"
                 },
-                "firstName": {
-                    "description": "First name\nin: string",
-                    "type": "string"
-                },
                 "id": {
                     "description": "User ID\nin: string",
                     "type": "string"
                 },
-                "lastName": {
-                    "description": "Last name\nin: string",
+                "latitude": {
+                    "description": "Latitude\nin: float64",
+                    "type": "number"
+                },
+                "longitude": {
+                    "description": "Longitude\nin: float64",
+                    "type": "number"
+                },
+                "name": {
+                    "description": "Name\nin: string",
                     "type": "string"
                 },
                 "phone": {
@@ -1690,11 +1690,8 @@ const docTemplate = `{
                     "description": "Email\nin: string",
                     "type": "string"
                 },
-                "firstName": {
-                    "type": "string"
-                },
-                "lastName": {
-                    "description": "Last name\nin: string",
+                "name": {
+                    "description": "Name\nin: string",
                     "type": "string"
                 },
                 "phone": {

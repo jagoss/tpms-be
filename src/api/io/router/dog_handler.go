@@ -279,7 +279,7 @@ func ClaimFoundMissingDog(c *gin.Context, env environment.Env) {
 		matchingDogIDs = append(matchingDogIDs, uint(id))
 	}
 	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
-	err := lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, users.NewUserManager(env.UserPersister), env.NotificationSender)
+	err := lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, env.NotificationSender)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
