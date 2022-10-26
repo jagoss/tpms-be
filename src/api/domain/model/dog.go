@@ -888,7 +888,7 @@ type CoatLength int
 func (cl CoatLength) String() string {
 	switch cl {
 	case Short:
-		return "Cort"
+		return "Corto"
 	case Long:
 		return "Largo"
 	default:
@@ -920,8 +920,8 @@ type DogResponse struct {
 	Host       string
 	Latitude   float32
 	Longitude  float32
-	ImgUrl     string
-	Img        []byte
+	ImgsUrl    string
+	ProfileImg string
 }
 
 type DogRequest struct {
@@ -938,5 +938,5 @@ type DogRequest struct {
 	Latitude   float32
 	Longitude  float32
 	ImgUrl     string
-	Imgs       [][]byte
+	Imgs       []string
 }

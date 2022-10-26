@@ -27,7 +27,7 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 	return &dog, nil
 }
 
-func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
+func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 	dog := &model.Dog{
 		Name:       reqDog.Name,
 		Breed:      model.ParseBreed(reqDog.Breed),
@@ -47,6 +47,7 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, [][]byte) {
 		return nil, nil
 	}
 	dog.ID = uint(unitID)
+
 	return dog, reqDog.Imgs
 }
 
@@ -66,12 +67,15 @@ func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogRespo
 		Host:       dog.Host.ID,
 		Latitude:   dog.Latitude,
 		Longitude:  dog.Longitude,
-		ImgUrl:     dog.ImgUrl,
-		Img:        imgArray[0],
+		ImgsUrl:    dog.ImgUrl,
+		ProfileImg: imgArray[0],
 	}
 }
 
 func MapToDogResponseList(dogs []model.Dog, bucket interfaces.Storage) []model.DogResponse {
+	if len(dogs) == 0 {
+		return nil
+	}
 	var dogsResp []model.DogResponse
 	for _, dog := range dogs {
 		dogsResp = append(dogsResp, *MapToDogResponse(&dog, bucket))

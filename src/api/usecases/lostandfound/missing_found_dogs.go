@@ -78,3 +78,21 @@ func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64) float64 {
 	dist = dist * 1.609344
 	return dist
 }
+
+func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, matchingDogIDs []uint, userManager interfaces.UserManager, messaging interfaces.Messaging) error {
+	for _, id := range matchingDogIDs {
+		dog, err := l.dogPersister.GetDog(id)
+		if err != nil {
+			return err
+		}
+
+		data := map[string]string{
+			"title": fmt.Sprintf("Puede que alguien viera a %s!", dog.Name),
+			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
+		}
+		if err := userManager.SendPushToOwner(dog.Owner.Email, data, messaging); err != nil {
+			return err
+		}
+	}
+	return nil
+}

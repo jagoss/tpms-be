@@ -24,7 +24,7 @@ func AuthMiddleware(c *gin.Context) {
 	token, err := firebaseAuth.VerifyIDToken(context.Background(), idToken)
 	if err != nil {
 		log.Printf("[middleware.AuthMiddleware] error getting token for token id %s: %v", idToken, err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid token"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
 		c.Abort()
 		return
 	}

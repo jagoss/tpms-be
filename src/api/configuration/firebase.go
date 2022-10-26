@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func SetupFirebase() *auth.Client {
+func SetupFirebase() (*firebase.App, *auth.Client) {
 	serviceAccountKeyFilePath, err := filepath.Abs("./serviceAccountKey.json")
 	if err != nil {
 		panic("Unable to load serviceAccountKeys.json file")
@@ -24,5 +24,5 @@ func SetupFirebase() *auth.Client {
 	if err != nil {
 		panic("Firebase load error")
 	}
-	return authenticator
+	return app, authenticator
 }

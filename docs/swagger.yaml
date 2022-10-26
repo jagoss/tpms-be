@@ -18,9 +18,7 @@ definitions:
         type: string
       imgs:
         items:
-          items:
-            type: integer
-          type: array
+          type: string
         type: array
       isLost:
         type: boolean
@@ -49,11 +47,7 @@ definitions:
         type: string
       id:
         type: string
-      img:
-        items:
-          type: integer
-        type: array
-      imgUrl:
+      imgsUrl:
         type: string
       isLost:
         type: boolean
@@ -64,6 +58,8 @@ definitions:
       name:
         type: string
       owner:
+        type: string
+      profileImg:
         type: string
       size:
         type: string
@@ -153,15 +149,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.DogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "422":
           description: Unprocessable Entity
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -170,9 +188,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Updates dog
@@ -195,15 +213,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.DogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "422":
           description: Unprocessable Entity
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -212,9 +252,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Register new dog
@@ -243,9 +283,20 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -254,12 +305,76 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get dog given its ID
+      tags:
+      - dog
+  /dog/claim_found:
+    patch:
+      consumes:
+      - application/json
+      description: Claim that missing dog is found
+      parameters:
+      - description: dog ID
+        in: query
+        name: dogID
+        type: string
+      - description: possible matching dogs
+        in: query
+        items:
+          type: string
+        name: matchingDogs
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                message:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Claim that missing dog was found
       tags:
       - dog
   /dog/found:
@@ -288,15 +403,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.DogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Reunite dog with owner
@@ -337,9 +474,20 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Brings list of missing dogs
@@ -370,9 +518,20 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -381,9 +540,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Add Image
@@ -422,15 +581,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get user
@@ -454,15 +635,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "422":
           description: Unprocessable Entity
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -471,9 +674,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Updates user
@@ -496,15 +699,37 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "422":
           description: Unprocessable Entity
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -513,9 +738,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Register new user
@@ -545,9 +770,20 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -556,9 +792,9 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get user contact info
@@ -595,15 +831,37 @@ paths:
                     $ref: '#/definitions/model.DogResponse'
                   type: array
               type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Get all user dogs
@@ -618,7 +876,7 @@ paths:
       parameters:
       - description: FCM token
         in: body
-        name: user
+        name: token
         required: true
         schema:
           allOf:
@@ -639,15 +897,37 @@ paths:
                 result:
                   type: string
               type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
         "422":
           description: Unprocessable Entity
           schema:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
         "500":
@@ -656,12 +936,66 @@ paths:
             allOf:
             - type: object
             - properties:
-                ' message':
-                  type: string
                 error:
+                  type: string
+                message:
                   type: string
               type: object
       summary: Updates FCM token for given user
+      tags:
+      - user
+  /user/notif:
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      parameters:
+      - description: message
+        in: body
+        name: user
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Register new user
       tags:
       - user
 swagger: "2.0"

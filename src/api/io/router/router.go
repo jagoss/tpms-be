@@ -138,6 +138,12 @@ func mapUserRoutes(env environment.Env) {
 		}
 		GetUserContactInfo(context, env)
 	})
+	userRouter.POST("/notif", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		SendNotif(context, env)
+	})
 }
 
 func mapImgsRoutes(env environment.Env) {

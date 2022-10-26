@@ -26,8 +26,10 @@ type UserHandler struct {
 // @Produce     json
 // @Param		user body model.User false "new user"
 // @Success     200 {object} model.User
-// @Failure		422 {object} object{error=string, message=string}
-// @Failure		500 {object} object{error=string, message=string}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		422 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
 // @Router      /user [post]
 func RegisterNewUser(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -74,8 +76,10 @@ func RegisterNewUser(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		user body model.User true "user to update"
 // @Success     200 {object} model.User
-// @Failure		422 {object} object{error=string, message=string}
-// @Failure		500 {object} object{error=string, message=string}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		422 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
 // @Router      /user [patch]
 func UpdateUser(c *gin.Context, env environment.Env) {
 	jsonBody, err := ioutil.ReadAll(c.Request.Body)
@@ -122,7 +126,9 @@ func UpdateUser(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		x-user-id header string true "user id"
 // @Success     200 {object} model.User
-// @Failure		500 {object} object{error=string, message=string}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
 // @Router      /user [get]
 func GetUser(c *gin.Context, env environment.Env) {
 	userID := c.GetHeader("x-user-id")
@@ -150,8 +156,9 @@ func GetUser(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		id path string true "user id"
 // @Success     200 {object} model.UserContactInfo
-// @Failure		400 {object} object{error=string, message=string}
-// @Failure		500 {object} object{error=string, message=string}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
 // @Router      /user/:id [get]
 func GetUserContactInfo(c *gin.Context, env environment.Env) {
 	userID, exists := c.Get("id")
@@ -191,7 +198,9 @@ func GetUserContactInfo(c *gin.Context, env environment.Env) {
 // @Produce     json
 // @Param		user body model.User true "user to update"
 // @Success     200 {object} object{ownedDogs=[]model.DogResponse, foundDogs=[]model.DogResponse}
-// @Failure		500 {object} object{error=string, message=string}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
 // @Router      /user/dog [get]
 func GetUserDogs(c *gin.Context, env environment.Env) {
 	userID := c.GetHeader("x-user-id")
@@ -220,10 +229,12 @@ func GetUserDogs(c *gin.Context, env environment.Env) {
 // @Tags        user
 // @Accept      json
 // @Produce     json
-// @Param		user body object{token=string} true "FCM token"
+// @Param		token body object{token=string} true "FCM token"
 // @Success     200 {object} object{result=string}
-// @Failure		422 {object} object{error=string, message=string}
-// @Failure		500 {object} object{error=string, message=string}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		422 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
 // @Router      /user/fcmtoken [put]
 func UpdateFCMToken(c *gin.Context, env environment.Env) {
 	userID := c.GetHeader("x-user-id")
@@ -263,4 +274,37 @@ func UpdateFCMToken(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, gin.H{
 		"result": "OK",
 	})
+}
+
+// SendNotif godoc
+// @Summary Register new user
+// @Schemes
+// @Description Register new user
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param		user body object{} false "message"
+// @Success     200 {object} model.User
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Router      /user/notif [post]
+func SendNotif(c *gin.Context, env environment.Env) {
+	userID, _ := c.Get("x-user-id")
+
+	data := map[string]string{
+		"title": "Hola!",
+		"body":  "Entra a nuestra app!",
+	}
+	userManager := users.NewUserManager(env.UserPersister)
+	err := userManager.SendPushToOwner(fmt.Sprintf("%v", userID), data, env.NotificationSender)
+	if err != nil {
+		msg := fmt.Sprintf("[userHandler.SendNotif] error sending token to user %v", userID)
+		log.Printf(msg)
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   err.Error(),
+			"message": msg,
+		})
+		return
+	}
 }

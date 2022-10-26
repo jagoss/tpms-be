@@ -3,6 +3,7 @@ package router
 import (
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io/storage"
+	"encoding/base64"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -18,8 +19,9 @@ import (
 // @Accept      json
 // @Produce     json
 // @Success     200 {string} img "name" saved correctly!
-// @Failure		400 {object} object{error=string, message=string}
-// @Failure		500 {object} object{error=string, message=string}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
 // @Router      /img [post]
 func AddImg(c *gin.Context, env environment.Env) {
 	_, fileHeader, err := c.Request.FormFile("img")
@@ -39,8 +41,12 @@ func AddImg(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
-	imgs, err := env.Storage.SaveImgs(imgBuffArray)
+	var encodedImgs []string
+	for _, img := range imgBuffArray {
+		encoded := base64.StdEncoding.EncodeToString(img)
+		encodedImgs = append(encodedImgs, encoded)
+	}
+	imgs, err := env.Storage.SaveImgs(encodedImgs)
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{
