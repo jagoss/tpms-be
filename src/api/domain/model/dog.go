@@ -155,6 +155,12 @@ const (
 	Long
 )
 
+const (
+	Pending Ack = iota
+	Accepted
+	Rejected
+)
+
 type Dog struct {
 	gorm.Model
 	Name       string
@@ -939,4 +945,38 @@ type DogRequest struct {
 	Longitude  float32
 	ImgUrl     string
 	Imgs       []string
+}
+
+type PossibleDogMatch struct {
+	DogID         string
+	PossibleDogID string
+	Ack           Ack
+}
+
+type Ack int
+
+func (a Ack) String() string {
+	switch a {
+	case Pending:
+		return "PENDING"
+	case Accepted:
+		return "ACCEPTED"
+	case Rejected:
+		return "REJECTED"
+	default:
+		return "PENDING"
+	}
+}
+
+func ParseAck(ack string) Ack {
+	switch strings.ToUpper(ack) {
+	case "ACCEPTED":
+		return Accepted
+	case "REJECTED":
+		return Rejected
+	case "PENDING":
+		return Pending
+	default:
+		return Pending
+	}
 }

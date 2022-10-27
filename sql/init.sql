@@ -36,10 +36,9 @@ CREATE TABLE IF NOT EXISTS `dogs`
 
 CREATE TABLE IF NOT EXISTS `possible_matches`
 (
-    `dog_id`           INT NOT NULL,
-    `possible_dog_id`  INT NOT NULL,
-    `dog_ack`          boolean,
-    `possible_dog_ack` boolean
+    `dog_id`          INT NOT NULL,
+    `possible_dog_id` INT NOT NULL,
+    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED')
 );
 
 CREATE DATABASE IF NOT EXISTS tpms_test;
@@ -76,4 +75,10 @@ CREATE TABLE IF NOT EXISTS `dogs`
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
+);
+CREATE TABLE IF NOT EXISTS `possible_matches`
+(
+    `dog_id`          INT NOT NULL,
+    `possible_dog_id` INT NOT NULL,
+    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED')
 );

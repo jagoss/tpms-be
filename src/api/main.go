@@ -55,10 +55,11 @@ func initializeDependencies() (*environment.Env, error) {
 	}
 	userPersister := persisters.NewUserPersister(database)
 	dogPersister := persisters.NewDogPersister(database)
+	possibleMatchPersister := persisters.NewPossibleMatchPersister(database)
 	restClient := *router.CreateRestClientConfig(scope)
 	cvModelClient := restclient.NewCVModelRestClient(&restClient)
 	bucket := storage.NewBucket()
-	env := environment.InitEnv(firebaseApp, *firebaseAuth, notifSender, restClient, cvModelClient, userPersister, dogPersister, bucket)
+	env := environment.InitEnv(firebaseApp, *firebaseAuth, notifSender, restClient, cvModelClient, userPersister, dogPersister, possibleMatchPersister, bucket)
 	return env, nil
 }
 
