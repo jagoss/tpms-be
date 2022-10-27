@@ -29,6 +29,9 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 	var dog model.Dog
 	tx := dp.db.Connection.First(&dog, dogID)
 	if tx.Error != nil {
+		if IsRecordNotFoundError(tx.Error) {
+			return nil, nil
+		}
 		return nil, tx.Error
 	}
 	return &dog, nil
@@ -47,20 +50,38 @@ func (dp *DogPersister) DeleteDog(dogID uint) error {
 	return tx.Error
 }
 
-func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string) bool {
+func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string) (bool, error) {
 	var dog model.Dog
-	dp.db.Connection.Where("name = ? AND owner_id = ?", dogName, ownerID).First(&dog)
-	return dog.ID != 0
+	tx := dp.db.Connection.Where("name = ? AND owner_id = ?", dogName, ownerID).First(&dog)
+	if tx.Error != nil {
+		if IsRecordNotFoundError(tx.Error) {
+			return false, nil
+		}
+		return false, tx.Error
+	}
+	return dog.ID != 0, nil
 }
 
-func (dp *DogPersister) GetMissingDogs() []model.Dog {
+func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
 	var dogs []model.Dog
-	dp.db.Connection.Where("is_lost = ?", "true").Find(&dogs)
-	return dogs
+	tx := dp.db.Connection.Where("is_lost = ?", "true").Find(&dogs)
+	if tx.Error != nil {
+		if IsRecordNotFoundError(tx.Error) {
+			return nil, nil
+		}
+		return nil, tx.Error
+	}
+	return dogs, nil
 }
 
-func (dp *DogPersister) GetDogsByUser(userID string) []model.Dog {
+func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
 	var dogs []model.Dog
-	dp.db.Connection.Where("host_id = ?", userID).Find(dogs)
-	return dogs
+	tx := dp.db.Connection.Where("host_id = ?", userID).Find(dogs)
+	if tx.Error != nil {
+		if IsRecordNotFoundError(tx.Error) {
+			return nil, nil
+		}
+		return nil, tx.Error
+	}
+	return dogs, nil
 }

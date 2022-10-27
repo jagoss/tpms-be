@@ -29,6 +29,9 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 	user := &model.User{ID: userID}
 	tx := up.db.Connection.First(user)
 	if tx.Error != nil {
+		if IsRecordNotFoundError(tx.Error) {
+			return nil, nil
+		}
 		return nil, tx.Error
 	}
 	return user, nil

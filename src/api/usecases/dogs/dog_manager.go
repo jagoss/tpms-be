@@ -35,7 +35,7 @@ func (d *DogManager) Register(dog *model.Dog, imgBuffArray []string, userManager
 
 	dog.ImgUrl = imgsPath
 
-	if d.dogPersister.DogExisitsByNameAndOwner(dog.Name, dog.Owner.ID) {
+	if exists, _ := d.dogPersister.DogExisitsByNameAndOwner(dog.Name, dog.Owner.ID); exists {
 		return nil, fmt.Errorf("dog with name %s and ownerID %s already exists", dog.Name, dog.Owner.ID)
 	}
 
@@ -93,7 +93,10 @@ func (d *DogManager) AddImgs(dog *model.Dog, imgBuffArray []string) (string, err
 }
 
 func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, error) {
-	missingDogs := d.dogPersister.GetDogsByUser(userID)
+	missingDogs, err := d.dogPersister.GetDogsByUser(userID)
+	if err != nil {
+		return nil, nil, fmt.Errorf("[dogmanaer.GetAllUserDogs] error getting user %s dogs: %s", userID, err.Error())
+	}
 	var foundDogs []model.Dog
 	var userOwnedDogs []model.Dog
 	for _, dog := range missingDogs {

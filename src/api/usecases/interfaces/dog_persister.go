@@ -9,7 +9,7 @@ type DogPersister interface {
 	GetDog(dogID uint) (*model.Dog, error)
 	UpdateDog(dog *model.Dog) (*model.Dog, error)
 	DeleteDog(dogID uint) error
-	DogExisitsByNameAndOwner(string, string) bool
-	GetMissingDogs() []model.Dog
-	GetDogsByUser(userID string) []model.Dog
+	DogExisitsByNameAndOwner(string, string) (bool, error)
+	GetMissingDogs() ([]model.Dog, error)
+	GetDogsByUser(userID string) ([]model.Dog, error)
 }
