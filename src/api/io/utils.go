@@ -74,7 +74,7 @@ func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogRespo
 
 func MapToDogResponseList(dogs []model.Dog, bucket interfaces.Storage) []model.DogResponse {
 	if len(dogs) == 0 {
-		return nil
+		return make([]model.DogResponse, 0)
 	}
 	var dogsResp []model.DogResponse
 	for _, dog := range dogs {
