@@ -45,19 +45,22 @@ func (l *LostFoundDogs) ReuniteDog(dogID uint, ownerID string, hosterID string) 
 	return modifiedDog, nil
 }
 
-func (l *LostFoundDogs) GetAllMissingDogsList() []model.Dog {
+func (l *LostFoundDogs) GetAllMissingDogsList() ([]model.Dog, error) {
 	return l.dogPersister.GetMissingDogs()
 }
 
-func (l *LostFoundDogs) GetMissingDogsInRadius(userLat float64, userLng float64, radius float64) []model.Dog {
-	missingDogs := l.dogPersister.GetMissingDogs()
+func (l *LostFoundDogs) GetMissingDogsInRadius(userLat float64, userLng float64, radius float64) ([]model.Dog, error) {
+	missingDogs, err := l.dogPersister.GetMissingDogs()
+	if err != nil {
+		return nil, fmt.Errorf("[lostfounddogs.GetMissingDogsInRadius] error getting dogs: %s", err.Error())
+	}
 	var dogsInRadio []model.Dog
 	for _, dog := range missingDogs {
 		if distance(userLat, userLng, float64(dog.Latitude), float64(dog.Longitude)) <= radius {
 			dogsInRadio = append(dogsInRadio, dog)
 		}
 	}
-	return dogsInRadio
+	return dogsInRadio, nil
 }
 
 func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64) float64 {
