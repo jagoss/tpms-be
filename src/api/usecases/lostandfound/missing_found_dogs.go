@@ -45,19 +45,22 @@ func (l *LostFoundDogs) ReuniteDog(dogID uint, ownerID string, hosterID string) 
 	return modifiedDog, nil
 }
 
-func (l *LostFoundDogs) GetAllMissingDogsList() []model.Dog {
+func (l *LostFoundDogs) GetAllMissingDogsList() ([]model.Dog, error) {
 	return l.dogPersister.GetMissingDogs()
 }
 
-func (l *LostFoundDogs) GetMissingDogsInRadius(userLat float64, userLng float64, radius float64) []model.Dog {
-	missingDogs := l.dogPersister.GetMissingDogs()
+func (l *LostFoundDogs) GetMissingDogsInRadius(userLat float64, userLng float64, radius float64) ([]model.Dog, error) {
+	missingDogs, err := l.dogPersister.GetMissingDogs()
+	if err != nil {
+		return nil, fmt.Errorf("[lostfounddogs.GetMissingDogsInRadius] error getting dogs: %s", err.Error())
+	}
 	var dogsInRadio []model.Dog
 	for _, dog := range missingDogs {
 		if distance(userLat, userLng, float64(dog.Latitude), float64(dog.Longitude)) <= radius {
 			dogsInRadio = append(dogsInRadio, dog)
 		}
 	}
-	return dogsInRadio
+	return dogsInRadio, nil
 }
 
 func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64) float64 {
@@ -79,7 +82,7 @@ func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64) float64 {
 	return dist
 }
 
-func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, matchingDogIDs []uint, userManager interfaces.UserManager, messaging interfaces.Messaging) error {
+func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, matchingDogIDs []uint, messaging interfaces.Messaging) error {
 	for _, id := range matchingDogIDs {
 		dog, err := l.dogPersister.GetDog(id)
 		if err != nil {
@@ -90,8 +93,9 @@ func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, matchingDogIDs []uint, 
 			"title": fmt.Sprintf("Puede que alguien viera a %s!", dog.Name),
 			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
 		}
-		if err := userManager.SendPushToOwner(dog.Owner.Email, data, messaging); err != nil {
-			return err
+
+		if err := messaging.SendMessage(dog.Owner.FCMToken, data); err != nil {
+			return fmt.Errorf("error sending push notification to user %s: %v", dog.Owner.ID, err)
 		}
 	}
 	return nil

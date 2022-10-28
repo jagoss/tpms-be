@@ -30,6 +30,9 @@ func (ns *NotificationSender) GetClient() *messaging.Client {
 }
 
 func (ns *NotificationSender) SendMessage(token string, data map[string]string) error {
+	if token == "" {
+		return fmt.Errorf("token is empty string")
+	}
 	// See documentation on defining a message payload.
 	message := &messaging.Message{
 		Data:  data,

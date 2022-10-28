@@ -181,10 +181,9 @@ func GetUserContactInfo(c *gin.Context, env environment.Env) {
 	}
 
 	userContactInfo := &model.UserContactInfo{
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		Email:     user.Email,
-		Phone:     user.Phone}
+		Name:  user.Name,
+		Email: user.Email,
+		Phone: user.Phone}
 
 	c.JSON(http.StatusOK, userContactInfo)
 }

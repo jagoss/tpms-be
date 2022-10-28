@@ -8,25 +8,27 @@ import (
 )
 
 type Env struct {
-	FirebaseApp        *firebase.App
-	FirebaseAuth       auth.Client
-	NotificationSender interfaces.Messaging
-	RestClient         resty.Client
-	CVModelRestClient  interfaces.CVModelRestClient
-	UserPersister      interfaces.UserPersister
-	DogPersister       interfaces.DogPersister
-	Storage            interfaces.Storage
+	FirebaseApp            *firebase.App
+	FirebaseAuth           auth.Client
+	NotificationSender     interfaces.Messaging
+	RestClient             resty.Client
+	CVModelRestClient      interfaces.CVModelRestClient
+	UserPersister          interfaces.UserPersister
+	DogPersister           interfaces.DogPersister
+	PossibleMatchPersister interfaces.PossibleMatchPersister
+	Storage                interfaces.Storage
 }
 
-func InitEnv(firebaseApp *firebase.App, firebaseAuth auth.Client, notificationSender interfaces.Messaging, restClient resty.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister, storage interfaces.Storage) *Env {
+func InitEnv(firebaseApp *firebase.App, firebaseAuth auth.Client, notificationSender interfaces.Messaging, restClient resty.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister, possibleMatchPersister interfaces.PossibleMatchPersister, storage interfaces.Storage) *Env {
 	return &Env{
-		FirebaseApp:        firebaseApp,
-		FirebaseAuth:       firebaseAuth,
-		NotificationSender: notificationSender,
-		RestClient:         restClient,
-		CVModelRestClient:  cvModelClient,
-		UserPersister:      userPersister,
-		DogPersister:       dogPersister,
-		Storage:            storage,
+		FirebaseApp:            firebaseApp,
+		FirebaseAuth:           firebaseAuth,
+		NotificationSender:     notificationSender,
+		RestClient:             restClient,
+		CVModelRestClient:      cvModelClient,
+		UserPersister:          userPersister,
+		DogPersister:           dogPersister,
+		PossibleMatchPersister: possibleMatchPersister,
+		Storage:                storage,
 	}
 }

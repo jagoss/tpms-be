@@ -241,7 +241,16 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 
 	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
 	if userLat == "" && userLng == "" && radius == "" {
-		dogList := lfDogs.GetAllMissingDogsList()
+		dogList, err := lfDogs.GetAllMissingDogsList()
+		if err != nil {
+			log.Printf(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   err.Error(),
+				"message": "error getting all lost dogs",
+			},
+			)
+			return
+		}
 		dogRespList := io.MapToDogResponseList(dogList, env.Storage)
 		c.JSON(http.StatusOK, dogRespList)
 		return
@@ -249,7 +258,17 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 	userLatF, _ := strconv.ParseFloat(userLat, 64)
 	userLngF, _ := strconv.ParseFloat(userLng, 64)
 	radiusF, _ := strconv.ParseFloat(radius, 64)
-	dogList := lfDogs.GetMissingDogsInRadius(userLatF, userLngF, radiusF)
+	dogList, err := lfDogs.GetMissingDogsInRadius(userLatF, userLngF, radiusF)
+	if err != nil {
+		log.Printf(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error getting lost dogs in radius of %2.f", radiusF),
+		},
+		)
+		return
+	}
+
 	dogRespList := io.MapToDogResponseList(dogList, env.Storage)
 
 	c.JSON(http.StatusOK, dogRespList)
@@ -279,7 +298,7 @@ func ClaimFoundMissingDog(c *gin.Context, env environment.Env) {
 		matchingDogIDs = append(matchingDogIDs, uint(id))
 	}
 	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
-	err := lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, users.NewUserManager(env.UserPersister), env.NotificationSender)
+	err := lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, env.NotificationSender)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),

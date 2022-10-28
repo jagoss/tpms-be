@@ -7,12 +7,13 @@ CREATE TABLE IF NOT EXISTS `users`
     `last_name`  VARCHAR(50)  NOT NULL,
     `email`      VARCHAR(255) NOT NULL,
     `phone`      VARCHAR(40)  NOT NULL,
-    `city`       VARCHAR(255) NOT NULL,
-    `fmt_token`  VARCHAR(255)
+    `fmt_token`  VARCHAR(255),
+    `latitude`   FLOAT,
+    `longitude`  FLOAT
 );
 CREATE TABLE IF NOT EXISTS `dogs`
 (
-    `id`          VARCHAR(255),
+    `id`          int         NOT NULL,
     `name`        VARCHAR(50) NOT NULL,
     `breed`       int         NOT NULL,
     `age`         int         NOT NULL,
@@ -22,8 +23,8 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `is_lost`     boolean,
     `owner_id`    VARCHAR(255),
     `host_id`     VARCHAR(255),
-    `latitude`    DECIMAL,
-    `longitude`   DECIMAL,
+    `latitude`    FLOAT,
+    `longitude`   FLOAT,
     `img_url`     LONGTEXT,
     `created_at`  DATETIME    NOT NULL,
     `updated_at`  DATETIME    NOT NULL,
@@ -31,6 +32,13 @@ CREATE TABLE IF NOT EXISTS `dogs`
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS `possible_matches`
+(
+    `dog_id`          INT NOT NULL,
+    `possible_dog_id` INT NOT NULL,
+    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED')
 );
 
 CREATE DATABASE IF NOT EXISTS tpms_test;
@@ -42,12 +50,13 @@ CREATE TABLE IF NOT EXISTS users
     `last_name`  VARCHAR(50)  NOT NULL,
     `email`      VARCHAR(255) NOT NULL,
     `phone`      VARCHAR(40)  NOT NULL,
-    `city`       VARCHAR(255) NOT NULL,
-    `fcm_token`  VARCHAR(255)
+    `fcm_token`  VARCHAR(255),
+    `latitude`   FLOAT,
+    `longitude`  FLOAT
 );
 CREATE TABLE IF NOT EXISTS `dogs`
 (
-    `id`          VARCHAR(255),
+    `id`          int         NOT NULL,
     `name`        VARCHAR(50) NOT NULL,
     `breed`       int         NOT NULL,
     `age`         int         NOT NULL,
@@ -57,8 +66,8 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `is_lost`     boolean,
     `owner_id`    VARCHAR(255),
     `host_id`     VARCHAR(255),
-    `latitude`    DECIMAL,
-    `longitude`   DECIMAL,
+    `latitude`    FLOAT,
+    `longitude`   FLOAT,
     `img_url`     LONGTEXT,
     `created_at`  DATETIME    NOT NULL,
     `updated_at`  DATETIME    NOT NULL,
@@ -66,4 +75,10 @@ CREATE TABLE IF NOT EXISTS `dogs`
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
+);
+CREATE TABLE IF NOT EXISTS `possible_matches`
+(
+    `dog_id`          INT NOT NULL,
+    `possible_dog_id` INT NOT NULL,
+    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED')
 );
