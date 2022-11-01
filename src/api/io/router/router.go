@@ -86,7 +86,7 @@ func mapDogRoutes(env environment.Env) {
 		}
 		UpdateDog(context, env)
 	})
-	dogRouter.PATCH("/found", func(context *gin.Context) {
+	dogRouter.PUT("/found", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}

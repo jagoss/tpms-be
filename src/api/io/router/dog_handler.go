@@ -184,7 +184,7 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
-// @Router      /dog/found [patch]
+// @Router      /dog/found [put]
 func DogReUnited(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
 	dogID, possibleDogID := q.Get("dogID"), q.Get("possibleDogID")
