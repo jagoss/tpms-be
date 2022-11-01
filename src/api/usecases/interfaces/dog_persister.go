@@ -12,4 +12,5 @@ type DogPersister interface {
 	DogExisitsByNameAndOwner(string, string) (bool, error)
 	GetMissingDogs() ([]model.Dog, error)
 	GetDogsByUser(userID string) ([]model.Dog, error)
+	GetDogs(dogs []uint) ([]model.Dog, error)
 }

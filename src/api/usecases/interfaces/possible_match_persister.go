@@ -3,9 +3,9 @@ package interfaces
 import "be-tpms/src/api/domain/model"
 
 type PossibleMatchPersister interface {
-	AddPossibleMatch(int, int) error
-	UpdateAck(int, int, model.Ack) error
-	Delete(int, int) error
-	RemovePossibleMatchesForDog(int) error
-	RemovePossibleDogMatches(int) error
+	AddPossibleMatch(uint, uint) error
+	UpdateAck(uint, uint, model.Ack) error
+	Delete(uint, uint) error
+	RemovePossibleMatchesForDog(uint) ([]model.PossibleMatch, error)
+	RemovePossibleDogMatches(uint) ([]model.PossibleMatch, error)
 }

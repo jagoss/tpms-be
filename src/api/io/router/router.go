@@ -98,11 +98,23 @@ func mapDogRoutes(env environment.Env) {
 		}
 		GetMissingDogsList(context, env)
 	})
-	dogRouter.PATCH("/claim_found", func(context *gin.Context) {
+	dogRouter.POST("/possible", func(context *gin.Context) {
 		if !validUser(context) {
 			return
 		}
-		ClaimFoundMissingDog(context, env)
+		PossibleMatch(context, env)
+	})
+	dogRouter.PUT("/possible", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		AckPossibleDog(context, env)
+	})
+	dogRouter.DELETE("/possible", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		RejectPossibleDog(context, env)
 	})
 }
 

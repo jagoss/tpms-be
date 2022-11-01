@@ -37,6 +37,18 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 	return &dog, nil
 }
 
+func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
+	var dogs []model.Dog
+	tx := dp.db.Connection.Find(&dogs, ids)
+	if tx.Error != nil {
+		if IsRecordNotFoundError(tx.Error) {
+			return make([]model.Dog, 0), nil
+		}
+		return nil, tx.Error
+	}
+	return dogs, nil
+}
+
 func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 	tx := dp.db.Connection.Save(dog)
 	if tx.Error != nil {

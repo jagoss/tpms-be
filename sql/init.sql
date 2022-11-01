@@ -2,18 +2,19 @@ CREATE DATABASE IF NOT EXISTS tpms_prod;
 USE tpms_prod;
 CREATE TABLE IF NOT EXISTS `users`
 (
-    `id`         VARCHAR(255) PRIMARY KEY,
+    `id`         VARCHAR(255) NOT NULL,
     `first_name` VARCHAR(50)  NOT NULL,
     `last_name`  VARCHAR(50)  NOT NULL,
     `email`      VARCHAR(255) NOT NULL,
     `phone`      VARCHAR(40)  NOT NULL,
     `fmt_token`  VARCHAR(255),
-    `latitude`   FLOAT,
-    `longitude`  FLOAT
+    `latitude`   DOUBLE,
+    `longitude`  DOUBLE,
+    PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `dogs`
 (
-    `id`          int         NOT NULL,
+    `id`          BIGINT      NOT NULL AUTO_INCREMENT,
     `name`        VARCHAR(50) NOT NULL,
     `breed`       int         NOT NULL,
     `age`         int         NOT NULL,
@@ -23,8 +24,8 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `is_lost`     boolean,
     `owner_id`    VARCHAR(255),
     `host_id`     VARCHAR(255),
-    `latitude`    FLOAT,
-    `longitude`   FLOAT,
+    `latitude`    DOUBLE,
+    `longitude`   DOUBLE,
     `img_url`     LONGTEXT,
     `created_at`  DATETIME    NOT NULL,
     `updated_at`  DATETIME    NOT NULL,
@@ -36,27 +37,29 @@ CREATE TABLE IF NOT EXISTS `dogs`
 
 CREATE TABLE IF NOT EXISTS `possible_matches`
 (
-    `dog_id`          INT NOT NULL,
-    `possible_dog_id` INT NOT NULL,
-    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED')
+    `dog_id`          BIGINT                                   NOT NULL,
+    `possible_dog_id` BIGINT                                   NOT NULL,
+    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED') NOT NULL,
+    PRIMARY KEY (`dog_id`, `possible_dog_id`)
 );
 
 CREATE DATABASE IF NOT EXISTS tpms_test;
 USE tpms_test;
 CREATE TABLE IF NOT EXISTS users
 (
-    `id`         VARCHAR(255) PRIMARY KEY,
+    `id`         VARCHAR(255) NOT NULL,
     `first_name` VARCHAR(50)  NOT NULL,
     `last_name`  VARCHAR(50)  NOT NULL,
     `email`      VARCHAR(255) NOT NULL,
     `phone`      VARCHAR(40)  NOT NULL,
     `fcm_token`  VARCHAR(255),
-    `latitude`   FLOAT,
-    `longitude`  FLOAT
+    `latitude`   DOUBLE,
+    `longitude`  DOUBLE,
+    PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `dogs`
 (
-    `id`          int         NOT NULL,
+    `id`          BIGINT      NOT NULL AUTO_INCREMENT,
     `name`        VARCHAR(50) NOT NULL,
     `breed`       int         NOT NULL,
     `age`         int         NOT NULL,
@@ -66,8 +69,8 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `is_lost`     boolean,
     `owner_id`    VARCHAR(255),
     `host_id`     VARCHAR(255),
-    `latitude`    FLOAT,
-    `longitude`   FLOAT,
+    `latitude`    DOUBLE,
+    `longitude`   DOUBLE,
     `img_url`     LONGTEXT,
     `created_at`  DATETIME    NOT NULL,
     `updated_at`  DATETIME    NOT NULL,
@@ -78,7 +81,8 @@ CREATE TABLE IF NOT EXISTS `dogs`
 );
 CREATE TABLE IF NOT EXISTS `possible_matches`
 (
-    `dog_id`          INT NOT NULL,
-    `possible_dog_id` INT NOT NULL,
-    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED')
+    `dog_id`          BIGINT                                   NOT NULL,
+    `possible_dog_id` BIGINT                                   NOT NULL,
+    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED') NOT NULL,
+    PRIMARY KEY (`dog_id`, `possible_dog_id`)
 );
