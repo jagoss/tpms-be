@@ -311,72 +311,8 @@ paths:
       summary: Get dog given its ID
       tags:
       - dog
-  /dog/claim_found:
-    patch:
-      consumes:
-      - application/json
-      description: Claim that missing dog is found
-      parameters:
-      - description: dog ID
-        in: query
-        name: dogID
-        type: string
-      - description: possible matching dogs
-        in: query
-        items:
-          type: string
-        name: matchingDogs
-        type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - type: object
-            - properties:
-                message:
-                  type: string
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - type: object
-            - properties:
-                error:
-                  type: string
-                message:
-                  type: string
-              type: object
-        "401":
-          description: Unauthorized
-          schema:
-            allOf:
-            - type: object
-            - properties:
-                error:
-                  type: string
-                message:
-                  type: string
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - type: object
-            - properties:
-                error:
-                  type: string
-                message:
-                  type: string
-              type: object
-      summary: Claim that missing dog was found
-      tags:
-      - dog
   /dog/found:
-    patch:
+    put:
       consumes:
       - application/json
       description: Reunite dog with owner. Making him its only host and removing other
@@ -386,13 +322,9 @@ paths:
         in: query
         name: dogID
         type: string
-      - description: dog owner ID
+      - description: possible dog ID
         in: query
-        name: ownerID
-        type: string
-      - description: dog host ID
-        in: query
-        name: hostID
+        name: possibleDogID
         type: string
       produces:
       - application/json
@@ -489,6 +421,193 @@ paths:
                   type: string
               type: object
       summary: Brings list of missing dogs
+      tags:
+      - dog
+  /dog/possible:
+    delete:
+      consumes:
+      - application/json
+      description: Reject that possible dog is missing dog. Delete register from table.
+        Then notify user
+      parameters:
+      - description: dog ID
+        in: query
+        name: dogID
+        type: string
+      - description: possible dog ID
+        in: query
+        name: possibleDogID
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                message:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Reject possible dog as dog
+      tags:
+      - dog
+    post:
+      consumes:
+      - application/json
+      description: Claim that missing dog is found
+      parameters:
+      - description: dog ID
+        in: query
+        name: dogID
+        type: string
+      - description: possible matching dogs
+        in: query
+        items:
+          type: string
+        name: possibleDogs
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                message:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Claim that missing dog was found
+      tags:
+      - dog
+    put:
+      consumes:
+      - application/json
+      description: Acknowledge that possible dog is missing dog
+      parameters:
+      - description: dog ID
+        in: query
+        name: dogID
+        type: string
+      - description: possible dog ID
+        in: query
+        name: possibleDogID
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                message:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Acknowledge possible dog as dog
       tags:
       - dog
   /img:
