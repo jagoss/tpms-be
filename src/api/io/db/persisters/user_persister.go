@@ -27,7 +27,7 @@ func (up *UserPersister) InsertUser(user *model.User) (*model.User, error) {
 
 func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 	var user model.User
-	tx := up.db.Connection.First(&user, userID)
+	tx := up.db.Connection.First(&user, "id = ?", userID)
 	if tx.Error != nil {
 		if IsRecordNotFoundError(tx.Error) {
 			return nil, nil
