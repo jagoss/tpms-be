@@ -27,7 +27,7 @@ func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
 
 func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 	var dog model.Dog
-	tx := dp.db.Connection.First(&dog, dogID)
+	tx := dp.db.Connection.Preload("Owner").Preload("Host").First(&dog, dogID)
 	if tx.Error != nil {
 		if IsRecordNotFoundError(tx.Error) {
 			return nil, nil
@@ -39,7 +39,7 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 
 func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
 	var dogs []model.Dog
-	tx := dp.db.Connection.Find(&dogs, ids)
+	tx := dp.db.Connection.Preload("Owner").Preload("Host").Find(&dogs, ids)
 	if tx.Error != nil {
 		if IsRecordNotFoundError(tx.Error) {
 			return make([]model.Dog, 0), nil
@@ -58,13 +58,13 @@ func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 }
 
 func (dp *DogPersister) DeleteDog(dogID uint) error {
-	tx := dp.db.Connection.Delete(&model.Dog{}, dogID)
+	tx := dp.db.Connection.Preload("Owner").Preload("Host").Delete(&model.Dog{}, dogID)
 	return tx.Error
 }
 
 func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string) (bool, error) {
 	var dog model.Dog
-	tx := dp.db.Connection.Where("name = ? AND owner_id = ?", dogName, ownerID).First(&dog)
+	tx := dp.db.Connection.Preload("Owner").Preload("Host").Where("name = ? AND owner_id = ?", dogName, ownerID).First(&dog)
 	if tx.Error != nil {
 		if IsRecordNotFoundError(tx.Error) {
 			return false, nil
@@ -76,7 +76,7 @@ func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string)
 
 func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
 	var dogs []model.Dog
-	tx := dp.db.Connection.Where("is_lost = ?", "true").Find(&dogs)
+	tx := dp.db.Connection.Preload("Owner").Preload("Host").Where("is_lost = ?", "true").Find(&dogs)
 	if tx.Error != nil {
 		if IsRecordNotFoundError(tx.Error) {
 			return nil, nil
@@ -88,7 +88,7 @@ func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
 
 func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
 	var dogs []model.Dog
-	tx := dp.db.Connection.Where("host_id = ?", userID).Find(dogs)
+	tx := dp.db.Connection.Preload("Owner").Preload("Host").Where("host_id = ?", userID).Find(dogs)
 	if tx.Error != nil {
 		if IsRecordNotFoundError(tx.Error) {
 			return nil, nil

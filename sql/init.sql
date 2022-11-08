@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `img_url`     LONGTEXT,
     `created_at`  DATETIME    NOT NULL,
     `updated_at`  DATETIME    NOT NULL,
-    `deleted_at`  DATETIME    NOT NULL,
+    `deleted_at`  DATETIME,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `img_url`     LONGTEXT,
     `created_at`  DATETIME    NOT NULL,
     `updated_at`  DATETIME    NOT NULL,
-    `deleted_at`  DATETIME    NOT NULL,
+    `deleted_at`  DATETIME,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
