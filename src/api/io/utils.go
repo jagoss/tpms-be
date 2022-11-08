@@ -43,12 +43,14 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 		Longitude:  reqDog.Longitude,
 		ImgUrl:     reqDog.ImgUrl,
 	}
-	unitID, err := strconv.ParseUint(reqDog.ID, 10, 64)
-	if err != nil {
-		log.Printf("error parsing uint: %s", err.Error())
-		return nil, nil
+	if reqDog.ID != "" {
+		unitID, err := strconv.ParseUint(reqDog.ID, 10, 64)
+		if err != nil {
+			log.Printf("error parsing uint: %s", err.Error())
+			return nil, nil
+		}
+		dog.ID = uint(unitID)
 	}
-	dog.ID = uint(unitID)
 
 	return dog, reqDog.Imgs
 }
