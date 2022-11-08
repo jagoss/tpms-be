@@ -53,9 +53,9 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 	}
 	dog, imgs := io.MapFromDogRequest(reqDog)
 	if dog == nil && imgs == nil {
-		log.Printf("error unmarshalling dog body: %v", err)
+		log.Printf("error mapping dog request when parsing uint")
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
-			"error":   err.Error(),
+			"error":   "error parsing uint",
 			"message": "error parsing dogRequest to dog!",
 		})
 		return

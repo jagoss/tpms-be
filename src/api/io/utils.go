@@ -5,6 +5,7 @@ import (
 	"be-tpms/src/api/usecases/interfaces"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -44,6 +45,7 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 	}
 	unitID, err := strconv.ParseUint(reqDog.ID, 10, 64)
 	if err != nil {
+		log.Printf("error parsing uint: %s", err.Error())
 		return nil, nil
 	}
 	dog.ID = uint(unitID)
