@@ -4,7 +4,7 @@ package model
 type User struct {
 	// User ID
 	// in: string
-	ID string `gorm:"primarykey"`
+	ID string `gorm:"primaryKey"`
 	// Name
 	// in: string
 	Name string
