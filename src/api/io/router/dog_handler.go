@@ -179,20 +179,21 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Accept      json
 // @Produce     json
 // @Param		dogID query string false "dog ID"
-// @Param		ownerID query string false "dog owner ID"
-// @Param		hostID query string false "dog host ID"
+// @Param		possibleDogID query string false "possible dog ID"
 // @Success     200 {object} model.DogResponse
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
-// @Router      /dog/found [patch]
+// @Router      /dog/found [put]
 func DogReUnited(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
-	dogID, ownerID, hostID := q.Get("dogID"), q.Get("ownerID"), q.Get("hostID")
+	dogID, possibleDogID := q.Get("dogID"), q.Get("possibleDogID")
 	dogIDInt, _ := strconv.Atoi(dogID)
-	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
+	possibleDogIDInt, _ := strconv.Atoi(possibleDogID)
 
-	dog, err := lfDogs.ReuniteDog(uint(dogIDInt), ownerID, hostID)
+	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
+
+	dog, err := lfDogs.ReuniteDog(uint(dogIDInt), uint(possibleDogIDInt), env.NotificationSender)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
@@ -239,7 +240,7 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
+	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
 	if userLat == "" && userLng == "" && radius == "" {
 		dogList, err := lfDogs.GetAllMissingDogsList()
 		if err != nil {
@@ -274,7 +275,7 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, dogRespList)
 }
 
-// ClaimFoundMissingDog godoc
+// PossibleMatch godoc
 // @Summary Claim that missing dog was found
 // @Schemes
 // @Description	Claim that missing dog is found
@@ -282,23 +283,87 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 // @Accept      json
 // @Produce     json
 // @Param		dogID query string false "dog ID"
-// @Param		matchingDogs query []string false "possible matching dogs"
+// @Param		possibleDogs query []string false "possible matching dogs"
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
 // @Success     200 {object} object{message=string}
-// @Router      /dog/claim_found [patch]
-func ClaimFoundMissingDog(c *gin.Context, env environment.Env) {
+// @Router      /dog/possible [post]
+func PossibleMatch(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
-	dogID, matchingDogsArr := q.Get("dogID"), q.Get("matchingDogs")
+	dogID, possibleDogsArr := q.Get("dogID"), q.Get("possibleDogs")
 	dogIDInt, _ := strconv.Atoi(dogID)
 	var matchingDogIDs []uint
-	for _, matchingDogID := range strings.Split(matchingDogsArr, ",") {
+	for _, matchingDogID := range strings.Split(possibleDogsArr, ",") {
 		id, _ := strconv.Atoi(matchingDogID)
 		matchingDogIDs = append(matchingDogIDs, uint(id))
 	}
-	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister)
+	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
 	err := lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, env.NotificationSender)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error matching possible missing dogs",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "users notified!"})
+}
+
+// AckPossibleDog godoc
+// @Summary Acknowledge possible dog as dog
+// @Schemes
+// @Description	Acknowledge that possible dog is missing dog
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dogID query string false "dog ID"
+// @Param		possibleDogID query string false "possible dog ID"
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Success     200 {object} object{message=string}
+// @Router      /dog/possible [put]
+func AckPossibleDog(c *gin.Context, env environment.Env) {
+	q := c.Request.URL.Query()
+	dogID, possibleDogID := q.Get("dogID"), q.Get("possibleDogID")
+	dogIDInt, _ := strconv.Atoi(dogID)
+	possibleDogIDInt, _ := strconv.Atoi(possibleDogID)
+
+	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
+	err := lf.AcknowledgePossibleDog(uint(dogIDInt), uint(possibleDogIDInt), env.NotificationSender)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error matching possible missing dogs",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "users notified!"})
+}
+
+// RejectPossibleDog godoc
+// @Summary Reject possible dog as dog
+// @Schemes
+// @Description	Reject that possible dog is missing dog. Delete register from table. Then notify user
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dogID query string false "dog ID"
+// @Param		possibleDogID query string false "possible dog ID"
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Success     200 {object} object{message=string}
+// @Router      /dog/possible [delete]
+func RejectPossibleDog(c *gin.Context, env environment.Env) {
+	q := c.Request.URL.Query()
+	dogID, possibleDogID := q.Get("dogID"), q.Get("possibleDogID")
+	dogIDInt, _ := strconv.Atoi(dogID)
+	possibleDogIDInt, _ := strconv.Atoi(possibleDogID)
+
+	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
+	err := lf.RejectPossibleDog(uint(dogIDInt), uint(possibleDogIDInt), env.NotificationSender)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),

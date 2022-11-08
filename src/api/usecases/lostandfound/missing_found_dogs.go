@@ -4,45 +4,49 @@ import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/usecases/interfaces"
 	"fmt"
+	"log"
 	"math"
 )
 
 type LostFoundDogs struct {
-	dogPersister  interfaces.DogPersister
-	userPersister interfaces.UserPersister
+	dogPersister           interfaces.DogPersister
+	userPersister          interfaces.UserPersister
+	possibleMatchPersister interfaces.PossibleMatchPersister
 }
 
-func NewLostFoundDogs(dogPersister interfaces.DogPersister, userPersister interfaces.UserPersister) LostFoundDogs {
+func NewLostFoundDogs(dogPersister interfaces.DogPersister, userPersister interfaces.UserPersister, possibleMatchPersister interfaces.PossibleMatchPersister) LostFoundDogs {
 	return LostFoundDogs{
-		dogPersister:  dogPersister,
-		userPersister: userPersister,
+		dogPersister:           dogPersister,
+		userPersister:          userPersister,
+		possibleMatchPersister: possibleMatchPersister,
 	}
 }
 
-func (l *LostFoundDogs) ReuniteDog(dogID uint, ownerID string, hosterID string) (*model.Dog, error) {
-	if ownerID == hosterID {
-		dog, _ := l.dogPersister.GetDog(dogID)
-		return dog, nil
-	}
+func (l *LostFoundDogs) ReuniteDog(dogID uint, matchingDogID uint, sender interfaces.Messaging) (*model.Dog, error) {
 	dog, err := l.dogPersister.GetDog(dogID)
 	if err != nil {
 		return nil, fmt.Errorf("[lostfounddogs.ReuniteDog] %v", err)
 	}
-	owner, err := l.userPersister.GetUser(ownerID)
+	possibleDog, err := l.dogPersister.GetDog(matchingDogID)
 	if err != nil {
 		return nil, fmt.Errorf("[lostfounddogs.ReuniteDog] %v", err)
 	}
-	dog.Host = owner
-	dog.IsLost = false
-	modifiedDog, err := l.dogPersister.UpdateDog(dog)
+	err = l.unifyDogs(dog, possibleDog)
 	if err != nil {
-		return nil, fmt.Errorf("[lostfounddogs.ReuniteDog] error updating owner: %v", err)
-	}
-	if modifiedDog.IsLost || modifiedDog.Owner.ID != ownerID {
-		return nil, fmt.Errorf("[lostfounddogs.ReuniteDog] error updating dog:\n correct ownerID: %s, but is %s and it may remains mark as lost!", ownerID, modifiedDog.Owner.ID)
+		return nil, err
 	}
 
-	return modifiedDog, nil
+	dogIDsRemoved, err := l.cleanPossibleMatches(dogID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = l.notifyDogsHosters(dog.Name, dogIDsRemoved, sender)
+	if err != nil {
+		return nil, err
+	}
+
+	return dog, nil
 }
 
 func (l *LostFoundDogs) GetAllMissingDogsList() ([]model.Dog, error) {
@@ -82,21 +86,127 @@ func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64) float64 {
 	return dist
 }
 
-func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, matchingDogIDs []uint, messaging interfaces.Messaging) error {
-	for _, id := range matchingDogIDs {
+func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, possibleDogsIDs []uint, sender interfaces.Messaging) error {
+	for _, id := range possibleDogsIDs {
 		dog, err := l.dogPersister.GetDog(id)
 		if err != nil {
 			return err
 		}
 
-		data := map[string]string{
-			"title": fmt.Sprintf("Puede que alguien viera a %s!", dog.Name),
-			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
-		}
+		if err = l.possibleMatchPersister.AddPossibleMatch(dogID, id); err != nil {
+			log.Printf("%v", err)
+		} else {
+			data := map[string]string{
+				"title": fmt.Sprintf("Puede que alguien viera a %s!", dog.Name),
+				"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
+			}
 
-		if err := messaging.SendMessage(dog.Owner.FCMToken, data); err != nil {
-			return fmt.Errorf("error sending push notification to user %s: %v", dog.Owner.ID, err)
+			if err = sender.SendMessage(dog.Owner.FCMToken, data); err != nil {
+				log.Printf("error sending push notification to user %s: %v", dog.Owner.ID, err)
+			}
 		}
 	}
 	return nil
+}
+
+func (l *LostFoundDogs) AcknowledgePossibleDog(dogID uint, possibleDogID uint, sender interfaces.Messaging) error {
+	possibleDog, _ := l.dogPersister.GetDog(possibleDogID)
+	dog, _ := l.dogPersister.GetDog(dogID)
+
+	data := map[string]string{
+		"title": fmt.Sprintf("Han confirmado tu perro!"),
+		"body":  fmt.Sprintf("Puede que %s tenga a %s", possibleDog.Owner.Name, dog.Name),
+	}
+	return l.updatePossibleDogMatch(dogID, possibleDogID, model.Accepted, data, sender)
+}
+
+func (l *LostFoundDogs) RejectPossibleDog(dogID uint, possibleDogID uint, sender interfaces.Messaging) error {
+	possibleDog, _ := l.dogPersister.GetDog(possibleDogID)
+	dog, _ := l.dogPersister.GetDog(dogID)
+
+	data := map[string]string{
+		"title": fmt.Sprintf("Han rechazado tu match"),
+		"body":  fmt.Sprintf("Parece que %s no era %s. Sigamos buscando!", possibleDog.Name, dog.Name),
+	}
+	return l.updatePossibleDogMatch(dogID, possibleDogID, model.Accepted, data, sender)
+}
+
+func (l *LostFoundDogs) updatePossibleDogMatch(dogID uint, possibleDogID uint, ack model.Ack, data map[string]string, sender interfaces.Messaging) error {
+	if ack == model.Accepted {
+		err := l.possibleMatchPersister.UpdateAck(dogID, possibleDogID, ack)
+		if err != nil {
+			return fmt.Errorf("[LostFoundDogs.updatePossibleDogMatch] error updating ack dog %d wiht dog %d: %v",
+				dogID, possibleDogID, err)
+		}
+	} else {
+		err := l.possibleMatchPersister.Delete(dogID, possibleDogID)
+		if err != nil {
+			return fmt.Errorf("[LostFoundDogs.updatePossibleDogMatch] error deleting possible match with dogs dog %d wiht dog %d: %v",
+				dogID, possibleDogID, err)
+		}
+	}
+
+	dog, _ := l.dogPersister.GetDog(dogID)
+
+	if err := sender.SendMessage(dog.Owner.FCMToken, data); err != nil {
+		log.Printf("error sending push notification to user %s: %v", dog.Owner.ID, err)
+	}
+
+	return nil
+}
+
+func (l *LostFoundDogs) unifyDogs(dog *model.Dog, matchingDog *model.Dog) error {
+	dog.IsLost = false
+	dog.Host = dog.Owner
+	dog.ImgUrl = fmt.Sprintf("%s;%s", dog.ImgUrl, matchingDog.ImgUrl)
+	notifyModel(dog.ID, matchingDog.ID)
+	return nil
+}
+
+func (l *LostFoundDogs) cleanPossibleMatches(dogID uint) ([]uint, error) {
+	removedPossibleDogs, err := l.possibleMatchPersister.RemovePossibleDogMatches(dogID)
+	if err != nil {
+		return nil, err
+	}
+
+	removedDogPossibleMatches, err := l.possibleMatchPersister.RemovePossibleMatchesForDog(dogID)
+	if err != nil {
+		return nil, err
+	}
+
+	possibleMatches := append(removedPossibleDogs, removedDogPossibleMatches...)
+	var ids []uint
+	for _, dog := range possibleMatches {
+		if dog.DogID != 0 {
+			ids = append(ids, dog.DogID)
+		} else {
+			ids = append(ids, dog.PossibleDogID)
+		}
+	}
+
+	return ids, nil
+}
+
+func (l *LostFoundDogs) notifyDogsHosters(actualDogName string, removedDogs []uint, sender interfaces.Messaging) error {
+	dogs, err := l.dogPersister.GetDogs(removedDogs)
+	if err != nil {
+		return err
+	}
+
+	data := map[string]string{
+		"title": fmt.Sprintf("Parece que era otro perro!"),
+	}
+	for _, dog := range dogs {
+		err = sender.SendMessage(dog.Host.FCMToken, data)
+		data["body"] = fmt.Sprintf("Parece que %s no era %s. Sigamos buscando!", dog.Name, actualDogName)
+		if err != nil {
+			log.Printf("error sending notification tu user %s: %s", dog.Host.ID, err.Error())
+		}
+	}
+
+	return nil
+}
+
+func notifyModel(dogID uint, sameDogID uint) {
+
 }

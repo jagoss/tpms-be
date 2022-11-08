@@ -947,9 +947,10 @@ type DogRequest struct {
 	Imgs       []string
 }
 
-type PossibleDogMatch struct {
-	DogID         string
-	PossibleDogID string
+type PossibleMatch struct {
+	gorm.Model
+	DogID         uint `gorm:"primaryKey"`
+	PossibleDogID uint `gorm:"primaryKey"`
 	Ack           Ack
 }
 
