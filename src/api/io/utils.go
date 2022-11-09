@@ -62,7 +62,7 @@ func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogRespo
 	if dog.Owner != nil {
 		ownerID = dog.Owner.ID
 	}
-	if dog.Host == nil {
+	if dog.Host != nil {
 		hostID = dog.Host.ID
 	}
 
