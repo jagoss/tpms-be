@@ -58,6 +58,14 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogResponse {
 	firstImg := strings.Split(dog.ImgUrl, ";")[0]
 	imgArray, _ := bucket.GetImgs(firstImg)
+	ownerID, hostID := "", ""
+	if dog.Owner != nil {
+		ownerID = dog.Owner.ID
+	}
+	if dog.Host == nil {
+		hostID = dog.Host.ID
+	}
+
 	return &model.DogResponse{
 		ID:         strconv.Itoa(int(dog.ID)),
 		Name:       dog.Name,
@@ -67,8 +75,8 @@ func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogRespo
 		CoatColor:  dog.CoatColor.String(),
 		CoatLength: dog.CoatLength.String(),
 		IsLost:     dog.IsLost,
-		Owner:      dog.Owner.ID,
-		Host:       dog.Host.ID,
+		Owner:      ownerID,
+		Host:       hostID,
 		Latitude:   dog.Latitude,
 		Longitude:  dog.Longitude,
 		ImgsUrl:    dog.ImgUrl,
