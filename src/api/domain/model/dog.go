@@ -170,9 +170,7 @@ type Dog struct {
 	CoatColor  CoatColor
 	CoatLength CoatLength
 	IsLost     bool
-	OwnerID    string
 	Owner      *User `gorm:"foreignKey:ID"`
-	HostID     string
 	Host       *User `gorm:"foreignKey:ID"`
 	Latitude   float32
 	Longitude  float32
