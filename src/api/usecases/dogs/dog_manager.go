@@ -43,6 +43,7 @@ func (d *DogManager) Register(dog *model.Dog, imgBuffArray []string, userManager
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("[dogmanager.Register] host: %v, owner: %v", dog.Host, dog.Owner)
 
 	newDog, err := d.dogPersister.InsertDog(dog)
 	if err != nil {
@@ -120,7 +121,7 @@ func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
 	if err != nil {
 		return fmt.Errorf("error getting dog host: %v", err)
 	}
-
+	fmt.Printf("[dogmanager.setHostAndOwner] host: %v, owner: %v", host, owner)
 	dog.Owner = owner
 	dog.Host = host
 	return nil

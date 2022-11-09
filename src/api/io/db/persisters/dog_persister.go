@@ -15,7 +15,7 @@ func NewDogPersister(db *db.DataBase) *DogPersister {
 }
 
 func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
-	result := dp.db.Connection.Create(dog)
+	result := dp.db.Connection.Preload("Owner").Preload("Host").Create(dog)
 	if result.Error != nil {
 		return nil, result.Error
 	}
