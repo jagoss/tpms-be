@@ -37,7 +37,9 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 		CoatColor:  model.ParseCoatColor(reqDog.CoatColor),
 		CoatLength: model.ParseCoatLength(reqDog.CoatLength),
 		IsLost:     reqDog.IsLost,
+		OwnerID:    reqDog.Owner,
 		Owner:      &model.User{ID: reqDog.Owner},
+		HostID:     reqDog.Host,
 		Host:       &model.User{ID: reqDog.Host},
 		Latitude:   reqDog.Latitude,
 		Longitude:  reqDog.Longitude,
@@ -58,13 +60,6 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogResponse {
 	firstImg := strings.Split(dog.ImgUrl, ";")[0]
 	imgArray, _ := bucket.GetImgs(firstImg)
-	ownerID, hostID := "", ""
-	if dog.Owner != nil {
-		ownerID = dog.Owner.ID
-	}
-	if dog.Host != nil {
-		hostID = dog.Host.ID
-	}
 
 	return &model.DogResponse{
 		ID:         strconv.Itoa(int(dog.ID)),
@@ -75,8 +70,8 @@ func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogRespo
 		CoatColor:  dog.CoatColor.String(),
 		CoatLength: dog.CoatLength.String(),
 		IsLost:     dog.IsLost,
-		Owner:      ownerID,
-		Host:       hostID,
+		Owner:      dog.OwnerID,
+		Host:       dog.HostID,
 		Latitude:   dog.Latitude,
 		Longitude:  dog.Longitude,
 		ImgsUrl:    dog.ImgUrl,

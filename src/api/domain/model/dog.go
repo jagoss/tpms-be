@@ -170,7 +170,9 @@ type Dog struct {
 	CoatColor  CoatColor
 	CoatLength CoatLength
 	IsLost     bool
+	OwnerID    string
 	Owner      *User `gorm:"foreignKey:ID"`
+	HostID     string
 	Host       *User `gorm:"foreignKey:ID"`
 	Latitude   float32
 	Longitude  float32
@@ -914,37 +916,37 @@ func ParseCoatLength(length string) CoatLength {
 }
 
 type DogResponse struct {
-	ID         string
-	Name       string
-	Breed      string
-	Age        string
-	Size       string
-	CoatColor  string
-	CoatLength string
-	IsLost     bool
-	Owner      string
-	Host       string
-	Latitude   float32
-	Longitude  float32
-	ImgsUrl    string
-	ProfileImg string
+	ID         string  `json:"id"`
+	Name       string  `json:"name"`
+	Breed      string  `json:"breed"`
+	Age        string  `json:"age"`
+	Size       string  `json:"size"`
+	CoatColor  string  `json:"coatColor"`
+	CoatLength string  `json:"coatLength"`
+	IsLost     bool    `json:"isLost"`
+	Owner      string  `json:"owner"`
+	Host       string  `json:"host"`
+	Latitude   float32 `json:"latitude"`
+	Longitude  float32 `json:"longitude"`
+	ImgsUrl    string  `json:"imgsUrl"`
+	ProfileImg string  `json:"profileImg"`
 }
 
 type DogRequest struct {
-	ID         string
-	Name       string
-	Breed      string
-	Age        string
-	Size       string
-	CoatColor  string
-	CoatLength string
-	IsLost     bool
-	Owner      string
-	Host       string
-	Latitude   float32
-	Longitude  float32
-	ImgUrl     string
-	Imgs       []string
+	ID         string   `json:"id"`
+	Name       string   `json:"name"`
+	Breed      string   `json:"breed"`
+	Age        string   `json:"age"`
+	Size       string   `json:"size"`
+	CoatColor  string   `json:"coatColor"`
+	CoatLength string   `json:"coatLength"`
+	IsLost     bool     `json:"isLost"`
+	Owner      string   `json:"owner"`
+	Host       string   `json:"host"`
+	Latitude   float32  `json:"latitude"`
+	Longitude  float32  `json:"longitude"`
+	ImgUrl     string   `json:"imgUrl"`
+	Imgs       []string `json:"imgs"`
 }
 
 type PossibleMatch struct {
