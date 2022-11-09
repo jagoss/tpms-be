@@ -74,6 +74,9 @@ func mapDogRoutes(env environment.Env) {
 		}
 		RegisterNewDog(context, env)
 	})
+	dogRouter.POST("/scrapper", func(context *gin.Context) {
+		RegisterNewScrapperDog(context, env)
+	})
 	dogRouter.GET("/:id", func(context *gin.Context) {
 		if !validUser(context) {
 			return
