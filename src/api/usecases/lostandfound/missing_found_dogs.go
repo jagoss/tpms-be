@@ -207,6 +207,6 @@ func (l *LostFoundDogs) notifyDogsHosters(actualDogName string, removedDogs []ui
 	return nil
 }
 
-func notifyModel(dogID uint, sameDogID uint) {
+func notifyModel(dogID int64, sameDogID int64) {
 
 }

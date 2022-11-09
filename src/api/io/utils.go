@@ -44,12 +44,12 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 		ImgUrl:     reqDog.ImgUrl,
 	}
 	if reqDog.ID != "" {
-		unitID, err := strconv.ParseUint(reqDog.ID, 10, 64)
+		unitID, err := strconv.ParseInt(reqDog.ID, 10, 64)
 		if err != nil {
 			log.Printf("error parsing uint: %s", err.Error())
 			return nil, nil
 		}
-		dog.ID = uint(unitID)
+		dog.ID = unitID
 	}
 
 	return dog, reqDog.Imgs

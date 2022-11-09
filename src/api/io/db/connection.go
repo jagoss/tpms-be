@@ -2,18 +2,17 @@ package db
 
 import (
 	"be-tpms/src/api/configuration"
+	"database/sql"
 	"errors"
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 )
 
-type DataBase struct {
-	Connection *gorm.DB
+type Connection struct {
+	DB *sql.DB
 }
 
-func Init(config configuration.DBConfig) (*DataBase, error) {
+func Init(config configuration.DBConfig) (*Connection, error) {
 	host := config.Host
 	username := config.Username
 	password := config.Password
@@ -22,13 +21,11 @@ func Init(config configuration.DBConfig) (*DataBase, error) {
 	log.Printf("host: %s, port: %s, database: %s", host, port, database)
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true", username, password, host, port, database)
 
-	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
-
+	db, err := sql.Open("mysql", connectionString)
 	if err != nil {
 		err = errors.New("Error opening connection to " + host + " database " + database + ". Error: '" + err.Error())
 		log.Printf("%v", err)
 		return nil, err
 	}
-
-	return &DataBase{db}, nil
+	return &Connection{db}, nil
 }

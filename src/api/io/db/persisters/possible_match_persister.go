@@ -3,71 +3,97 @@ package persisters
 import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/io/db"
-	"gorm.io/gorm/clause"
+	"database/sql"
 )
 
 type PossibleMatchPersister struct {
-	db *db.DataBase
+	connection *db.Connection
 }
 
-func NewPossibleMatchPersister(db *db.DataBase) *PossibleMatchPersister {
-	return &PossibleMatchPersister{db}
+func NewPossibleMatchPersister(connection *db.Connection) *PossibleMatchPersister {
+	return &PossibleMatchPersister{connection}
 }
 
 func (pmp *PossibleMatchPersister) AddPossibleMatch(dogID uint, possibleDogID uint) error {
-	tx := pmp.db.Connection.Create(model.PossibleMatch{DogID: dogID, PossibleDogID: possibleDogID, Ack: model.Pending})
-	if tx.Error != nil {
-		return tx.Error
+	query := "INSERT INTO possible_matches(dog_id, possible_dog_id, ack) VALUES (?, ?, 'PENDING')"
+	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
+	if err != nil {
+		return err
 	}
 	return nil
+
 }
 func (pmp *PossibleMatchPersister) UpdateAck(dogID uint, possibleDogID uint, ack model.Ack) error {
-	possibleMatch := &model.PossibleMatch{DogID: dogID, PossibleDogID: possibleDogID}
-	tx := pmp.db.Connection.First(possibleMatch)
-	if tx.Error != nil {
-		return tx.Error
-	}
-
-	possibleMatch.Ack = ack
-	tx = pmp.db.Connection.Save(possibleMatch)
-	if tx.Error != nil {
-		return tx.Error
+	query := "UPDATE possible_matches SET ack = ? WHERE dog_id = ? AND possible_dog_id = ?"
+	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
+	if err != nil {
+		return err
 	}
 	return nil
 }
 func (pmp *PossibleMatchPersister) Delete(dogID uint, possibleDogID uint) error {
-	registerToDelete := &model.PossibleMatch{DogID: dogID, PossibleDogID: possibleDogID}
-	tx := pmp.db.Connection.Delete(registerToDelete)
-	if tx.Error != nil {
-		return tx.Error
+	query := "DELETE FROM possible_matches WHERE dog_id = ? AND possible_dog_id = ?"
+	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
 // RemovePossibleMatchesForDog Remove entries where given id is the dogID
 func (pmp *PossibleMatchPersister) RemovePossibleMatchesForDog(dogID uint) ([]model.PossibleMatch, error) {
-	var possibleMatches []model.PossibleMatch
-	tx := pmp.db.Connection.
-		Clauses(clause.Returning{Columns: []clause.Column{{Name: "possible_dog_id"}}}).
-		Where("dog_id = ?", dogID).
-		Delete(possibleMatches)
-	if tx.Error != nil {
-		return nil, tx.Error
+	query := "SELECT * FROM possible_matches WHERE dog_id = ?"
+	rows, err := pmp.connection.DB.Query(query, dogID)
+	if err != nil {
+		return nil, err
+	}
+	resultList, err := parsePossibleMatch(rows)
+	if err != nil {
+		return nil, err
 	}
 
-	return possibleMatches, nil
+	deleteQuery := "DELETE FROM possible_matches WHERE dog_id IN (?)"
+	_, err = pmp.connection.DB.Exec(deleteQuery, dogID)
+	if err != nil {
+		return nil, err
+	}
+	return resultList, nil
 }
 
 // RemovePossibleDogMatches Remove entries where given id is the possibleDogID
 func (pmp *PossibleMatchPersister) RemovePossibleDogMatches(possibleDogID uint) ([]model.PossibleMatch, error) {
-	var possibleMatches []model.PossibleMatch
-	tx := pmp.db.Connection.
-		Clauses(clause.Returning{Columns: []clause.Column{{Name: "dog_id"}}}).
-		Where("possible_dog_id = ?", possibleDogID).
-		Delete(possibleMatches)
-	if tx.Error != nil {
-		return nil, tx.Error
+	query := "SELECT * FROM possible_matches WHERE possible_dog_id = ?"
+	rows, err := pmp.connection.DB.Query(query, possibleDogID)
+	if err != nil {
+		return nil, err
+	}
+	resultList, err := parsePossibleMatch(rows)
+	if err != nil {
+		return nil, err
 	}
 
-	return possibleMatches, nil
+	deleteQuery := "DELETE FROM possible_matches WHERE possible_dog_id IN (?)"
+	_, err = pmp.connection.DB.Exec(deleteQuery, possibleDogID)
+	if err != nil {
+		return nil, err
+	}
+
+	return resultList, nil
+}
+
+func parsePossibleMatch(rows *sql.Rows) ([]model.PossibleMatch, error) {
+	var resultList []model.PossibleMatch
+
+	for rows.Next() {
+		var pm model.PossibleMatch
+		if err := rows.Scan(&pm.DogID, &pm.PossibleDogID, &pm.Ack); err != nil {
+			return nil, err
+		}
+		resultList = append(resultList, pm)
+	}
+
+	if resultList == nil || len(resultList) == 0 {
+		return make([]model.PossibleMatch, 0), nil
+	}
+	return resultList, nil
 }

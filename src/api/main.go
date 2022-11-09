@@ -63,7 +63,7 @@ func initializeDependencies() (*environment.Env, error) {
 	return env, nil
 }
 
-func initializeDatabase(config configuration.GeneralConfiguration) (*db.DataBase, error) {
+func initializeDatabase(config configuration.GeneralConfiguration) (*db.Connection, error) {
 	database, err := db.Init(config.Database)
 	if err != nil {
 		return nil, fmt.Errorf("unable to init database configuration: %v", err)

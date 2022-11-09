@@ -1,7 +1,6 @@
 package model
 
 import (
-	"gorm.io/gorm"
 	"strings"
 )
 
@@ -162,7 +161,7 @@ const (
 )
 
 type Dog struct {
-	gorm.Model
+	ID         int64
 	Name       string
 	Breed      Breed
 	Age        Age
@@ -170,8 +169,24 @@ type Dog struct {
 	CoatColor  CoatColor
 	CoatLength CoatLength
 	IsLost     bool
-	Owner      *User `gorm:"foreignKey:ID"`
-	Host       *User `gorm:"foreignKey:ID"`
+	Owner      *User
+	Host       *User
+	Latitude   float32
+	Longitude  float32
+	ImgUrl     string
+}
+
+type DogModel struct {
+	ID         int64
+	Name       string
+	Breed      Breed
+	Age        Age
+	Size       Size
+	CoatColor  CoatColor
+	CoatLength CoatLength
+	IsLost     bool
+	OwnerID    string
+	HostID     string
 	Latitude   float32
 	Longitude  float32
 	ImgUrl     string
@@ -948,9 +963,8 @@ type DogRequest struct {
 }
 
 type PossibleMatch struct {
-	gorm.Model
-	DogID         uint `gorm:"primaryKey"`
-	PossibleDogID uint `gorm:"primaryKey"`
+	DogID         uint
+	PossibleDogID uint
 	Ack           Ack
 }
 

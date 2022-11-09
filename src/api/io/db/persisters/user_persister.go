@@ -7,44 +7,73 @@ import (
 )
 
 type UserPersister struct {
-	db *db.DataBase
+	connection *db.Connection
 }
 
-func NewUserPersister(db *db.DataBase) *UserPersister {
-	return &UserPersister{db: db}
+func NewUserPersister(connection *db.Connection) *UserPersister {
+	return &UserPersister{connection: connection}
 }
 
 func (up *UserPersister) InsertUser(user *model.User) (*model.User, error) {
-	result := up.db.Connection.Create(user)
-	if result.Error != nil {
-		return nil, result.Error
+	query := "INSERT INTO users(`id`, `name`, `phone`, `email`, `latitude`, `longitude`) VALUES (?, ?, ?, ?, ?, ?)"
+	result, err := up.connection.DB.Exec(query, user.ID, user.Name, user.Phone, user.Email, user.Latitude, user.Longitude)
+	if err != nil {
+		return nil, err
 	}
-	if result.RowsAffected == 0 {
-		return nil, fmt.Errorf("no user was inserted")
+	if amount, err := result.RowsAffected(); err != nil || amount == 0 {
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("no rows affected in database when inserting user %v", user)
 	}
 	return user, nil
 }
 
 func (up *UserPersister) GetUser(userID string) (*model.User, error) {
+	query := "SELECT * FROM users WHERE id = ?"
+	rows, err := up.connection.DB.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	if !rows.Next() {
+		return nil, nil
+	}
+
 	var user model.User
-	tx := up.db.Connection.First(&user, "id = ?", userID)
-	if tx.Error != nil {
-		if IsRecordNotFoundError(tx.Error) {
-			return nil, nil
-		}
-		return nil, tx.Error
+	if err = rows.Scan(&user.ID, &user.Email, &user.Phone, &user.FCMToken, &user.Name, &user.Latitude, &user.Longitude); err != nil {
+		return nil, err
 	}
 	return &user, nil
 }
 
 func (up *UserPersister) UpdateUser(user *model.User) (*model.User, error) {
-	tx := up.db.Connection.Save(user)
-	if tx.Error != nil {
-		return nil, tx.Error
+	query := "UPDATE users SET email = ?, phone = ?, fcm_token = ?, latitude = ?, longitude = ? WHERE id = ?"
+	result, err := up.connection.DB.Exec(query, user.Email, user.Phone, user.FCMToken, user.Latitude, user.Longitude, user.ID)
+	if err != nil {
+		return nil, err
 	}
+	if amount, err := result.RowsAffected(); err != nil || amount == 0 {
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("no rows affected in database when updating user %v", user)
+	}
+
 	return user, nil
 }
 func (up *UserPersister) DeleteUser(userID string) error {
-	tx := up.db.Connection.Delete(&model.User{}, userID)
-	return tx.Error
+	query := "DELETE FROM users WHERE id = ?"
+	result, err := up.connection.DB.Exec(query, userID)
+	if err != nil {
+		return err
+	}
+
+	if amount, err := result.RowsAffected(); err != nil || amount == 0 {
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf("no rows affected in database when deleting user %s", userID)
+	}
+
+	return nil
 }
