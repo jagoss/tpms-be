@@ -122,9 +122,9 @@ func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
 }
 
 func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
-	query := "SELECT * FROM dogs WHERE host_id = ?"
+	query := "SELECT * FROM dogs WHERE host_id = ? OR owner_id = ?"
 
-	rows, err := dp.connection.DB.Query(query)
+	rows, err := dp.connection.DB.Query(query, userID, userID)
 	if err != nil {
 		return nil, err
 	}
