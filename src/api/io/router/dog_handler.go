@@ -91,7 +91,7 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 // @Router      /dog/:id [get]
 func GetDog(c *gin.Context, env environment.Env) {
 	dogID := c.Param("id")
-	if dogID != "" {
+	if dogID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "Variable missing",
 			"message": "Missing dog ID",
@@ -388,7 +388,7 @@ func RejectPossibleDog(c *gin.Context, env environment.Env) {
 // @Router      /dog/:id [delete]
 func DeleteDog(c *gin.Context, env environment.Env) {
 	dogID := c.Param("id")
-	if dogID != "" {
+	if dogID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "Variable missing",
 			"message": "Missing dog ID",
