@@ -80,6 +80,12 @@ func mapDogRoutes(env environment.Env) {
 		}
 		GetDog(context, env)
 	})
+	dogRouter.DELETE("/:id", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		DeleteDog(context, env)
+	})
 	dogRouter.PATCH("", func(context *gin.Context) {
 		if !validUser(context) {
 			return

@@ -373,3 +373,44 @@ func RejectPossibleDog(c *gin.Context, env environment.Env) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "users notified!"})
 }
+
+// DeleteDog godoc
+// @Summary Delete dog given its ID
+// @Schemes
+// @Description Delete dog given its ID
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dog path string false  "dog ID"
+// @Success     200 {object} object{deleted=bool}
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Router      /dog/:id [delete]
+func DeleteDog(c *gin.Context, env environment.Env) {
+	dogID, exists := c.Get("id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+
+	deleted, err := dogManager.Delete(io.ParseToUint(dogID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error deleting dog",
+		})
+		return
+	}
+	if !deleted {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "could not delete dog",
+			"message": "error deleting dog",
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{"delted": deleted})
+}
