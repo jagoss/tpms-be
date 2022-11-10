@@ -100,7 +100,7 @@ func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string)
 }
 
 func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
-	query := "SELECT * FROM dogs where is_lost = true AND owner_id IS NULL"
+	query := "SELECT * FROM dogs where is_lost = true AND owner_id != ''"
 	rows, err := dp.connection.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -167,9 +167,13 @@ func mapToDogModel(dog model.Dog) model.DogModel {
 	}
 	if dog.Owner != nil {
 		dogModel.OwnerID = dog.Owner.ID
+	} else {
+		dogModel.OwnerID = ""
 	}
 	if dog.Host != nil {
 		dogModel.HostID = dog.Owner.ID
+	} else {
+		dogModel.HostID = ""
 	}
 	return dogModel
 }

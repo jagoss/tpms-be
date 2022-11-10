@@ -45,7 +45,7 @@ func (d *DogManager) Register(dog *model.Dog, imgBuffArray []string, userManager
 		return nil, err
 	}
 	log.Printf("[dogmanager.Register] host: %v, owner: %v", dog.Host, dog.Owner)
-
+	dog.IsLost = dog.Owner == nil || dog.Host == nil
 	newDog, err := d.dogPersister.InsertDog(dog)
 	if err != nil {
 		return nil, fmt.Errorf("[dogmanager.Register] error registing dog: %v", err)
