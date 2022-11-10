@@ -5,6 +5,7 @@ import (
 	"be-tpms/src/api/io/db"
 	"database/sql"
 	"log"
+	"time"
 )
 
 type DogPersister struct {
@@ -18,8 +19,8 @@ func NewDogPersister(connection *db.Connection) *DogPersister {
 func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
 	dogModel := mapToDogModel(*dog)
 
-	query := "INSERT INTO dogs(name, breed, age, size, coat_color, coat_length, is_lost, owner_id, host_id, latitude, longitude, img_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	result, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Breed, dogModel.Age, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.IsLost, dogModel.OwnerID, dogModel.HostID, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl)
+	query := "INSERT INTO dogs(name, breed, age, size, coat_color, coat_length, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	result, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Breed, dogModel.Age, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.IsLost, dogModel.OwnerID, dogModel.HostID, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl, time.Now())
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +37,7 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 	}
 
 	var dog model.DogModel
-	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl); err != nil {
+	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt); err != nil {
 		return nil, err
 	}
 	up := UserPersister{dp.connection}
@@ -143,6 +144,7 @@ func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) mode
 		Latitude:   dogModel.Latitude,
 		Longitude:  dogModel.Longitude,
 		ImgUrl:     dogModel.ImgUrl,
+		CreateAt:   dogModel.CreateAt,
 	}
 }
 
@@ -158,6 +160,7 @@ func mapToDogModel(dog model.Dog) model.DogModel {
 		Latitude:   dog.Latitude,
 		Longitude:  dog.Longitude,
 		ImgUrl:     dog.ImgUrl,
+		CreateAt:   dog.CreateAt,
 	}
 	if dog.ID != 0 {
 		dogModel.ID = dog.ID
