@@ -16,15 +16,9 @@ func NewUserPersister(connection *db.Connection) *UserPersister {
 
 func (up *UserPersister) InsertUser(user *model.User) (*model.User, error) {
 	query := "INSERT INTO users(`id`, `name`, `phone`, `email`, `latitude`, `longitude`) VALUES (?, ?, ?, ?, ?, ?)"
-	result, err := up.connection.DB.Exec(query, user.ID, user.Name, user.Phone, user.Email, user.Latitude, user.Longitude)
+	_, err := up.connection.DB.Exec(query, user.ID, user.Name, user.Phone, user.Email, user.Latitude, user.Longitude)
 	if err != nil {
 		return nil, err
-	}
-	if amount, err := result.RowsAffected(); err != nil || amount == 0 {
-		if err != nil {
-			return nil, err
-		}
-		return nil, fmt.Errorf("no rows affected in database when inserting user %v", user)
 	}
 	return user, nil
 }
@@ -48,15 +42,9 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 
 func (up *UserPersister) UpdateUser(user *model.User) (*model.User, error) {
 	query := "UPDATE users SET email = ?, phone = ?, fcm_token = ?, latitude = ?, longitude = ? WHERE id = ?"
-	result, err := up.connection.DB.Exec(query, user.Email, user.Phone, user.FCMToken, user.Latitude, user.Longitude, user.ID)
+	_, err := up.connection.DB.Exec(query, user.Email, user.Phone, user.FCMToken, user.Latitude, user.Longitude, user.ID)
 	if err != nil {
 		return nil, err
-	}
-	if amount, err := result.RowsAffected(); err != nil || amount == 0 {
-		if err != nil {
-			return nil, err
-		}
-		return nil, fmt.Errorf("no rows affected in database when updating user %v", user)
 	}
 
 	return user, nil

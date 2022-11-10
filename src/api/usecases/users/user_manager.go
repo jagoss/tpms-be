@@ -53,7 +53,7 @@ func (u *UserManager) UpdateFCMToken(id string, token string) error {
 	user.FCMToken = token
 	user, err = u.userRepo.UpdateUser(user)
 	if err != nil {
-		return fmt.Errorf("error updating user token %s for user %s: %v", id, token, err)
+		return fmt.Errorf("error updating fcm token %s for user %s: %v", token, id, err)
 	}
 	return nil
 }

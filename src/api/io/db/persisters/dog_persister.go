@@ -4,7 +4,6 @@ import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/io/db"
 	"database/sql"
-	"fmt"
 	"log"
 )
 
@@ -21,9 +20,6 @@ func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
 	result, err := dp.connection.DB.Exec(query, dog.Name, dog.Breed, dog.Age, dog.Size, dog.CoatColor, dog.CoatLength, dog.IsLost, dog.Owner.ID, dog.Host.ID, dog.Latitude, dog.Longitude, dog.ImgUrl)
 	if err != nil {
 		return nil, err
-	}
-	if rows, _ := result.RowsAffected(); rows == 0 {
-		return nil, fmt.Errorf("dog %v was not inserted", dog)
 	}
 
 	dog.ID, _ = result.LastInsertId()
@@ -72,15 +68,9 @@ func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
 
 func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 	query := "UPDATE tpms_prod.dogs SET name = ?, age = ?, breed = ?, size = ?, coat_color=?, coat_length = ?, is_lost = ?, latitude = ?, longitude = ?, img_url = ? WHERE id = ?"
-	result, err := dp.connection.DB.Exec(query, dog.Name, dog.Age, dog.Breed, dog.Size, dog.CoatColor, dog.CoatLength, dog.IsLost, dog.Latitude, dog.Longitude, dog.ImgUrl)
+	_, err := dp.connection.DB.Exec(query, dog.Name, dog.Age, dog.Breed, dog.Size, dog.CoatColor, dog.CoatLength, dog.IsLost, dog.Latitude, dog.Longitude, dog.ImgUrl)
 	if err != nil {
 		return nil, err
-	}
-	if amount, err := result.RowsAffected(); err != nil || amount == 0 {
-		if err != nil {
-			return nil, err
-		}
-		return nil, fmt.Errorf("no rows affected in database when updating dog %v", dog)
 	}
 
 	return dog, nil
@@ -88,13 +78,11 @@ func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 
 func (dp *DogPersister) DeleteDog(dogID uint) error {
 	query := "DELETE FROM dogs WHERE id = ?"
-	exec, err := dp.connection.DB.Exec(query, dogID)
+	_, err := dp.connection.DB.Exec(query, dogID)
 	if err != nil {
 		return err
 	}
-	if count, _ := exec.RowsAffected(); count == 0 {
-		return fmt.Errorf("dog %d was not deleted", dogID)
-	}
+
 	return nil
 }
 

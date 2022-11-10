@@ -276,13 +276,12 @@ func UpdateFCMToken(c *gin.Context, env environment.Env) {
 }
 
 // SendNotif godoc
-// @Summary Register new user
+// @Summary Send notif to user
 // @Schemes
-// @Description Register new user
+// @Description Send default push notification to user
 // @Tags        user
 // @Accept      json
 // @Produce     json
-// @Param		user body object{} false "message"
 // @Success     200 {object} model.User
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
