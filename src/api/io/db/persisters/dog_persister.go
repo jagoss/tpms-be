@@ -5,6 +5,7 @@ import (
 	"be-tpms/src/api/io/db"
 	"database/sql"
 	"fmt"
+	"log"
 )
 
 type DogPersister struct {
@@ -133,6 +134,7 @@ func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("dogs %v", dogs)
 	return dogs, nil
 }
 
