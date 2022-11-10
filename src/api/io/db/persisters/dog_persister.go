@@ -16,8 +16,10 @@ func NewDogPersister(connection *db.Connection) *DogPersister {
 }
 
 func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
-	query := "INSERT INTO dogs(name, breed, age, size, coat_color, coat_length, is_lost, owner_id, host_id, latitude, longitude, img_url) VALUES (?, ?, ?, ?, ?)"
-	result, err := dp.connection.DB.Exec(query, dog.Name, dog.Breed, dog.Age, dog.Size, dog.CoatColor, dog.CoatLength, dog.IsLost, dog.Owner.ID, dog.Host.ID, dog.Latitude, dog.Longitude, dog.ImgUrl)
+	dogModel := mapToDogModel(*dog)
+
+	query := "INSERT INTO dogs(name, breed, age, size, coat_color, coat_length, is_lost, owner_id, host_id, latitude, longitude, img_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	result, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Breed, dogModel.Age, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.IsLost, dogModel.OwnerID, dogModel.HostID, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +69,9 @@ func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
 }
 
 func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
+	dogModel := mapToDogModel(*dog)
 	query := "UPDATE tpms_prod.dogs SET name = ?, age = ?, breed = ?, size = ?, coat_color=?, coat_length = ?, is_lost = ?, latitude = ?, longitude = ?, img_url = ? WHERE id = ?"
-	_, err := dp.connection.DB.Exec(query, dog.Name, dog.Age, dog.Breed, dog.Size, dog.CoatColor, dog.CoatLength, dog.IsLost, dog.Latitude, dog.Longitude, dog.ImgUrl)
+	_, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Age, dogModel.Breed, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.IsLost, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -141,6 +144,31 @@ func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) mode
 		Longitude:  dogModel.Longitude,
 		ImgUrl:     dogModel.ImgUrl,
 	}
+}
+
+func mapToDogModel(dog model.Dog) model.DogModel {
+	dogModel := model.DogModel{
+		Name:       dog.Name,
+		Breed:      dog.Breed,
+		Size:       dog.Size,
+		Age:        dog.Age,
+		CoatColor:  dog.CoatColor,
+		CoatLength: dog.CoatLength,
+		IsLost:     dog.IsLost,
+		Latitude:   dog.Latitude,
+		Longitude:  dog.Longitude,
+		ImgUrl:     dog.ImgUrl,
+	}
+	if dog.ID != 0 {
+		dogModel.ID = dog.ID
+	}
+	if dog.Owner != nil {
+		dogModel.OwnerID = dog.Owner.ID
+	}
+	if dog.Host != nil {
+		dogModel.HostID = dog.Owner.ID
+	}
+	return dogModel
 }
 
 func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
