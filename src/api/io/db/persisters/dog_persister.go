@@ -171,7 +171,7 @@ func mapToDogModel(dog model.Dog) model.DogModel {
 		dogModel.OwnerID = ""
 	}
 	if dog.Host != nil {
-		dogModel.HostID = dog.Owner.ID
+		dogModel.HostID = dog.Host.ID
 	} else {
 		dogModel.HostID = ""
 	}
