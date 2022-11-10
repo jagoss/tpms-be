@@ -645,7 +645,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Claim that missing dog is found",
+                "description": "Mark dog as possible match and notify host of that dog.",
                 "consumes": [
                     "application/json"
                 ],
@@ -655,7 +655,7 @@ const docTemplate = `{
                 "tags": [
                     "dog"
                 ],
-                "summary": "Claim that missing dog was found",
+                "summary": "Mark dog as possible dog",
                 "parameters": [
                     {
                         "type": "string",
@@ -1671,7 +1671,7 @@ const docTemplate = `{
         },
         "/user/notif": {
             "post": {
-                "description": "Register new user",
+                "description": "Send default push notification to user",
                 "consumes": [
                     "application/json"
                 ],
@@ -1681,17 +1681,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Register new user",
-                "parameters": [
-                    {
-                        "description": "message",
-                        "name": "user",
-                        "in": "body",
-                        "schema": {
-                            "type": "object"
-                        }
-                    }
-                ],
+                "summary": "Send notif to user",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1867,12 +1857,12 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
-                "email": {
-                    "description": "Email\nin: string",
+                "FCMToken": {
+                    "description": "FCMToken\nin: string",
                     "type": "string"
                 },
-                "fcmtoken": {
-                    "description": "FCMToken\nin: string",
+                "email": {
+                    "description": "Email\nin: string",
                     "type": "string"
                 },
                 "id": {

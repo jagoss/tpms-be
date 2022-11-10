@@ -66,14 +66,14 @@ definitions:
     type: object
   model.User:
     properties:
+      FCMToken:
+        description: |-
+          FCMToken
+          in: string
+        type: string
       email:
         description: |-
           Email
-          in: string
-        type: string
-      fcmtoken:
-        description: |-
-          FCMToken
           in: string
         type: string
       id:
@@ -489,7 +489,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Claim that missing dog is found
+      description: Mark dog as possible match and notify host of that dog.
       parameters:
       - description: dog ID
         in: query
@@ -546,7 +546,7 @@ paths:
                 message:
                   type: string
               type: object
-      summary: Claim that missing dog was found
+      summary: Mark dog as possible dog
       tags:
       - dog
     put:
@@ -1065,13 +1065,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Register new user
-      parameters:
-      - description: message
-        in: body
-        name: user
-        schema:
-          type: object
+      description: Send default push notification to user
       produces:
       - application/json
       responses:
@@ -1112,7 +1106,7 @@ paths:
                 message:
                   type: string
               type: object
-      summary: Register new user
+      summary: Send notif to user
       tags:
       - user
 swagger: "2.0"
