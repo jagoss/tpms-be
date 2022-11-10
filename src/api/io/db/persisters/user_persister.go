@@ -3,6 +3,7 @@ package persisters
 import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/io/db"
+	"database/sql"
 	"fmt"
 )
 
@@ -32,12 +33,11 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 	if !rows.Next() {
 		return nil, nil
 	}
-
-	var user model.User
-	if err = rows.Scan(&user.ID, &user.Email, &user.Phone, &user.FCMToken, &user.Name, &user.Latitude, &user.Longitude); err != nil {
+	user, err := mapToUser(rows)
+	if err != nil {
 		return nil, err
 	}
-	return &user, nil
+	return user, nil
 }
 
 func (up *UserPersister) UpdateUser(user *model.User) (*model.User, error) {
@@ -64,4 +64,16 @@ func (up *UserPersister) DeleteUser(userID string) error {
 	}
 
 	return nil
+}
+
+func mapToUser(rows *sql.Rows) (*model.User, error) {
+	var user model.User
+	var fcmToken sql.NullString
+	if err := rows.Scan(&user.ID, &user.Email, &user.Phone, &fcmToken, &user.Name, &user.Latitude, &user.Longitude); err != nil {
+		return nil, err
+	}
+	if fcmToken.Valid {
+		user.FCMToken = fcmToken.String
+	}
+	return &user, nil
 }

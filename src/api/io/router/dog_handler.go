@@ -276,9 +276,9 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 }
 
 // PossibleMatch godoc
-// @Summary Claim that missing dog was found
+// @Summary    Mark dog as possible dog
 // @Schemes
-// @Description	Claim that missing dog is found
+// @Description	Mark dog as possible match and notify host of that dog.
 // @Tags        dog
 // @Accept      json
 // @Produce     json
