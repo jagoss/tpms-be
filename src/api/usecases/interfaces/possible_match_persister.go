@@ -10,5 +10,6 @@ type PossibleMatchPersister interface {
 	RemovePossibleMatchesForDog(uint) ([]model.PossibleMatch, error)
 	// RemovePossibleDogMatches Remove entries where given id is the possibleDogID
 	RemovePossibleDogMatches(uint) ([]model.PossibleMatch, error)
-	GetPossibleMatches(id uint, acks []model.Ack) ([]uint, error)
+	//GetPossibleMatches Return possible matches given dogID either if its possible dog or dog
+	GetPossibleMatches(id uint, acks []model.Ack) ([]model.PossibleMatch, error)
 }

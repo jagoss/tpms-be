@@ -413,8 +413,7 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 	}
 
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
-
-	deleted, err := dogManager.Delete(io.ParseToUint(dogID))
+	deleted, err := dogManager.Delete(io.ParseToUint(dogID), env.PossibleMatchPersister)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
@@ -432,14 +431,15 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 }
 
 // GetPossibleMatchingDog godoc
-// @Summary Get possible matching dogs
+// @Summary Get possible matching dogs given dog id and ack status
 // @Schemes
-// @Description Given one dog ID return possible matching dogs
+// @Description Given one dog ID return possible matching dogs and ack status of confirmation
 // @Tags        dog
 // @Accept      json
 // @Produce     json
 // @Param		dog path string false  "dog ID"
-// @Success     200 {object} []string
+// @Param		acks query []string	true "matching confirmation status"
+// @Success     200 {object} []model.PossibleMatch
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
@@ -479,5 +479,5 @@ func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	c.JSON(http.StatusOK, io.ToStringList(dogIDs))
+	c.JSON(http.StatusOK, dogIDs)
 }

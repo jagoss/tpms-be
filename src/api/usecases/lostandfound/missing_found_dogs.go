@@ -207,7 +207,7 @@ func (l *LostFoundDogs) notifyDogsHosters(actualDogName string, removedDogs []ui
 	return nil
 }
 
-func (l *LostFoundDogs) GetPossibleMatchingDogs(id uint, acks []model.Ack) ([]uint, error) {
+func (l *LostFoundDogs) GetPossibleMatchingDogs(id uint, acks []model.Ack) ([]model.PossibleMatch, error) {
 	possibleMatches, err := l.possibleMatchPersister.GetPossibleMatches(id, acks)
 	if err != nil {
 		log.Printf("[LostFoundDogs.GetPossibleMatchingDogs] error getting matches: %s", err.Error())
