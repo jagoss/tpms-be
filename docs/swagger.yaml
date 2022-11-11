@@ -965,6 +965,54 @@ paths:
       summary: Get user contact info
       tags:
       - user
+  /user/:id/notification:
+    post:
+      consumes:
+      - application/json
+      description: Send default push notification to user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Send notif to user
+      tags:
+      - user
   /user/dog:
     get:
       consumes:
@@ -1107,54 +1155,6 @@ paths:
                   type: string
               type: object
       summary: Updates FCM token for given user
-      tags:
-      - user
-  /user/notif:
-    post:
-      consumes:
-      - application/json
-      description: Send default push notification to user
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.User'
-        "400":
-          description: Bad Request
-          schema:
-            allOf:
-            - type: object
-            - properties:
-                error:
-                  type: string
-                message:
-                  type: string
-              type: object
-        "401":
-          description: Unauthorized
-          schema:
-            allOf:
-            - type: object
-            - properties:
-                error:
-                  type: string
-                message:
-                  type: string
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            allOf:
-            - type: object
-            - properties:
-                error:
-                  type: string
-                message:
-                  type: string
-              type: object
-      summary: Send notif to user
       tags:
       - user
 swagger: "2.0"
