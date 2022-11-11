@@ -64,6 +64,15 @@ definitions:
       size:
         type: string
     type: object
+  model.PossibleMatch:
+    properties:
+      ack:
+        type: integer
+      dogID:
+        type: integer
+      possibleDogID:
+        type: integer
+    type: object
   model.User:
     properties:
       FCMToken:
@@ -308,12 +317,20 @@ paths:
     get:
       consumes:
       - application/json
-      description: Given one dog ID return possible matching dogs
+      description: Given one dog ID return possible matching dogs and ack status of
+        confirmation
       parameters:
       - description: dog ID
         in: path
         name: dog
         type: string
+      - description: matching confirmation status
+        in: query
+        items:
+          type: string
+        name: acks
+        required: true
+        type: array
       produces:
       - application/json
       responses:
@@ -321,7 +338,7 @@ paths:
           description: OK
           schema:
             items:
-              type: string
+              $ref: '#/definitions/model.PossibleMatch'
             type: array
         "400":
           description: Bad Request
@@ -356,7 +373,7 @@ paths:
                 message:
                   type: string
               type: object
-      summary: Get possible matching dogs
+      summary: Get possible matching dogs given dog id and ack status
       tags:
       - dog
   /dog/found:

@@ -253,7 +253,7 @@ const docTemplate = `{
         },
         "/dog/:id": {
             "get": {
-                "description": "Given one dog ID return possible matching dogs",
+                "description": "Given one dog ID return possible matching dogs and ack status of confirmation",
                 "consumes": [
                     "application/json"
                 ],
@@ -263,13 +263,23 @@ const docTemplate = `{
                 "tags": [
                     "dog"
                 ],
-                "summary": "Get possible matching dogs",
+                "summary": "Get possible matching dogs given dog id and ack status",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "dog ID",
                         "name": "dog",
                         "in": "path"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "matching confirmation status",
+                        "name": "acks",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -278,7 +288,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "$ref": "#/definitions/model.PossibleMatch"
                             }
                         }
                     },
@@ -1937,6 +1947,20 @@ const docTemplate = `{
                 },
                 "size": {
                     "type": "string"
+                }
+            }
+        },
+        "model.PossibleMatch": {
+            "type": "object",
+            "properties": {
+                "ack": {
+                    "type": "integer"
+                },
+                "dogID": {
+                    "type": "integer"
+                },
+                "possibleDogID": {
+                    "type": "integer"
                 }
             }
         },
