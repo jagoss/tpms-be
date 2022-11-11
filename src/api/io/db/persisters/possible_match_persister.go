@@ -4,6 +4,7 @@ import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/io/db"
 	"database/sql"
+	"log"
 )
 
 type PossibleMatchPersister struct {
@@ -18,6 +19,7 @@ func (pmp *PossibleMatchPersister) AddPossibleMatch(dogID uint, possibleDogID ui
 	query := "INSERT INTO possible_matches(dog_id, possible_dog_id, ack) VALUES (?, ?, 'PENDING')"
 	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
 	if err != nil {
+		log.Printf("[PossibleMatchPersister.AddPossibleMatch] error inserting possible match: %s", err.Error())
 		return err
 	}
 	return nil
