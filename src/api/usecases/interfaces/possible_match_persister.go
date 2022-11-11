@@ -8,4 +8,5 @@ type PossibleMatchPersister interface {
 	Delete(uint, uint) error
 	RemovePossibleMatchesForDog(uint) ([]model.PossibleMatch, error)
 	RemovePossibleDogMatches(uint) ([]model.PossibleMatch, error)
+	GetPossibleMatches(id uint, acks []model.Ack) ([]uint, error)
 }

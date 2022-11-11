@@ -122,6 +122,12 @@ func mapDogRoutes(env environment.Env) {
 		}
 		RejectPossibleDog(context, env)
 	})
+	dogRouter.GET("/:id/possible", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetPossibleMatchingDog(context, env)
+	})
 }
 
 func mapUserRoutes(env environment.Env) {

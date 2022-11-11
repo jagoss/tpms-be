@@ -1,6 +1,7 @@
 package router
 
 import (
+	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io"
 	"be-tpms/src/api/usecases/dogs"
@@ -413,4 +414,55 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{"delted": deleted})
+}
+
+// GetPossibleMatchingDog godoc
+// @Summary Get possible matching dogs
+// @Schemes
+// @Description Given one dog ID return possible matching dogs
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dog path string false  "dog ID"
+// @Success     200 {object} []string
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Router      /dog/:id [get]
+func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
+	id := c.Param("id")
+	acksStrings, exists := c.GetQueryArray("ack")
+	if exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing acks",
+		})
+		return
+	}
+	var acks []model.Ack
+	for _, ack := range acksStrings {
+		acks = append(acks, model.ParseAck(ack))
+	}
+
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
+	dogID, _ := strconv.ParseUint(id, 10, 64)
+	dogIDs, err := lfDogs.GetPossibleMatchingDogs(uint(dogID), acks)
+
+	if err != nil {
+		log.Printf(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error getting lost dogs in radius of %s", id),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, io.ToStringList(dogIDs))
 }

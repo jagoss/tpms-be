@@ -102,3 +102,14 @@ func ParseToUint(val any) uint {
 	res, _ := strconv.ParseUint(stringVal, 10, 64)
 	return uint(res)
 }
+
+func ToStringList(values []uint) []string {
+	var resultList []string
+	for _, val := range values {
+		resultList = append(resultList, fmt.Sprintf("%d", val))
+	}
+	if len(resultList) == 0 {
+		return make([]string, 0)
+	}
+	return resultList
+}

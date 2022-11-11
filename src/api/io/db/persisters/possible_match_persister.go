@@ -81,6 +81,31 @@ func (pmp *PossibleMatchPersister) RemovePossibleDogMatches(possibleDogID uint) 
 	return resultList, nil
 }
 
+func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack) ([]uint, error) {
+	query := "SELECT possible_dog_id FROM possible_matches WHERE dog_id = ? AND ack IN (?)"
+	rows, err := pmp.connection.DB.Query(query, id, acks)
+	if err != nil {
+		return nil, err
+	}
+	var resultList []uint
+	for rows.Next() {
+		var id uint
+		if err := rows.Scan(id); err != nil {
+			return nil, err
+		}
+		resultList = append(resultList, id)
+	}
+
+	if resultList == nil || len(resultList) == 0 {
+		return make([]uint, 0), nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return resultList, nil
+}
+
 func parsePossibleMatch(rows *sql.Rows) ([]model.PossibleMatch, error) {
 	var resultList []model.PossibleMatch
 
