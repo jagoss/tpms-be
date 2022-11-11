@@ -105,7 +105,7 @@ func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, possibleDogsIDs []uint,
 				"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
 			}
 
-			if err = sender.SendMessage(dog.Owner.FCMToken, data); err != nil {
+			if err = sender.SendMessage(getToken(dog), data); err != nil {
 				log.Printf("error sending push notification to user %s: %v", dog.Owner.ID, err)
 			}
 		}
@@ -223,4 +223,11 @@ func (l *LostFoundDogs) GetPossibleMatchingDogs(id uint, acks []model.Ack) ([]mo
 
 func notifyModel(dogID int64, sameDogID int64) {
 
+}
+
+func getToken(dog *model.Dog) string {
+	if dog.Owner == nil {
+		return dog.Host.FCMToken
+	}
+	return dog.Owner.FCMToken
 }
