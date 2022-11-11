@@ -18,8 +18,8 @@ func NewDogPersister(connection *db.Connection) *DogPersister {
 func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
 	dogModel := mapToDogModel(*dog)
 
-	query := "INSERT INTO dogs(name, breed, age, size, coat_color, coat_length, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-	result, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Breed, dogModel.Age, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.IsLost, dogModel.OwnerID, dogModel.HostID, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl, time.Now())
+	query := "INSERT INTO dogs(name, breed, age, size, coat_color, coat_length, tail_length, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	result, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Breed, dogModel.Age, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.TailLength, dogModel.IsLost, dogModel.OwnerID, dogModel.HostID, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl, time.Now())
 	if err != nil {
 		return nil, err
 	}
@@ -69,8 +69,8 @@ func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
 
 func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 	dogModel := mapToDogModel(*dog)
-	query := "UPDATE tpms_prod.dogs SET name = ?, age = ?, breed = ?, size = ?, coat_color=?, coat_length = ?, is_lost = ?, latitude = ?, longitude = ?, img_url = ? WHERE id = ?"
-	_, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Age, dogModel.Breed, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.IsLost, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl)
+	query := "UPDATE tpms_prod.dogs SET name = ?, age = ?, breed = ?, size = ?, coat_color=?, coat_length = ?, tail_length = ?, is_lost = ?, latitude = ?, longitude = ?, img_url = ? WHERE id = ?"
+	_, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Age, dogModel.Breed, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.TailLength, dogModel.IsLost, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -135,6 +135,7 @@ func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) mode
 		Age:        dogModel.Age,
 		CoatColor:  dogModel.CoatColor,
 		CoatLength: dogModel.CoatLength,
+		TailLength: dogModel.TailLength,
 		IsLost:     dogModel.IsLost,
 		Owner:      owner,
 		Host:       host,
@@ -153,6 +154,7 @@ func mapToDogModel(dog model.Dog) model.DogModel {
 		Age:        dog.Age,
 		CoatColor:  dog.CoatColor,
 		CoatLength: dog.CoatLength,
+		TailLength: dog.TailLength,
 		IsLost:     dog.IsLost,
 		Latitude:   dog.Latitude,
 		Longitude:  dog.Longitude,
@@ -182,7 +184,7 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 	for rows.Next() {
 		var dog model.DogModel
 		var deleteDate sql.NullTime
-		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
+		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
 			return nil, err
 		}
 		if deleteDate.Valid {
@@ -207,7 +209,7 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 func parseToDogModel(row *sql.Row) (*model.DogModel, error) {
 	var dog model.DogModel
 	var deleteDate sql.NullTime
-	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
+	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
 		return nil, err
 	}
 	if deleteDate.Valid {

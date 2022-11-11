@@ -156,6 +156,11 @@ const (
 )
 
 const (
+	ShortTail TailLength = iota
+	LongTail
+)
+
+const (
 	Pending Ack = iota
 	Accepted
 	Rejected
@@ -169,6 +174,7 @@ type Dog struct {
 	Size       Size
 	CoatColor  CoatColor
 	CoatLength CoatLength
+	TailLength TailLength
 	IsLost     bool
 	Owner      *User
 	Host       *User
@@ -186,6 +192,7 @@ type DogModel struct {
 	Size       Size
 	CoatColor  CoatColor
 	CoatLength CoatLength
+	TailLength TailLength
 	IsLost     bool
 	OwnerID    string
 	HostID     string
@@ -932,6 +939,30 @@ func ParseCoatLength(length string) CoatLength {
 	}
 }
 
+type TailLength int
+
+func (tl TailLength) String() string {
+	switch tl {
+	case ShortTail:
+		return "CORTO"
+	case LongTail:
+		return "LARGO"
+	default:
+		return "CORTO"
+	}
+}
+
+func ParseTailLength(length string) TailLength {
+	switch strings.ToUpper(length) {
+	case "CORTO":
+		return ShortTail
+	case "LARGO":
+		return LongTail
+	default:
+		return ShortTail
+	}
+}
+
 type DogResponse struct {
 	ID         string  `json:"id"`
 	Name       string  `json:"name"`
@@ -940,6 +971,7 @@ type DogResponse struct {
 	Size       string  `json:"size"`
 	CoatColor  string  `json:"coatColor"`
 	CoatLength string  `json:"coatLength"`
+	TailLength string  `json:"tailLength"`
 	IsLost     bool    `json:"isLost"`
 	Owner      string  `json:"owner"`
 	Host       string  `json:"host"`
@@ -957,6 +989,7 @@ type DogRequest struct {
 	Size       string   `json:"size"`
 	CoatColor  string   `json:"coatColor"`
 	CoatLength string   `json:"coatLength"`
+	TailLength string   `json:"tailLength"`
 	IsLost     bool     `json:"isLost"`
 	Owner      string   `json:"owner"`
 	Host       string   `json:"host"`
