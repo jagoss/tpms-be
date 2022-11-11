@@ -106,7 +106,11 @@ func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, possibleDogsIDs []uint,
 			}
 
 			if err = sender.SendMessage(getToken(dog), data); err != nil {
-				log.Printf("error sending push notification to user %s: %v", dog.Owner.ID, err)
+				if dog.Host != nil {
+					log.Printf("error sending push notification to user %s: %v", dog.Host.ID, err)
+				} else {
+					log.Printf("error sending push notification to user %s: %v", dog.Owner.ID, err)
+				}
 			}
 		}
 	}
