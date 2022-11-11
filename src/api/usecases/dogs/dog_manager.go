@@ -103,13 +103,14 @@ func (d *DogManager) AddImgs(dog *model.Dog, imgBuffArray []string) (string, err
 }
 
 func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, error) {
-	missingDogs, err := d.dogPersister.GetDogsByUser(userID)
+	dogs, err := d.dogPersister.GetDogsByUser(userID)
 	if err != nil {
-		return nil, nil, fmt.Errorf("[dogmanaer.GetAllUserDogs] error getting user %s dogs: %s", userID, err.Error())
+		return nil, nil, fmt.Errorf("[dogmanager.GetAllUserDogs] error getting user %s dogs: %s", userID, err.Error())
 	}
+	log.Printf("dogs for user: %v", dogs)
 	var foundDogs []model.Dog
 	var userOwnedDogs []model.Dog
-	for _, dog := range missingDogs {
+	for _, dog := range dogs {
 		if dog.Owner == nil {
 			foundDogs = append(foundDogs, dog)
 		} else {
