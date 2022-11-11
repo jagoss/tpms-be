@@ -1,8 +1,8 @@
 package model
 
 import (
-	"google.golang.org/genproto/googleapis/type/datetime"
 	"strings"
+	"time"
 )
 
 const (
@@ -175,7 +175,7 @@ type Dog struct {
 	Latitude   float32
 	Longitude  float32
 	ImgUrl     string
-	CreateAt   datetime.DateTime
+	CreateAt   time.Time
 }
 
 type DogModel struct {
@@ -192,7 +192,8 @@ type DogModel struct {
 	Latitude   float32
 	Longitude  float32
 	ImgUrl     string
-	CreateAt   datetime.DateTime
+	CreateAt   time.Time
+	DeleteAt   time.Time
 }
 
 type Breed int

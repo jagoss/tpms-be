@@ -35,9 +35,8 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 	if row.Err() != nil {
 		return nil, row.Err()
 	}
-
-	var dog model.DogModel
-	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt); err != nil {
+	dog, err := parseToDogModel(row)
+	if err != nil {
 		return nil, err
 	}
 	up := UserPersister{dp.connection}
@@ -49,7 +48,7 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 		host, _ = up.GetUser(dog.HostID)
 	}
 
-	resultDog := mapToDog(dog, owner, host)
+	resultDog := mapToDog(*dog, owner, host)
 
 	return &resultDog, nil
 }
@@ -184,8 +183,12 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 
 	for rows.Next() {
 		var dog model.DogModel
-		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl); err != nil {
+		var deleteDate sql.NullTime
+		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &deleteDate); err != nil {
 			return nil, err
+		}
+		if deleteDate.Valid {
+			dog.DeleteAt = deleteDate.Time
 		}
 		var owner, host *model.User
 		if dog.OwnerID != "" {
@@ -201,4 +204,17 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 		return make([]model.Dog, 0), nil
 	}
 	return resultList, nil
+}
+
+func parseToDogModel(row *sql.Row) (*model.DogModel, error) {
+	var dog model.DogModel
+	var deleteDate sql.NullTime
+	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
+		return nil, err
+	}
+	if deleteDate.Valid {
+		dog.DeleteAt = deleteDate.Time
+	}
+
+	return &dog, nil
 }
