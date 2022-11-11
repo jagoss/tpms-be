@@ -180,7 +180,7 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Accept      json
 // @Produce     json
 // @Param		dogID query string false "dog ID"
-// @Param		possibleDogID query string false "possible dog ID"
+// @Param		matchingDog query string false "matching dog ID"
 // @Success     200 {object} model.DogResponse
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}

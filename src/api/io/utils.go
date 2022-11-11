@@ -44,7 +44,7 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 	if reqDog.Owner != "" {
 		dog.Owner = &model.User{ID: reqDog.Owner}
 	}
-	if reqDog.Owner != "" {
+	if reqDog.Host != "" {
 		dog.Host = &model.User{ID: reqDog.Host}
 	}
 
