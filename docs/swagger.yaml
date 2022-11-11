@@ -32,6 +32,8 @@ definitions:
         type: string
       size:
         type: string
+      tailLength:
+        type: string
     type: object
   model.DogResponse:
     properties:
@@ -62,6 +64,8 @@ definitions:
       profileImg:
         type: string
       size:
+        type: string
+      tailLength:
         type: string
     type: object
   model.PossibleMatch:
@@ -387,9 +391,9 @@ paths:
         in: query
         name: dogID
         type: string
-      - description: possible dog ID
+      - description: matching dog ID
         in: query
-        name: possibleDogID
+        name: matchingDog
         type: string
       produces:
       - application/json
@@ -993,7 +997,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.User'
+            allOf:
+            - type: object
+            - properties:
+                message:
+                  type: string
+              type: object
         "400":
           description: Bad Request
           schema:

@@ -463,8 +463,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "possible dog ID",
-                        "name": "possibleDogID",
+                        "description": "matching dog ID",
+                        "name": "matchingDog",
                         "in": "query"
                     }
                 ],
@@ -1522,7 +1522,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -1900,6 +1912,9 @@ const docTemplate = `{
                 },
                 "size": {
                     "type": "string"
+                },
+                "tailLength": {
+                    "type": "string"
                 }
             }
         },
@@ -1946,6 +1961,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "size": {
+                    "type": "string"
+                },
+                "tailLength": {
                     "type": "string"
                 }
             }
