@@ -10,6 +10,11 @@ import (
 	"strings"
 )
 
+const (
+	TITLE = "title"
+	BODY  = "body"
+)
+
 func DeserializeUser(input []byte) (*model.User, error) {
 	var user model.User
 	err := json.Unmarshal(input, &user)

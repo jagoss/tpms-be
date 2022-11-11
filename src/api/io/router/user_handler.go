@@ -282,7 +282,7 @@ func UpdateFCMToken(c *gin.Context, env environment.Env) {
 // @Tags        user
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} model.User
+// @Success     200 {object} object{message=string}
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
@@ -299,8 +299,8 @@ func SendNotif(c *gin.Context, env environment.Env) {
 	}
 
 	data := map[string]string{
-		"title": "Hola!",
-		"body":  "Entra a nuestra app!",
+		io.TITLE: "Hola!",
+		io.BODY:  "Entra a nuestra app!",
 	}
 	userManager := users.NewUserManager(env.UserPersister)
 	err := userManager.SendPushToOwner(fmt.Sprintf("%v", userID), data, env.NotificationSender)
@@ -313,4 +313,5 @@ func SendNotif(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
+	c.JSON(http.StatusOK, gin.H{"message": "push notification sent!"})
 }
