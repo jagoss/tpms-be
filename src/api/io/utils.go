@@ -37,12 +37,17 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 		CoatColor:  model.ParseCoatColor(reqDog.CoatColor),
 		CoatLength: model.ParseCoatLength(reqDog.CoatLength),
 		IsLost:     reqDog.IsLost,
-		Owner:      &model.User{ID: reqDog.Owner},
-		Host:       &model.User{ID: reqDog.Host},
 		Latitude:   reqDog.Latitude,
 		Longitude:  reqDog.Longitude,
 		ImgUrl:     reqDog.ImgUrl,
 	}
+	if reqDog.Owner != "" {
+		dog.Owner = &model.User{ID: reqDog.Owner}
+	}
+	if reqDog.Owner != "" {
+		dog.Host = &model.User{ID: reqDog.Host}
+	}
+
 	if reqDog.ID != "" {
 		unitID, err := strconv.ParseInt(reqDog.ID, 10, 64)
 		if err != nil {

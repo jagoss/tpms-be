@@ -307,7 +307,7 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
+	log.Printf("possibleDogs: %s", possibleDogsArr)
 	dogIDU, _ := strconv.ParseUint(dogID, 10, 64)
 	var matchingDogIDs []uint
 	for _, matchingDogID := range possibleDogsArr {

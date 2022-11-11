@@ -35,9 +35,10 @@ func (d *DogManager) Register(dog *model.Dog, imgBuffArray []string, userManager
 	}
 
 	dog.ImgUrl = imgsPath
-
-	if exists, _ := d.dogPersister.DogExisitsByNameAndOwner(dog.Name, dog.Owner.ID); exists {
-		return nil, fmt.Errorf("dog with name %s and ownerID %s already exists", dog.Name, dog.Owner.ID)
+	if dog.Owner != nil {
+		if exists, _ := d.dogPersister.DogExisitsByNameAndOwner(dog.Name, dog.Owner.ID); exists {
+			return nil, fmt.Errorf("dog with name %s and ownerID %s already exists", dog.Name, dog.Owner.ID)
+		}
 	}
 
 	err = setHostAndOwner(dog, userManager)
@@ -120,17 +121,21 @@ func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, er
 }
 
 func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
-	owner, err := userManager.Get(dog.Owner.ID)
-	if err != nil {
-		return fmt.Errorf("error getting dog owner: %v", err)
+	if dog.Owner != nil {
+		owner, err := userManager.Get(dog.Owner.ID)
+		if err != nil {
+			return fmt.Errorf("error getting dog owner: %v", err)
+		}
+		dog.Owner = owner
 	}
 
-	host, err := userManager.Get(dog.Host.ID)
-	if err != nil {
-		return fmt.Errorf("error getting dog host: %v", err)
+	if dog.Host != nil {
+		host, err := userManager.Get(dog.Owner.ID)
+		if err != nil {
+			return fmt.Errorf("error getting dog owner: %v", err)
+		}
+		dog.Host = host
 	}
-	log.Printf("[dogmanager.setHostAndOwner] host: %v, owner: %v", host, owner)
-	dog.Owner = owner
-	dog.Host = host
+
 	return nil
 }
