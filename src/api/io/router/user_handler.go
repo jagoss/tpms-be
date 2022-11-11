@@ -286,9 +286,17 @@ func UpdateFCMToken(c *gin.Context, env environment.Env) {
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
-// @Router      /user/notif [post]
+// @Router      /user/:id/notification [post]
 func SendNotif(c *gin.Context, env environment.Env) {
-	userID, _ := c.Get("x-user-id")
+	userID := c.Param("id")
+	if userID != "" {
+		log.Printf("missing user id")
+		c.JSON(http.StatusInternalServerError, map[string]string{
+			"error":   "missing user id",
+			"message": "missing path variable",
+		})
+		return
+	}
 
 	data := map[string]string{
 		"title": "Hola!",

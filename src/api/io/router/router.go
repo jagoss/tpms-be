@@ -168,10 +168,7 @@ func mapUserRoutes(env environment.Env) {
 		}
 		GetUserContactInfo(context, env)
 	})
-	userRouter.POST("/notif", func(context *gin.Context) {
-		if !validUser(context) {
-			return
-		}
+	userRouter.POST("/:id/notification", func(context *gin.Context) {
 		SendNotif(context, env)
 	})
 }
