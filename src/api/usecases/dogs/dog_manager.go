@@ -130,7 +130,7 @@ func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
 	}
 
 	if dog.Host != nil {
-		host, err := userManager.Get(dog.Owner.ID)
+		host, err := userManager.Get(dog.Host.ID)
 		if err != nil {
 			return fmt.Errorf("error getting dog owner: %v", err)
 		}
