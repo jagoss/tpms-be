@@ -289,7 +289,7 @@ func UpdateFCMToken(c *gin.Context, env environment.Env) {
 // @Router      /user/:id/notification [post]
 func SendNotif(c *gin.Context, env environment.Env) {
 	userID := c.Param("id")
-	if userID != "" {
+	if userID == "" {
 		log.Printf("missing user id")
 		c.JSON(http.StatusInternalServerError, map[string]string{
 			"error":   "missing user id",
