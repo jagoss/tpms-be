@@ -944,19 +944,19 @@ type TailLength int
 func (tl TailLength) String() string {
 	switch tl {
 	case ShortTail:
-		return "CORTO"
+		return "Corta"
 	case LongTail:
-		return "LARGO"
+		return "Larga"
 	default:
-		return "CORTO"
+		return "Corta"
 	}
 }
 
 func ParseTailLength(length string) TailLength {
 	switch strings.ToUpper(length) {
-	case "CORTO":
+	case "CORTA":
 		return ShortTail
-	case "LARGO":
+	case "LARGA":
 		return LongTail
 	default:
 		return ShortTail
