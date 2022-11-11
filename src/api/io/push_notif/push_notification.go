@@ -7,7 +7,6 @@ import (
 	"firebase.google.com/go/v4/messaging"
 	"fmt"
 	"log"
-	"time"
 )
 
 type NotificationSender struct {
@@ -47,26 +46,10 @@ func (ns *NotificationSender) SendMessage(token string, data map[string]string) 
 }
 
 func buildNotificationMessage(token string, data map[string]string) *messaging.Message {
-	duration := time.Duration(48) * time.Hour
-	badge := 42
 	return &messaging.Message{
 		Notification: &messaging.Notification{
 			Title: data[io.TITLE],
 			Body:  data[io.BODY],
-		},
-		Android: &messaging.AndroidConfig{
-			TTL: &duration,
-			Notification: &messaging.AndroidNotification{
-				Icon:  "stock_ticker_update",
-				Color: "#f45342",
-			},
-		},
-		APNS: &messaging.APNSConfig{
-			Payload: &messaging.APNSPayload{
-				Aps: &messaging.Aps{
-					Badge: &badge,
-				},
-			},
 		},
 		Token: token,
 	}
