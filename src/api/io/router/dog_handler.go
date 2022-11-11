@@ -103,8 +103,8 @@ func GetDog(c *gin.Context, env environment.Env) {
 	dog, err := dogManager.Get(io.ParseToUint(dogID))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "Variable missing",
-			"message": "Missing dog ID",
+			"error":   err.Error(),
+			"message": "error getting dog",
 		})
 		return
 	}
