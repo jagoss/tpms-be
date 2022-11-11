@@ -40,7 +40,6 @@ func (pmp *PossibleMatchPersister) Delete(dogID uint, possibleDogID uint) error 
 	return nil
 }
 
-// RemovePossibleMatchesForDog Remove entries where given id is the dogID
 func (pmp *PossibleMatchPersister) RemovePossibleMatchesForDog(dogID uint) ([]model.PossibleMatch, error) {
 	query := "SELECT * FROM possible_matches WHERE dog_id = ?"
 	rows, err := pmp.connection.DB.Query(query, dogID)

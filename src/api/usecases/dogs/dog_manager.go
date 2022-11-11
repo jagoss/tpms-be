@@ -74,9 +74,16 @@ func (d *DogManager) Modify(dog *model.Dog, imgBuffArray []string, userManager i
 	return updatedDog, nil
 }
 
-func (d *DogManager) Delete(dogID uint) (bool, error) {
+func (d *DogManager) Delete(dogID uint, persister interfaces.PossibleMatchPersister) (bool, error) {
+	if _, err := persister.RemovePossibleDogMatches(dogID); err != nil {
+		return false, fmt.Errorf("[dogmanager.Delete] error deleting matches where possible dog has id %d: %v", dogID, err)
+	}
+	if _, err := persister.RemovePossibleMatchesForDog(dogID); err != nil {
+		return false, fmt.Errorf("[dogmanager.Delete] error deleting possible matches for dog with id %d: %v", dogID, err)
+
+	}
 	if err := d.dogPersister.DeleteDog(dogID); err != nil {
-		return false, fmt.Errorf("[dogmanager.Delete] error registing dog with id %d: %v", dogID, err)
+		return false, fmt.Errorf("[dogmanager.Delete] error deleting dog with id %d: %v", dogID, err)
 	}
 
 	return true, nil
