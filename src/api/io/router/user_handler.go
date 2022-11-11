@@ -206,7 +206,7 @@ func GetUserDogs(c *gin.Context, env environment.Env) {
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
 	userOwnedDogs, foundDogs, err := dogManager.GetAllUserDogs(userID)
 	if err != nil {
-		msg := fmt.Sprintf("Error getting dogs for user %s", userID)
+		msg := fmt.Sprintf("Error getting dogs for user %s: %s", userID, err.Error())
 		log.Printf(msg)
 		c.JSON(http.StatusInternalServerError, map[string]string{
 			"error":   err.Error(),
