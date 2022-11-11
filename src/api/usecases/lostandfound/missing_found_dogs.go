@@ -100,18 +100,7 @@ func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, possibleDogsIDs []uint,
 		if err = l.possibleMatchPersister.AddPossibleMatch(dogID, id); err != nil {
 			log.Printf("%v", err)
 		} else {
-			data := map[string]string{
-				"title": fmt.Sprintf("Puede que alguien viera a %s!", dog.Name),
-				"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
-			}
-
-			if err = sender.SendMessage(getToken(dog), data); err != nil {
-				if dog.Host != nil {
-					log.Printf("error sending push notification to user %s: %v", dog.Host.ID, err)
-				} else {
-					log.Printf("error sending push notification to user %s: %v", dog.Owner.ID, err)
-				}
-			}
+			send(dog, sender)
 		}
 	}
 	return nil
@@ -227,6 +216,28 @@ func (l *LostFoundDogs) GetPossibleMatchingDogs(id uint, acks []model.Ack) ([]mo
 
 func notifyModel(dogID int64, sameDogID int64) {
 
+}
+
+func send(dog *model.Dog, sender interfaces.Messaging) {
+	if dog.Owner != nil {
+		data := map[string]string{
+			"title": fmt.Sprintf("Puede que alguien viera a %s!", dog.Name),
+			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
+		}
+		sendNotification(data, dog.Owner, sender)
+	} else {
+		data := map[string]string{
+			"title": fmt.Sprintf("Parece que hay un posible dueño de %s!", dog.Name),
+			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
+		}
+		sendNotification(data, dog.Host, sender)
+	}
+}
+
+func sendNotification(data map[string]string, user *model.User, sender interfaces.Messaging) {
+	if err := sender.SendMessage(user.FCMToken, data); err != nil {
+		log.Printf("error sending push notification to user %s: %v", user.ID, err)
+	}
 }
 
 func getToken(dog *model.Dog) string {
