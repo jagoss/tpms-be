@@ -4,7 +4,6 @@ import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/io/db"
 	"database/sql"
-	"log"
 	"time"
 )
 
@@ -99,7 +98,7 @@ func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string)
 }
 
 func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
-	query := "SELECT * FROM dogs where is_lost = true AND owner_id != ''"
+	query := "SELECT * FROM dogs where is_lost = true"
 	rows, err := dp.connection.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -125,7 +124,6 @@ func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("dogs %v", dogs)
 	return dogs, nil
 }
 
@@ -184,7 +182,7 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 	for rows.Next() {
 		var dog model.DogModel
 		var deleteDate sql.NullTime
-		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &deleteDate); err != nil {
+		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
 			return nil, err
 		}
 		if deleteDate.Valid {
