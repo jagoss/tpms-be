@@ -308,14 +308,14 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	dogIDInt, _ := strconv.Atoi(dogID)
+	dogIDU, _ := strconv.ParseUint(dogID, 10, 64)
 	var matchingDogIDs []uint
 	for _, matchingDogID := range possibleDogsArr {
 		id, _ := strconv.Atoi(matchingDogID)
 		matchingDogIDs = append(matchingDogIDs, uint(id))
 	}
 	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
-	err := lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, env.NotificationSender)
+	err := lf.PossibleMatchingDogs(uint(dogIDU), matchingDogIDs, env.NotificationSender)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),

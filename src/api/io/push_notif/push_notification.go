@@ -38,8 +38,7 @@ func (ns *NotificationSender) SendMessage(token string, data map[string]string) 
 		Data:  data,
 		Token: token,
 	}
-	// Send a message to the device corresponding to the provided
-	// registration token.
+	// Send a message to the device corresponding to the provided registration token.
 	response, err := ns.GetClient().Send(ns.cxt, message)
 	if err != nil {
 		return err

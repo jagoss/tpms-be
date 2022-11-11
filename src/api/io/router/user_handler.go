@@ -305,8 +305,8 @@ func SendNotif(c *gin.Context, env environment.Env) {
 	userManager := users.NewUserManager(env.UserPersister)
 	err := userManager.SendPushToOwner(fmt.Sprintf("%v", userID), data, env.NotificationSender)
 	if err != nil {
-		msg := fmt.Sprintf("[userHandler.SendNotif] error sending token to user %v", userID)
-		log.Printf(msg)
+		msg := fmt.Sprintf("[userHandler.SendNotif] error sending notif to user %v", userID)
+		log.Printf(msg + " " + err.Error())
 		c.JSON(http.StatusInternalServerError, map[string]string{
 			"error":   err.Error(),
 			"message": msg,
