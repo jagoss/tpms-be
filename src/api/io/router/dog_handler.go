@@ -291,11 +291,26 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 // @Success     200 {object} object{message=string}
 // @Router      /dog/possible [post]
 func PossibleMatch(c *gin.Context, env environment.Env) {
-	q := c.Request.URL.Query()
-	dogID, possibleDogsArr := q.Get("dogID"), q.Get("possibleDogs")
+	dogID, exists := c.GetQuery("dogId")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing dogId",
+			"message": "missing argument",
+		})
+		return
+	}
+	possibleDogsArr, exists := c.GetQueryArray("possibleDogs")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing possibleDogs",
+			"message": "missing argument",
+		})
+		return
+	}
+
 	dogIDInt, _ := strconv.Atoi(dogID)
 	var matchingDogIDs []uint
-	for _, matchingDogID := range strings.Split(possibleDogsArr, ",") {
+	for _, matchingDogID := range possibleDogsArr {
 		id, _ := strconv.Atoi(matchingDogID)
 		matchingDogIDs = append(matchingDogIDs, uint(id))
 	}
