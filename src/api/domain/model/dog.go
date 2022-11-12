@@ -195,6 +195,7 @@ type Dog struct {
 	Latitude   float64
 	Longitude  float64
 	ImgUrl     string
+	Embedding  string
 	CreateAt   time.Time
 }
 
@@ -214,6 +215,7 @@ type DogModel struct {
 	Latitude   float64
 	Longitude  float64
 	ImgUrl     string
+	Embedding  string
 	CreateAt   time.Time
 	DeleteAt   time.Time
 }

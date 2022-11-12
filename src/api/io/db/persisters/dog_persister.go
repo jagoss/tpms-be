@@ -4,8 +4,11 @@ import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/io/db"
 	"database/sql"
+	"fmt"
 	"time"
 )
+
+const columns = "id, name, breed, age, size, coat_color, coat_length, tail_length, ear, is_lost, owner_id, host_id, latitude, longitude, img_url, create_at, delete_date"
 
 type DogPersister struct {
 	connection *db.Connection
@@ -18,7 +21,7 @@ func NewDogPersister(connection *db.Connection) *DogPersister {
 func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
 	dogModel := mapToDogModel(*dog)
 
-	query := "INSERT INTO dogs(name, breed, age, size, coat_color, coat_length, tail_length, ear, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+	query := "INSERT INTO tpms_prod.dogs(name, breed, age, size, coat_color, coat_length, tail_length, ear, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 	result, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Breed, dogModel.Age, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.TailLength, dogModel.Ear, dogModel.IsLost, dogModel.OwnerID, dogModel.HostID, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl, time.Now())
 	if err != nil {
 		return nil, err
@@ -29,7 +32,7 @@ func (dp *DogPersister) InsertDog(dog *model.Dog) (*model.Dog, error) {
 }
 
 func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
-	query := "SELECT * FROM tpms_prod.dogs WHERE id = ?"
+	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE id = ?", columns)
 	row := dp.connection.DB.QueryRow(query, dogID)
 	if row.Err() != nil {
 		return nil, row.Err()
@@ -53,7 +56,7 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 }
 
 func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
-	query := "SELECT * FROM tpms_prod.dogs WHERE id in (?)"
+	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE id in (?)", columns)
 	rows, err := dp.connection.DB.Query(query, ids)
 	if err != nil {
 		return nil, err
@@ -79,7 +82,7 @@ func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 }
 
 func (dp *DogPersister) DeleteDog(dogID uint) error {
-	query := "DELETE FROM dogs WHERE id = ?"
+	query := "DELETE FROM tpms_prod.dogs WHERE id = ?"
 	_, err := dp.connection.DB.Exec(query, dogID)
 	if err != nil {
 		return err
@@ -89,7 +92,7 @@ func (dp *DogPersister) DeleteDog(dogID uint) error {
 }
 
 func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string) (bool, error) {
-	query := "SELECT * FROM dogs WHERE name = ? AND owner_id = ?"
+	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE name = ? AND owner_id = ?", columns)
 	rows, err := dp.connection.DB.Query(query, dogName, ownerID)
 	if err != nil {
 		return false, err
@@ -98,7 +101,7 @@ func (dp *DogPersister) DogExisitsByNameAndOwner(dogName string, ownerID string)
 }
 
 func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
-	query := "SELECT * FROM dogs where is_lost = true"
+	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs where is_lost = true", columns)
 	rows, err := dp.connection.DB.Query(query)
 	if err != nil {
 		return nil, err
@@ -113,7 +116,7 @@ func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
 }
 
 func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
-	query := "SELECT * FROM dogs WHERE host_id = ? OR owner_id = ?"
+	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE host_id = ? OR owner_id = ?", columns)
 
 	rows, err := dp.connection.DB.Query(query, userID, userID)
 	if err != nil {
