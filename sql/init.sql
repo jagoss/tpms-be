@@ -2,14 +2,14 @@ CREATE DATABASE IF NOT EXISTS tpms_prod;
 USE tpms_prod;
 CREATE TABLE IF NOT EXISTS `users`
 (
-    `id`         VARCHAR(255) NOT NULL,
-    `first_name` VARCHAR(50)  NOT NULL,
-    `last_name`  VARCHAR(50)  NOT NULL,
-    `email`      VARCHAR(255) NOT NULL,
-    `phone`      VARCHAR(40)  NOT NULL,
-    `fmt_token`  VARCHAR(255),
-    `latitude`   DOUBLE,
-    `longitude`  DOUBLE,
+    `id`        VARCHAR(255) NOT NULL,
+    `email`     VARCHAR(255) NOT NULL,
+    `phone`     VARCHAR(40)  NOT NULL,
+    `fmt_token` VARCHAR(255),
+    `name`      VARCHAR(255) NOT NULL,
+    `optout`    BOOLEAN DEFAULT FALSE,
+    `latitude`  DOUBLE,
+    `longitude` DOUBLE,
     PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `dogs`
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `coat_length` int         NOT NULL,
     `tail_length` int         NOT NULL,
     `ear`         int         NOT NULL,
-    `is_lost`     boolean,
+    `is_lost`     BOOLEAN,
     `owner_id`    VARCHAR(255),
     `host_id`     VARCHAR(255),
     `latitude`    DOUBLE,
@@ -48,14 +48,14 @@ CREATE DATABASE IF NOT EXISTS tpms_test;
 USE tpms_test;
 CREATE TABLE IF NOT EXISTS users
 (
-    `id`         VARCHAR(255) NOT NULL,
-    `first_name` VARCHAR(50)  NOT NULL,
-    `last_name`  VARCHAR(50)  NOT NULL,
-    `email`      VARCHAR(255) NOT NULL,
-    `phone`      VARCHAR(40)  NOT NULL,
-    `fcm_token`  VARCHAR(255),
-    `latitude`   DOUBLE,
-    `longitude`  DOUBLE,
+    `id`        VARCHAR(255) NOT NULL,
+    `email`     VARCHAR(255) NOT NULL,
+    `phone`     VARCHAR(40)  NOT NULL,
+    `fcm_token` VARCHAR(255),
+    `name`      VARCHAR(255) NOT NULL,
+    `optout`    BOOLEAN DEFAULT FALSE,
+    `latitude`  DOUBLE,
+    `longitude` DOUBLE,
     PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `dogs`
