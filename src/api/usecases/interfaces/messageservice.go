@@ -1,5 +1,7 @@
 package interfaces
 
+import "be-tpms/src/api/domain/model"
+
 type MessageSender interface {
-	SendToEnabledUsers(userID string, data map[string]string) error
+	SendToEnabledUsers(dog *model.Dog) error
 }
