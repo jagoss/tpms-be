@@ -16,8 +16,8 @@ func NewUserPersister(connection *db.Connection) *UserPersister {
 }
 
 func (up *UserPersister) InsertUser(user *model.User) (*model.User, error) {
-	query := "INSERT INTO users(`id`, `name`, `phone`, `email`, `latitude`, `longitude`) VALUES (?, ?, ?, ?, ?, ?)"
-	_, err := up.connection.DB.Exec(query, user.ID, user.Name, user.Phone, user.Email, user.Latitude, user.Longitude)
+	query := "INSERT INTO users(`id`, `name`, `phone`, `email`, `latitude`, `longitude`, `optout`) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	_, err := up.connection.DB.Exec(query, user.ID, user.Name, user.Phone, user.Email, user.Latitude, user.Longitude, user.Optout)
 	if err != nil {
 		return nil, err
 	}
@@ -41,8 +41,8 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 }
 
 func (up *UserPersister) UpdateUser(user *model.User) (*model.User, error) {
-	query := "UPDATE users SET email = ?, phone = ?, fcm_token = ?, latitude = ?, longitude = ? WHERE id = ?"
-	_, err := up.connection.DB.Exec(query, user.Email, user.Phone, user.FCMToken, user.Latitude, user.Longitude, user.ID)
+	query := "UPDATE users SET email = ?, phone = ?, fcm_token = ?, latitude = ?, longitude = ?, optout = ? WHERE id = ?"
+	_, err := up.connection.DB.Exec(query, user.Email, user.Phone, user.FCMToken, user.Latitude, user.Longitude, user.Optout, user.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func mapToUsers(rows *sql.Rows) ([]model.User, error) {
 	var fcmToken sql.NullString
 	for rows.Next() {
 		var user model.User
-		if err := rows.Scan(&user.ID, &user.Email, &user.Phone, &fcmToken, &user.Name, &user.Latitude, &user.Longitude); err != nil {
+		if err := rows.Scan(&user.ID, &user.Email, &user.Phone, &fcmToken, &user.Name, &user.Optout, &user.Latitude, &user.Longitude); err != nil {
 			return nil, err
 		}
 		if fcmToken.Valid {

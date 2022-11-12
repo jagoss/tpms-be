@@ -23,6 +23,9 @@ type User struct {
 	// FCMToken
 	// in: string
 	FCMToken string `json:"FCMToken"`
+	// Optout
+	// in: bool
+	Optout bool `json:"optout"`
 }
 
 // swagger:model UserContactInfo
