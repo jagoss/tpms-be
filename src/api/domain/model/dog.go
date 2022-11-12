@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	Other Breed = iota
+	UnknowBreed Breed = iota
+	Other
 	Affenpinscher
 	AfghanHound
 	AfricanHuntingDog
@@ -130,18 +131,21 @@ const (
 )
 
 const (
-	Small Size = iota
+	UnknowSize Size = iota
+	Small
 	Medium
 	Large
 )
 const (
-	Puppy Age = iota
+	UnknowAge Age = iota
+	Puppy
 	Young
 	Adult
 )
 
 const (
-	Black CoatColor = iota
+	UnknowColor CoatColor = iota
+	Black
 	Brown
 	Gray
 	Beige
@@ -151,17 +155,20 @@ const (
 )
 
 const (
-	Short CoatLength = iota
+	UnknowCoatLength CoatLength = iota
+	Short
 	Long
 )
 
 const (
-	ShortTail TailLength = iota
+	UnknowTailLength TailLength = iota
+	ShortTail
 	LongTail
 )
 
 const (
-	Standing Ear = iota
+	UnknowEar Ear = iota
+	Standing
 	Cut
 	Floppy
 )
@@ -458,7 +465,7 @@ func (b Breed) String() string {
 	case Other:
 		return "Otra"
 	default:
-		return "Otra"
+		return "Desconocido"
 	}
 }
 
@@ -819,7 +826,7 @@ func ParseBreed(breed string) Breed {
 	case "Otra":
 		return Other
 	default:
-		return Other
+		return UnknowBreed
 	}
 }
 
@@ -834,7 +841,7 @@ func (s Size) String() string {
 	case Large:
 		return "Grande"
 	default:
-		return "Chico"
+		return "Desconocido"
 	}
 }
 
@@ -847,7 +854,7 @@ func ParseSize(size string) Size {
 	case "GRANDE":
 		return Large
 	default:
-		return Small
+		return UnknowSize
 	}
 }
 
@@ -862,7 +869,7 @@ func (a Age) String() string {
 	case Adult:
 		return "Adulto"
 	default:
-		return "Cachorro"
+		return "Desconocido"
 	}
 }
 
@@ -875,7 +882,7 @@ func ParseAge(age string) Age {
 	case "ADULTO":
 		return Adult
 	default:
-		return Puppy
+		return UnknowAge
 	}
 }
 
@@ -898,7 +905,7 @@ func (cc CoatColor) String() string {
 	case Brindle:
 		return "Atigrado"
 	default:
-		return "Mas de un color"
+		return "Desconocido"
 	}
 }
 
@@ -919,7 +926,7 @@ func ParseCoatColor(coatColor string) CoatColor {
 	case "ATIGRADO":
 		return Brindle
 	default:
-		return Multicolor
+		return UnknowColor
 	}
 }
 
@@ -932,7 +939,7 @@ func (cl CoatLength) String() string {
 	case Long:
 		return "Largo"
 	default:
-		return "Corto"
+		return "Desconocido"
 	}
 }
 
@@ -943,7 +950,7 @@ func ParseCoatLength(length string) CoatLength {
 	case "LARGO":
 		return Long
 	default:
-		return Short
+		return UnknowCoatLength
 	}
 }
 
@@ -956,7 +963,7 @@ func (tl TailLength) String() string {
 	case LongTail:
 		return "Larga"
 	default:
-		return "Corta"
+		return "Desconocido"
 	}
 }
 
@@ -967,7 +974,7 @@ func ParseTailLength(length string) TailLength {
 	case "LARGA":
 		return LongTail
 	default:
-		return ShortTail
+		return UnknowTailLength
 	}
 }
 
@@ -982,7 +989,7 @@ func (e Ear) String() string {
 	case Floppy:
 		return "Caida"
 	default:
-		return "Caida"
+		return "Desconocido"
 	}
 }
 
@@ -995,7 +1002,7 @@ func ParseEar(ear string) Ear {
 	case "CAIDA":
 		return Floppy
 	default:
-		return Floppy
+		return UnknowEar
 	}
 }
 
