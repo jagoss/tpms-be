@@ -6,6 +6,7 @@ import (
 	"be-tpms/src/api/io"
 	"be-tpms/src/api/usecases/dogs"
 	"be-tpms/src/api/usecases/lostandfound"
+	"be-tpms/src/api/usecases/messaging"
 	"be-tpms/src/api/usecases/users"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -72,6 +73,18 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 			"message": fmt.Sprintf("error inserting new dog: %v", err),
 		})
 		return
+	}
+
+	if dog.IsLost {
+
+		notificationSender := messaging.NewMessageSender(env.NotificationSender, env.UserPersister)
+		data := map[string]string{
+			io.TITLE: "Se ha perdido un perro cerca tuyo!",
+			io.BODY:  fmt.Sprintf("Se perdio un perro de raza %s cerca tuyo!", dog.Breed.String()),
+		}
+		if err = notificationSender.SendToEnabledUsers(dog, data); err != nil {
+			log.Printf("error notifi")
+		}
 	}
 
 	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
