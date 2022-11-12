@@ -192,8 +192,8 @@ type Dog struct {
 	IsLost     bool
 	Owner      *User
 	Host       *User
-	Latitude   float32
-	Longitude  float32
+	Latitude   float64
+	Longitude  float64
 	ImgUrl     string
 	CreateAt   time.Time
 }
@@ -211,8 +211,8 @@ type DogModel struct {
 	IsLost     bool
 	OwnerID    string
 	HostID     string
-	Latitude   float32
-	Longitude  float32
+	Latitude   float64
+	Longitude  float64
 	ImgUrl     string
 	CreateAt   time.Time
 	DeleteAt   time.Time

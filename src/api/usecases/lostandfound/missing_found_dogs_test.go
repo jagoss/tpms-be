@@ -6,5 +6,5 @@ import (
 )
 
 func TestDistance(t *testing.T) {
-	log.Printf("distance: %.2fkm", distance(32, 32, 45, 57))
+	log.Printf("Distance: %.2fkm", Distance(32, 32, 45, 57))
 }

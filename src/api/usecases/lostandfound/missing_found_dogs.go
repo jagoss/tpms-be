@@ -2,10 +2,10 @@ package lostandfound
 
 import (
 	"be-tpms/src/api/domain/model"
+	"be-tpms/src/api/usecases"
 	"be-tpms/src/api/usecases/interfaces"
 	"fmt"
 	"log"
-	"math"
 )
 
 type LostFoundDogs struct {
@@ -60,30 +60,11 @@ func (l *LostFoundDogs) GetMissingDogsInRadius(userLat float64, userLng float64,
 	}
 	var dogsInRadio []model.Dog
 	for _, dog := range missingDogs {
-		if distance(userLat, userLng, float64(dog.Latitude), float64(dog.Longitude)) <= radius {
+		if usecases.Distance(userLat, userLng, dog.Latitude, dog.Longitude) <= radius {
 			dogsInRadio = append(dogsInRadio, dog)
 		}
 	}
 	return dogsInRadio, nil
-}
-
-func distance(lat1 float64, lng1 float64, lat2 float64, lng2 float64) float64 {
-	radlat1 := math.Pi * lat1 / 180
-	radlat2 := math.Pi * lat2 / 180
-
-	theta := lng1 - lng2
-	radtheta := math.Pi * theta / 180
-
-	dist := math.Sin(radlat1)*math.Sin(radlat2) + math.Cos(radlat1)*math.Cos(radlat2)*math.Cos(radtheta)
-	if dist > 1 {
-		dist = 1
-	}
-
-	dist = math.Acos(dist)
-	dist = dist * 180 / math.Pi
-	dist = dist * 60 * 1.1515
-	dist = dist * 1.609344
-	return dist
 }
 
 func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, possibleDogsIDs []uint, sender interfaces.Messaging) error {
@@ -156,7 +137,6 @@ func (l *LostFoundDogs) unifyDogs(dog *model.Dog, matchingDog *model.Dog) error 
 	dog.IsLost = false
 	dog.Host = dog.Owner
 	dog.ImgUrl = fmt.Sprintf("%s;%s", dog.ImgUrl, matchingDog.ImgUrl)
-	notifyModel(dog.ID, matchingDog.ID)
 	return nil
 }
 
@@ -212,10 +192,6 @@ func (l *LostFoundDogs) GetPossibleMatchingDogs(id uint, acks []model.Ack) ([]mo
 	}
 
 	return possibleMatches, nil
-}
-
-func notifyModel(dogID int64, sameDogID int64) {
-
 }
 
 func send(dog *model.Dog, sender interfaces.Messaging) {
