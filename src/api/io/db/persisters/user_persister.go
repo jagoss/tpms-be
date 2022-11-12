@@ -37,7 +37,9 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &users[0], nil
+
+	user := users[0]
+	return &user, nil
 }
 
 func (up *UserPersister) UpdateUser(user *model.User) (*model.User, error) {
@@ -76,11 +78,11 @@ func (up *UserPersister) GetUsersEnabledMessages() ([]model.User, error) {
 	if !rows.Next() {
 		return nil, nil
 	}
-	user, err := mapToUsers(rows)
+	users, err := mapToUsers(rows)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return users, nil
 }
 
 func mapToUsers(rows *sql.Rows) ([]model.User, error) {
