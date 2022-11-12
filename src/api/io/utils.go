@@ -111,6 +111,14 @@ func MapToDogResponseList(dogs []model.Dog, bucket interfaces.Storage) []model.D
 	return dogsResp
 }
 
+func ParseToUintList(list []int64) []uint {
+	var resultList []uint
+	for _, e := range list {
+		resultList = append(resultList, ParseToUint(e))
+	}
+	return resultList
+}
+
 func ParseToUint(val any) uint {
 	stringVal := fmt.Sprintf("%s", val)
 	res, _ := strconv.ParseUint(stringVal, 10, 64)

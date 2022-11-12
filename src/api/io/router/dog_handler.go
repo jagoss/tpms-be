@@ -4,6 +4,7 @@ import (
 	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io"
+	"be-tpms/src/api/usecases/cvmodel"
 	"be-tpms/src/api/usecases/dogs"
 	"be-tpms/src/api/usecases/lostandfound"
 	"be-tpms/src/api/usecases/users"
@@ -70,6 +71,16 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
 			"message": fmt.Sprintf("error inserting new dog: %v", err),
+		})
+		return
+	}
+
+	predictionService := cvmodel.NewPrediction(env.CVModelRestClient, env.Storage)
+	if err = predictionService.CalculateVector(dog.ID, dog.ImgUrl); err != nil {
+		log.Printf("%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error calculating new dog %d vector: %v", dog.ID, err),
 		})
 		return
 	}
@@ -480,4 +491,41 @@ func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
 	}
 
 	c.JSON(http.StatusOK, dogIDs)
+}
+
+// GetSimilarDogPrediction godoc
+// @Summary Get similar dogs from CV models
+// @Schemes
+// @Description Given one dog ID return similar based on results of CV prediction model
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dog path string false  "dog ID"
+// @Success     200 {object} []model.DogResponse
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Router      /dog/:id/prediction [get]
+func GetSimilarDogPrediction(c *gin.Context, env environment.Env) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+	predictionService := cvmodel.NewPrediction(env.CVModelRestClient, env.Storage)
+	dogID, _ := strconv.ParseUint(id, 10, 64)
+	resultList, err := predictionService.FindMatches(uint(dogID), env.DogPersister)
+	if err != nil {
+		log.Printf(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error getting similar dogs from CV model for dog %s", id),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, io.MapToDogResponseList(resultList, env.Storage))
 }

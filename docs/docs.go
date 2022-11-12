@@ -441,6 +441,103 @@ const docTemplate = `{
                 }
             }
         },
+        "/dog/:id/prediction": {
+            "get": {
+                "description": "Given one dog ID return similar based on results of CV prediction model",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dog"
+                ],
+                "summary": "Get similar dogs from CV models",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "dog ID",
+                        "name": "dog",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DogResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/dog/found": {
             "put": {
                 "description": "Reunite dog with owner. Making him its only host and removing other hosts",
@@ -1880,6 +1977,9 @@ const docTemplate = `{
                 "coatLength": {
                     "type": "string"
                 },
+                "ear": {
+                    "type": "string"
+                },
                 "host": {
                     "type": "string"
                 },
@@ -1931,6 +2031,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "coatLength": {
+                    "type": "string"
+                },
+                "ear": {
                     "type": "string"
                 },
                 "host": {

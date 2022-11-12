@@ -128,6 +128,12 @@ func mapDogRoutes(env environment.Env) {
 		}
 		GetPossibleMatchingDog(context, env)
 	})
+	dogRouter.GET("/:id/prediction", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetSimilarDogPrediction(context, env)
+	})
 }
 
 func mapUserRoutes(env environment.Env) {

@@ -1,7 +1,6 @@
 package interfaces
 
-import "be-tpms/src/api/domain/model"
-
 type CVModelRestClient interface {
-	SearchDog() (*model.DogResponse, error)
+	CalculateVector(id int64, imgs []string) error
+	SearchSimilarDog(dogID int64) ([]uint, error)
 }
