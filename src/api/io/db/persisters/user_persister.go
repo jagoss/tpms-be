@@ -30,9 +30,6 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	if !rows.Next() {
-		return nil, nil
-	}
 	users, err := mapToUsers(rows)
 	if err != nil {
 		return nil, err
@@ -97,6 +94,10 @@ func mapToUsers(rows *sql.Rows) ([]model.User, error) {
 			user.FCMToken = fcmToken.String
 		}
 		users = append(users, user)
+	}
+
+	if users == nil {
+		return make([]model.User, 0), nil
 	}
 
 	return users, nil
