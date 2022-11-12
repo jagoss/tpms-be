@@ -1019,8 +1019,8 @@ type DogResponse struct {
 	IsLost     bool    `json:"isLost"`
 	Owner      string  `json:"owner"`
 	Host       string  `json:"host"`
-	Latitude   float32 `json:"latitude"`
-	Longitude  float32 `json:"longitude"`
+	Latitude   float64 `json:"latitude"`
+	Longitude  float64 `json:"longitude"`
 	ImgsUrl    string  `json:"imgsUrl"`
 	ProfileImg string  `json:"profileImg"`
 }
@@ -1038,8 +1038,8 @@ type DogRequest struct {
 	IsLost     bool     `json:"isLost"`
 	Owner      string   `json:"owner"`
 	Host       string   `json:"host"`
-	Latitude   float32  `json:"latitude"`
-	Longitude  float32  `json:"longitude"`
+	Latitude   float64  `json:"latitude"`
+	Longitude  float64  `json:"longitude"`
 	ImgUrl     string   `json:"imgUrl"`
 	Imgs       []string `json:"imgs"`
 }
