@@ -93,7 +93,13 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 			io.TITLE: "Se ha perdido un perro cerca tuyo!",
 			io.BODY:  fmt.Sprintf("Se perdio un perro de raza %s cerca tuyo!", dog.Breed.String()),
 		}
-		if err = notificationSender.SendToEnabledUsers(data); err != nil {
+		var reporterID string
+		if dog.Owner == nil {
+			reporterID = dog.Host.ID
+		} else {
+			reporterID = dog.Owner.ID
+		}
+		if err = notificationSender.SendToEnabledUsers(reporterID, data); err != nil {
 			log.Printf("error notifying users")
 		}
 	}
