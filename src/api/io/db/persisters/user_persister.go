@@ -33,11 +33,11 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 	if !rows.Next() {
 		return nil, nil
 	}
-	user, err := mapToUser(rows)
+	users, err := mapToUsers(rows)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return &users[0], nil
 }
 
 func (up *UserPersister) UpdateUser(user *model.User) (*model.User, error) {
@@ -66,14 +66,36 @@ func (up *UserPersister) DeleteUser(userID string) error {
 	return nil
 }
 
-func mapToUser(rows *sql.Rows) (*model.User, error) {
-	var user model.User
-	var fcmToken sql.NullString
-	if err := rows.Scan(&user.ID, &user.Email, &user.Phone, &fcmToken, &user.Name, &user.Latitude, &user.Longitude); err != nil {
+func (up *UserPersister) GetUsersEnabledMessages() ([]model.User, error) {
+	query := "SELECT * FROM users WHERE optout = FALSE"
+
+	rows, err := up.connection.DB.Query(query)
+	if err != nil {
 		return nil, err
 	}
-	if fcmToken.Valid {
-		user.FCMToken = fcmToken.String
+	if !rows.Next() {
+		return nil, nil
 	}
-	return &user, nil
+	user, err := mapToUsers(rows)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func mapToUsers(rows *sql.Rows) ([]model.User, error) {
+	var users []model.User
+	var fcmToken sql.NullString
+	for rows.Next() {
+		var user model.User
+		if err := rows.Scan(&user.ID, &user.Email, &user.Phone, &fcmToken, &user.Name, &user.Latitude, &user.Longitude); err != nil {
+			return nil, err
+		}
+		if fcmToken.Valid {
+			user.FCMToken = fcmToken.String
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }
