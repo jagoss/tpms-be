@@ -78,14 +78,18 @@ func (c *CVModelClient) put(url string, body map[string]interface{}) error {
 	_ = json.NewEncoder(byteBuffer).Encode(body)
 	var decoded map[string]interface{}
 	_ = json.Unmarshal(byteBuffer.Bytes(), &decoded)
-	log.Printf("request body unmarshaled: %v", body)
 	request, err := http.NewRequest(http.MethodPut, url, byteBuffer)
 	if err != nil {
 		return err
 	}
 	res, err := http.DefaultClient.Do(request)
 	if res.StatusCode != OK {
-		return fmt.Errorf("status code not 200. It is %d", res.StatusCode)
+		resultListByte, _ := io.ReadAll(res.Body)
+		_ = res.Body.Close()
+
+		var result map[string]interface{}
+		err = json.Unmarshal(resultListByte, &result)
+		return fmt.Errorf("status code %d: %v", res.StatusCode, result)
 	}
 	return nil
 }
