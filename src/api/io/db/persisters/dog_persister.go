@@ -131,7 +131,7 @@ func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
 }
 
 func (dp *DogPersister) SetLostDog(id uint, lat float64, lng float64) error {
-	query := "UPDATE FROM tpms_prod.dogs SET latitude = ?, longitude = ? WHERE id = ?"
+	query := "UPDATE tpms_prod.dogs SET latitude = ?, longitude = ? WHERE id = ?"
 	_, err := dp.connection.DB.Exec(query, lat, lng, id)
 	if err != nil {
 		return err

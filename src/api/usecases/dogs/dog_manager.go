@@ -124,12 +124,24 @@ func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, er
 }
 
 func (d *DogManager) SetDogAsLost(id uint, lat float64, lng float64) (*model.Dog, error) {
-	if err := d.dogPersister.SetLostDog(id, lat, lng); err != nil {
-		log.Printf("[dogmanager.SetDogAsLost] error updating dog: %s", err.Error())
+	dog, err := d.dogPersister.GetDog(id)
+	if err != nil {
 		return nil, err
 	}
-	dog, _ := d.dogPersister.GetDog(id)
-	return dog, nil
+	if dog.IsLost {
+		msg := fmt.Sprintf("error: dog %d is already lost. Cant not update status 2 times", dog.ID)
+		log.Printf(msg)
+		return nil, fmt.Errorf(msg)
+	}
+	dog.Latitude = lat
+	dog.Longitude = lng
+	dog.IsLost = true
+	updateDog, err := d.dogPersister.UpdateDog(dog)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateDog, nil
 }
 
 func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
