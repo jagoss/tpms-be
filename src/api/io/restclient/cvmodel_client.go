@@ -75,6 +75,7 @@ type CVRequest struct {
 }
 
 func (c *CVModelClient) put(url string, body map[string]interface{}) error {
+	log.Printf("request body: %v", body)
 	byteBuffer := new(bytes.Buffer)
 	_ = json.NewEncoder(byteBuffer).Encode(body)
 	request, err := http.NewRequest(http.MethodPut, url, byteBuffer)
