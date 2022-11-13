@@ -116,7 +116,7 @@ func (dp *DogPersister) GetMissingDogs() ([]model.Dog, error) {
 }
 
 func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
-	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE host_id = ? OR owner_id = ?", columns)
+	query := fmt.Sprintf("SELECT DISTINCT %s FROM tpms_prod.dogs WHERE host_id = ? OR owner_id = ?", columns)
 
 	rows, err := dp.connection.DB.Query(query, userID, userID)
 	if err != nil {

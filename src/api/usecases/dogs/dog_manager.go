@@ -107,13 +107,14 @@ func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, er
 	if err != nil {
 		return nil, nil, fmt.Errorf("[dogmanager.GetAllUserDogs] error getting user %s dogs: %s", userID, err.Error())
 	}
+	log.Printf("All user dogs: %v", dogs)
 	var foundDogs []model.Dog
 	var userOwnedDogs []model.Dog
 	for _, dog := range dogs {
-		if dog.Owner == nil {
-			foundDogs = append(foundDogs, dog)
-		} else {
+		if dog.Owner != nil {
 			userOwnedDogs = append(userOwnedDogs, dog)
+		} else {
+			foundDogs = append(foundDogs, dog)
 		}
 	}
 
