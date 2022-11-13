@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -24,9 +26,11 @@ func NewCVModelRestClient(client *http.Client) *CVModelClient {
 }
 
 func (c *CVModelClient) CalculateEmbedding(id int64, imgs []string) error {
-	err := c.put(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), &CVRequest{ID: id, Imgs: imgs[0]})
+	err := c.put(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), buildRequestBody(id, imgs[0]))
 	if err != nil {
-		return fmt.Errorf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
+		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
+		log.Printf(msg)
+		return fmt.Errorf(msg)
 	}
 	return nil
 }
@@ -35,11 +39,15 @@ func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
 	response, err := c.rc.Get(fmt.Sprintf("%s/%s", baseURL, searchSimilarDogsURL))
 
 	if err != nil {
-		return nil, fmt.Errorf("[cvmodelrestclient.SearchSimilarDog] %s", err.Error())
+		msg := fmt.Sprintf("[cvmodelrestclient.SearchSimilarDog] %s", err.Error())
+		log.Printf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 
 	if response.StatusCode != OK {
-		return nil, fmt.Errorf("[cvmodelrestclient.SearchSimilarDog] couldnt get similar dogs for dog %d: %v", dogID, err)
+		msg := fmt.Sprintf("[cvmodelrestclient.SearchSimilarDog] couldnt get similar dogs for dog %d: %v", dogID, err)
+		log.Printf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 	resultListByte, _ := io.ReadAll(response.Body)
 	_ = response.Body.Close()
@@ -47,9 +55,18 @@ func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
 	var resultList []uint
 	err = json.Unmarshal(resultListByte, &resultList)
 	if err != nil {
-		return nil, err
+		msg := fmt.Sprintf("[cvmodelrestclient.SearchSimilarDog] error unmarshalling body: %s", err.Error())
+		log.Printf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 	return resultList, nil
+}
+
+func buildRequestBody(id int64, imgs string) map[string]interface{} {
+	return map[string]interface{}{
+		"id":    strconv.FormatInt(id, 10),
+		"image": imgs,
+	}
 }
 
 type CVRequest struct {
@@ -57,7 +74,7 @@ type CVRequest struct {
 	Imgs string `json:"image"`
 }
 
-func (c *CVModelClient) put(url string, body interface{}) error {
+func (c *CVModelClient) put(url string, body map[string]interface{}) error {
 	byteBuffer := new(bytes.Buffer)
 	_ = json.NewEncoder(byteBuffer).Encode(body)
 	request, err := http.NewRequest(http.MethodPut, url, byteBuffer)
