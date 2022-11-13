@@ -1,9 +1,11 @@
 package restclient
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
-	"github.com/go-resty/resty/v2"
-	"strconv"
+	"io"
+	"net/http"
 )
 
 const (
@@ -14,40 +16,38 @@ const (
 )
 
 type CVModelClient struct {
-	rc *resty.Client
+	rc *http.Client
 }
 
-func NewCVModelRestClient(client *resty.Client) *CVModelClient {
-	client.BaseURL = baseURL
+func NewCVModelRestClient(client *http.Client) *CVModelClient {
 	return &CVModelClient{rc: client}
 }
 
 func (c *CVModelClient) CalculateEmbedding(id int64, imgs []string) error {
-	response, err := c.rc.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(CVRequest{ID: id, Imgs: imgs[0]}).
-		Put(calculateEmbedding)
+	err := c.put(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), &CVRequest{ID: id, Imgs: imgs[0]})
 	if err != nil {
 		return fmt.Errorf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
-	}
-	if response.StatusCode() != OK {
-		return fmt.Errorf("[cvmodelrestclient.CalculateEmbedding] couldnt calculate vector for dog %d: %v", id, response.Error())
 	}
 	return nil
 }
 
 func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
-	var resultList []uint
-	response, err := c.rc.R().
-		SetHeader("Content-Type", "application/json").
-		SetQueryParam("dog_id", strconv.FormatInt(dogID, 10)).
-		SetResult(resultList).
-		Get(searchSimilarDogsURL)
+	response, err := c.rc.Get(fmt.Sprintf("%s/%s", baseURL, searchSimilarDogsURL))
+
 	if err != nil {
 		return nil, fmt.Errorf("[cvmodelrestclient.SearchSimilarDog] %s", err.Error())
 	}
-	if response.StatusCode() != OK {
-		return nil, fmt.Errorf("[cvmodelrestclient.SearchSimilarDog] couldnt get similar dogs for dog %d: %v", dogID, response.Error())
+
+	if response.StatusCode != OK {
+		return nil, fmt.Errorf("[cvmodelrestclient.SearchSimilarDog] couldnt get similar dogs for dog %d: %v", dogID, err)
+	}
+	resultListByte, _ := io.ReadAll(response.Body)
+	_ = response.Body.Close()
+
+	var resultList []uint
+	err = json.Unmarshal(resultListByte, &resultList)
+	if err != nil {
+		return nil, err
 	}
 	return resultList, nil
 }
@@ -55,4 +55,18 @@ func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
 type CVRequest struct {
 	ID   int64  `json:"id"`
 	Imgs string `json:"image"`
+}
+
+func (c *CVModelClient) put(url string, body interface{}) error {
+	byteBuffer := new(bytes.Buffer)
+	_ = json.NewEncoder(byteBuffer).Encode(body)
+	request, err := http.NewRequest(http.MethodPut, url, byteBuffer)
+	if err != nil {
+		return err
+	}
+	res, err := http.DefaultClient.Do(request)
+	if res.StatusCode != OK {
+		return fmt.Errorf("status code not 200. It is %d", res.StatusCode)
+	}
+	return nil
 }

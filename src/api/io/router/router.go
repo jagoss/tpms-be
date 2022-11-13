@@ -5,11 +5,11 @@ import (
 	"be-tpms/middleware"
 	"be-tpms/src/api/environment"
 	"github.com/gin-gonic/gin"
-	"github.com/go-resty/resty/v2"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"io/ioutil"
 	"log"
+	"net/http"
 )
 
 const (
@@ -57,9 +57,8 @@ func configureRoute(env environment.Env) *gin.Engine {
 	return router
 }
 
-func CreateRestClientConfig() *resty.Client {
-	restClient := resty.New()
-	return restClient
+func CreateRestClientConfig() *http.Client {
+	return http.DefaultClient
 }
 
 func mapDogRoutes(env environment.Env) {

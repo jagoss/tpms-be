@@ -4,14 +4,14 @@ import (
 	"be-tpms/src/api/usecases/interfaces"
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/auth"
-	"github.com/go-resty/resty/v2"
+	"net/http"
 )
 
 type Env struct {
 	FirebaseApp            *firebase.App
 	FirebaseAuth           auth.Client
 	NotificationSender     interfaces.Messaging
-	RestClient             resty.Client
+	RestClient             *http.Client
 	CVModelRestClient      interfaces.CVModelRestClient
 	UserPersister          interfaces.UserPersister
 	DogPersister           interfaces.DogPersister
@@ -19,7 +19,7 @@ type Env struct {
 	Storage                interfaces.Storage
 }
 
-func InitEnv(firebaseApp *firebase.App, firebaseAuth auth.Client, notificationSender interfaces.Messaging, restClient resty.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister, possibleMatchPersister interfaces.PossibleMatchPersister, storage interfaces.Storage) *Env {
+func InitEnv(firebaseApp *firebase.App, firebaseAuth auth.Client, notificationSender interfaces.Messaging, restClient *http.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister, possibleMatchPersister interfaces.PossibleMatchPersister, storage interfaces.Storage) *Env {
 	return &Env{
 		FirebaseApp:            firebaseApp,
 		FirebaseAuth:           firebaseAuth,
