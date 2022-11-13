@@ -76,17 +76,13 @@ type CVRequest struct {
 func (c *CVModelClient) put(url string, reqBody *CVRequest) error {
 	reqBodyJson, _ := json.Marshal(reqBody)
 	request, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(reqBodyJson))
+	request.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return err
 	}
 	res, err := http.DefaultClient.Do(request)
 	if res.StatusCode != OK {
-		resultListByte, _ := io.ReadAll(res.Body)
-		_ = res.Body.Close()
-
-		var result map[string]interface{}
-		err = json.Unmarshal(resultListByte, &result)
-		return fmt.Errorf("status code %d: %v", res.StatusCode, result)
+		return fmt.Errorf("status code %d: %v", res.StatusCode, res.Status)
 	}
 	return nil
 }
