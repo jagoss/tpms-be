@@ -76,15 +76,15 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	//predictionService := cvmodel.NewPrediction(env.CVModelRestClient, env.Storage)
-	//if err = predictionService.CalculateEmbedding(dog.ID, dog.ImgUrl); err != nil {
-	//	log.Printf("%v", err)
-	//	c.JSON(http.StatusInternalServerError, gin.H{
-	//		"error":   err.Error(),
-	//		"message": fmt.Sprintf("error calculating new dog %d vector: %v", dog.ID, err),
-	//	})
-	//	return
-	//}
+	predictionService := cvmodel.NewPrediction(env.CVModelRestClient, env.Storage)
+	if err = predictionService.CalculateEmbedding(dog.ID, dog.ImgUrl); err != nil {
+		log.Printf("%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error calculating new dog %d vector: %v", dog.ID, err),
+		})
+		return
+	}
 
 	if dog.IsLost {
 		notificationSender := messaging.NewMessageSender(env.NotificationSender, env.UserPersister)
