@@ -28,10 +28,10 @@ func (c *CVModelClient) CalculateEmbedding(id int64, imgs []string) error {
 		SetBody(CVRequest{ID: id, Imgs: imgs[0]}).
 		Put(calculateEmbedding)
 	if err != nil {
-		return err
+		return fmt.Errorf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 	}
 	if response.StatusCode() != OK {
-		return fmt.Errorf("couldnt calculate vector for dog %d: %v", id, response.Error())
+		return fmt.Errorf("[cvmodelrestclient.CalculateEmbedding] couldnt calculate vector for dog %d: %v", id, response.Error())
 	}
 	return nil
 }
@@ -44,10 +44,10 @@ func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
 		SetResult(resultList).
 		Get(searchSimilarDogsURL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[cvmodelrestclient.SearchSimilarDog] %s", err.Error())
 	}
 	if response.StatusCode() != OK {
-		return nil, fmt.Errorf("couldnt get similar dogs for dog %d: %v", dogID, response.Error())
+		return nil, fmt.Errorf("[cvmodelrestclient.SearchSimilarDog] couldnt get similar dogs for dog %d: %v", dogID, response.Error())
 	}
 	return resultList, nil
 }
