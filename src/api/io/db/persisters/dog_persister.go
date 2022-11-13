@@ -130,6 +130,16 @@ func (dp *DogPersister) GetDogsByUser(userID string) ([]model.Dog, error) {
 	return dogs, nil
 }
 
+func (dp *DogPersister) SetLostDog(id uint, lat float64, lng float64) error {
+	query := "UPDATE FROM tpms_prod.dogs SET latitude = ?, longitude = ? WHERE id = ?"
+	_, err := dp.connection.DB.Exec(query, lat, lng, id)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
 func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) model.Dog {
 	return model.Dog{ID: dogModel.ID,
 		Name:       dogModel.Name,

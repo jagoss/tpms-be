@@ -537,3 +537,63 @@ func GetSimilarDogPrediction(c *gin.Context, env environment.Env) {
 
 	c.JSON(http.StatusOK, io.MapToDogResponseList(resultList, env.Storage))
 }
+
+// ReportDogAsMissing godoc
+// @Summary Update dog status as missing
+// @Schemes
+// @Description Update given dog status as missing
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dog path string false  "dog ID"
+// @Param		userLatitude query float64 false "user lat"
+// @Param		userLongitude query float64 false "user lng"
+// @Success     200 {object} []model.DogResponse
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Router      /dog/:id [patch]
+func ReportDogAsMissing(c *gin.Context, env environment.Env) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+
+	lat, lng := c.Query("lat"), c.Query("lng")
+	if lat == "" || lng == "" {
+		var missingArgs []string
+		if lat == "" {
+			missingArgs = append(missingArgs, "lat")
+		}
+		if lng == "" {
+			missingArgs = append(missingArgs, "lng")
+		}
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Missing argument",
+			"message": fmt.Sprintf("There are missing arguments: %s", strings.Join(missingArgs, ",")),
+		})
+		return
+	}
+
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+	idUint, _ := strconv.ParseUint(id, 10, 64)
+	latFloat, _ := strconv.ParseFloat(lat, 64)
+	lngFloat, _ := strconv.ParseFloat(lng, 64)
+	dog, err := dogManager.SetDogAsLost(uint(idUint), latFloat, lngFloat)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("could not update dog %s", id),
+		})
+		return
+	}
+
+	notificationSender := messaging.NewMessageSender(env.NotificationSender, env.UserPersister)
+	if err = notificationSender.SendToEnabledUsers(dog); err != nil {
+		log.Printf("error notifying users")
+	}
+}

@@ -432,6 +432,113 @@
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "Update given dog status as missing",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dog"
+                ],
+                "summary": "Update dog status as missing",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "dog ID",
+                        "name": "dog",
+                        "in": "path"
+                    },
+                    {
+                        "type": "number",
+                        "description": "user lat",
+                        "name": "userLatitude",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "user lng",
+                        "name": "userLongitude",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.DogResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
             }
         },
         "/dog/:id/prediction": {
@@ -2104,6 +2211,10 @@
                 "name": {
                     "description": "Name\nin: string",
                     "type": "string"
+                },
+                "optout": {
+                    "description": "Optout\nin: bool",
+                    "type": "boolean"
                 },
                 "phone": {
                     "description": "Phone number\nin: string",

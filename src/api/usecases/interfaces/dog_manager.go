@@ -9,4 +9,5 @@ type DogManager interface {
 	GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, error)
 	AddImgs(dog *model.Dog, imgBuffArray []string) (string, error)
 	Delete(dogID uint, persister PossibleMatchPersister) (bool, error)
+	SetDogAsLost(id uint, lat float64, lng float64) (*model.Dog, error)
 }

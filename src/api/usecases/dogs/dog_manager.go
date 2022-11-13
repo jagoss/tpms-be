@@ -123,6 +123,15 @@ func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, er
 	return foundDogs, userOwnedDogs, nil
 }
 
+func (d *DogManager) SetDogAsLost(id uint, lat float64, lng float64) (*model.Dog, error) {
+	if err := d.dogPersister.SetLostDog(id, lat, lng); err != nil {
+		log.Printf("[dogmanager.SetDogAsLost] error updating dog: %s", err.Error())
+		return nil, err
+	}
+	dog, _ := d.dogPersister.GetDog(id)
+	return dog, nil
+}
+
 func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
 	if dog.Owner != nil {
 		owner, err := userManager.Get(dog.Owner.ID)

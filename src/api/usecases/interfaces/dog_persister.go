@@ -13,4 +13,5 @@ type DogPersister interface {
 	GetMissingDogs() ([]model.Dog, error)
 	GetDogsByUser(userID string) ([]model.Dog, error)
 	GetDogs(dogs []uint) ([]model.Dog, error)
+	SetLostDog(id uint, lat float64, lng float64) error
 }

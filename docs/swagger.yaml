@@ -113,6 +113,11 @@ definitions:
           Name
           in: string
         type: string
+      optout:
+        description: |-
+          Optout
+          in: bool
+        type: boolean
       phone:
         description: |-
           Phone number
@@ -382,6 +387,68 @@ paths:
                   type: string
               type: object
       summary: Get possible matching dogs given dog id and ack status
+      tags:
+      - dog
+    patch:
+      consumes:
+      - application/json
+      description: Update given dog status as missing
+      parameters:
+      - description: dog ID
+        in: path
+        name: dog
+        type: string
+      - description: user lat
+        in: query
+        name: userLatitude
+        type: number
+      - description: user lng
+        in: query
+        name: userLongitude
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.DogResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Update dog status as missing
       tags:
       - dog
   /dog/:id/prediction:
