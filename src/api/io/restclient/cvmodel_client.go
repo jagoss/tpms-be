@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	baseURL              = "https://dog-recognition-app-4l8w5.ondigitalocean.app/dog-recognition2"
+	baseURL              = "http://161.35.228.212:8080"
 	calculateEmbedding   = "/generate_embedding"
 	searchSimilarDogsURL = "/get_neighbors"
 	OK                   = 200
