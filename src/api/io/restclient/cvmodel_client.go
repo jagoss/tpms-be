@@ -7,7 +7,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 const (
@@ -64,7 +63,7 @@ func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
 
 func buildRequestBody(id int64, imgs string) map[string]interface{} {
 	return map[string]interface{}{
-		"id":    strconv.FormatInt(id, 10),
+		"id":    uint(id),
 		"image": imgs,
 	}
 }
