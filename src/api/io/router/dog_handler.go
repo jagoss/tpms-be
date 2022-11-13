@@ -77,7 +77,7 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 	}
 
 	//predictionService := cvmodel.NewPrediction(env.CVModelRestClient, env.Storage)
-	//if err = predictionService.CalculateVector(dog.ID, dog.ImgUrl); err != nil {
+	//if err = predictionService.CalculateEmbedding(dog.ID, dog.ImgUrl); err != nil {
 	//	log.Printf("%v", err)
 	//	c.JSON(http.StatusInternalServerError, gin.H{
 	//		"error":   err.Error(),

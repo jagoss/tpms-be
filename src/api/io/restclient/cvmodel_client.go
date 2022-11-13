@@ -3,12 +3,13 @@ package restclient
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"strconv"
 )
 
 const (
-	baseURL              = "localhost:8081"
-	calculateVectorURL   = ""
-	searchSimilarDogsURL = ""
+	baseURL              = "https://dog-recognition-app-4l8w5.ondigitalocean.app/dog-recognition2"
+	calculateEmbedding   = "/generate_embedding"
+	searchSimilarDogsURL = "/get_neighbors"
 	OK                   = 200
 )
 
@@ -17,15 +18,15 @@ type CVModelClient struct {
 }
 
 func NewCVModelRestClient(client *resty.Client) *CVModelClient {
+	client.BaseURL = baseURL
 	return &CVModelClient{rc: client}
 }
 
-func (c *CVModelClient) CalculateVector(id int64, imgs []string) error {
-	url := fmt.Sprintf("%s/%s", baseURL, calculateVectorURL)
+func (c *CVModelClient) CalculateEmbedding(id int64, imgs []string) error {
 	response, err := c.rc.R().
 		SetHeader("Content-Type", "application/json").
-		SetBody(CVRequest{DogID: id, Imgs: imgs}).
-		Put(url)
+		SetBody(CVRequest{ID: id, Imgs: imgs[0]}).
+		Put(calculateEmbedding)
 	if err != nil {
 		return err
 	}
@@ -36,12 +37,12 @@ func (c *CVModelClient) CalculateVector(id int64, imgs []string) error {
 }
 
 func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
-	url := fmt.Sprintf("%s/%s/%d", baseURL, searchSimilarDogsURL, dogID)
 	var resultList []uint
 	response, err := c.rc.R().
 		SetHeader("Content-Type", "application/json").
+		SetQueryParam("dog_id", strconv.FormatInt(dogID, 10)).
 		SetResult(resultList).
-		Get(url)
+		Get(searchSimilarDogsURL)
 	if err != nil {
 		return nil, err
 	}
@@ -52,6 +53,6 @@ func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
 }
 
 type CVRequest struct {
-	DogID int64    `json:"dog_id"`
-	Imgs  []string `json:"imgs"`
+	ID   int64  `json:"id"`
+	Imgs string `json:"image"`
 }

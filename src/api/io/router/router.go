@@ -3,7 +3,6 @@ package router
 import (
 	_ "be-tpms/docs"
 	"be-tpms/middleware"
-	"be-tpms/src/api/configuration"
 	"be-tpms/src/api/environment"
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
@@ -58,11 +57,8 @@ func configureRoute(env environment.Env) *gin.Engine {
 	return router
 }
 
-func CreateRestClientConfig(profile string) *resty.Client {
+func CreateRestClientConfig() *resty.Client {
 	restClient := resty.New()
-	if profile == configuration.Test {
-		restClient.Header.Add("test", "true")
-	}
 	return restClient
 }
 

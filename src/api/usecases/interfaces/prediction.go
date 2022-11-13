@@ -1,6 +1,8 @@
 package interfaces
 
+import "be-tpms/src/api/domain/model"
+
 type Prediction interface {
-	CalculateVector(dogID int64, imgsUrl string) error
-	FindMatches(dogID uint) ([]uint, error)
+	CalculateEmbedding(dogID int64, imgsUrl string) error
+	FindMatches(dogID uint, persister DogPersister) ([]model.Dog, error)
 }
