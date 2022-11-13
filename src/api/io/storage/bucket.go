@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -81,7 +80,6 @@ func (s *Storage) GetImgs(filePaths string) ([]string, error) {
 		imgEncoded = base64.StdEncoding.EncodeToString(buffImg)
 		buffArray = append(buffArray, imgEncoded)
 	}
-	log.Printf("len buffArray: %d", len(buffArray))
 	return buffArray, nil
 }
 
@@ -105,7 +103,6 @@ func (s *Storage) saveFile(key string, imgBuffer []byte) error {
 }
 
 func (s *Storage) getFile(key string) ([]byte, error) {
-	log.Printf("img path in storage: %s", key)
 	result, err := s.bucket.GetObject(
 		&s3.GetObjectInput{
 			Bucket: aws.String(s.bucketName),

@@ -25,7 +25,7 @@ func NewCVModelRestClient(client *http.Client) *CVModelClient {
 }
 
 func (c *CVModelClient) CalculateEmbedding(id int64, imgs []string) error {
-	err := c.put(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), buildRequestBody(id, imgs[0]))
+	err := c.put(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), &CVRequest{ID: id, Image: imgs[0]})
 	if err != nil {
 		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 		log.Printf(msg)
@@ -69,16 +69,13 @@ func buildRequestBody(id int64, imgs string) map[string]interface{} {
 }
 
 type CVRequest struct {
-	ID   int64  `json:"id"`
-	Imgs string `json:"image"`
+	ID    int64  `json:"id"`
+	Image string `json:"image"`
 }
 
-func (c *CVModelClient) put(url string, body map[string]interface{}) error {
-	byteBuffer := new(bytes.Buffer)
-	_ = json.NewEncoder(byteBuffer).Encode(body)
-	var decoded map[string]interface{}
-	_ = json.Unmarshal(byteBuffer.Bytes(), &decoded)
-	request, err := http.NewRequest(http.MethodPut, url, byteBuffer)
+func (c *CVModelClient) put(url string, reqBody *CVRequest) error {
+	reqBodyJson, _ := json.Marshal(reqBody)
+	request, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(reqBodyJson))
 	if err != nil {
 		return err
 	}
