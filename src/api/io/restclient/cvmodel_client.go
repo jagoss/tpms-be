@@ -25,7 +25,7 @@ func (c *CVModelClient) CalculateVector(id int64, imgs []string) error {
 	response, err := c.rc.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(CVRequest{DogID: id, Imgs: imgs}).
-		Post(url)
+		Put(url)
 	if err != nil {
 		return err
 	}
