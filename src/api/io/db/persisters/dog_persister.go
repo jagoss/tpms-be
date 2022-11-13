@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const columns = "id, name, breed, age, size, coat_color, coat_length, tail_length, ear, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at, deleted_date"
+const columns = "id, name, breed, age, size, coat_color, coat_length, tail_length, ear, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at, deleted_at"
 
 type DogPersister struct {
 	connection *db.Connection
