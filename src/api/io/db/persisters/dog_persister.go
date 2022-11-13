@@ -72,8 +72,8 @@ func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
 
 func (dp *DogPersister) UpdateDog(dog *model.Dog) (*model.Dog, error) {
 	dogModel := mapToDogModel(*dog)
-	query := "UPDATE tpms_prod.dogs SET name = ?, age = ?, breed = ?, size = ?, coat_color=?, coat_length = ?, tail_length = ?, ear = ?, is_lost = ?, latitude = ?, longitude = ?, img_url = ? WHERE id = ?"
-	_, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Age, dogModel.Breed, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.TailLength, dog.Ear, dogModel.IsLost, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl)
+	query := "UPDATE tpms_prod.dogs SET `name` = ?, age = ?, breed = ?, size = ?, coat_color=?, coat_length = ?, tail_length = ?, ear = ?, is_lost = ?, latitude = ?, longitude = ?, img_url = ? WHERE id = ?"
+	_, err := dp.connection.DB.Exec(query, dogModel.Name, dogModel.Age, dogModel.Breed, dogModel.Size, dogModel.CoatColor, dogModel.CoatLength, dogModel.TailLength, dog.Ear, dogModel.IsLost, dogModel.Latitude, dogModel.Longitude, dogModel.ImgUrl, dogModel.ID)
 	if err != nil {
 		return nil, err
 	}
