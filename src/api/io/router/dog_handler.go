@@ -462,7 +462,7 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
-// @Router      /dog/:id [get]
+// @Router      /dog/:id/possible [get]
 func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
 	id := c.Param("id")
 	acksStrings, exists := c.GetQueryArray("ack")
