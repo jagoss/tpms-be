@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	baseURL              = "http://161.35.228.212:8051"
+	baseURL              = "http://161.35.228.212:8501"
 	calculateEmbedding   = "/v1/models/model:predict"
 	searchSimilarDogsURL = "/get_neighbors"
 	OK                   = 200
