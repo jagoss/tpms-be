@@ -135,6 +135,9 @@ func mapDogRoutes(env environment.Env) {
 		}
 		GetSimilarDogPrediction(context, env)
 	})
+	dogRouter.PUT("/:id/embedding", func(context *gin.Context) {
+		GenerarteEmbedding(context, env)
+	})
 }
 
 func mapUserRoutes(env environment.Env) {

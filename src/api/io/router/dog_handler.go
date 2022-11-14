@@ -598,4 +598,27 @@ func ReportDogAsMissing(c *gin.Context, env environment.Env) {
 	if err = notificationSender.SendToEnabledUsers(dog); err != nil {
 		log.Printf("error notifying users")
 	}
+	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
+}
+
+func GenerarteEmbedding(c *gin.Context, env environment.Env) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Variable missing",
+			"message": "Missing dog ID",
+		})
+		return
+	}
+
+	result, err := env.CVModelRestClient.CalculateEmbedding()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("could not update dog %s", id),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }

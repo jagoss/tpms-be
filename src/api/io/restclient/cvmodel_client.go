@@ -4,14 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/color"
 	"io"
 	"log"
 	"net/http"
 )
 
 const (
-	baseURL              = "http://161.35.228.212:8080"
-	calculateEmbedding   = "/generate_embedding"
+	baseURL              = "http://161.35.228.212:8051"
+	calculateEmbedding   = "/v1/models/model:predict"
 	searchSimilarDogsURL = "/get_neighbors"
 	OK                   = 200
 )
@@ -24,14 +26,48 @@ func NewCVModelRestClient(client *http.Client) *CVModelClient {
 	return &CVModelClient{rc: client}
 }
 
-func (c *CVModelClient) CalculateEmbedding(id int64, imgs []string) error {
-	err := c.put(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), &CVRequest{ID: id, Image: imgs[0]})
+//func (c *CVModelClient) CalculateEmbedding(id int64, imgs []string) error {
+//	err := c.put(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), &CVRequest{ID: id, Image: imgs[0]})
+//	if err != nil {
+//		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
+//		log.Printf(msg)
+//		return fmt.Errorf(msg)
+//	}
+//	return nil
+//}
+
+func (c *CVModelClient) CalculateEmbedding() ([]int8, error) {
+	var (
+		width  = 244
+		height = 244
+	)
+	s2 := make([]uint8, width*height*3)
+
+	// ...read from hdf5...
+
+	to1D := func(x, y, z int) int {
+		return (z * height * width) + (y * width) + x
+	}
+	// display the fields
+	fmt.Printf(":: size: length %v  capacity %v\n", len(s2), cap(s2))
+
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	for ix := 0; ix < width; ix++ {
+		for iy := 0; iy < height; iy++ {
+			ir := to1D(ix, iy, 0)
+			ig := to1D(ix, iy, 1)
+			ib := to1D(ix, iy, 2)
+			img.SetRGBA(ix, iy, color.RGBA{R: s2[ir], G: s2[ig], B: s2[ib], A: 255})
+		}
+	}
+	res, err := Post(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), img)
 	if err != nil {
 		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 		log.Printf(msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
 	}
-	return nil
+	log.Printf("%v", res)
+	return res, nil
 }
 
 func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
@@ -85,4 +121,22 @@ func (c *CVModelClient) put(url string, reqBody *CVRequest) error {
 		return fmt.Errorf("status code %d: %v", res.StatusCode, res.Status)
 	}
 	return nil
+}
+
+func Post(url string, body interface{}) ([]int8, error) {
+	reqBodyJson, _ := json.Marshal(body)
+	response, err := http.Post(url, "application/json", bytes.NewBuffer(reqBodyJson))
+	if err != nil {
+		return nil, err
+	}
+
+	bytes, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	_ = response.Body.Close()
+
+	var respBody map[string][]int8
+	_ = json.Unmarshal(bytes, &respBody)
+	return respBody["predictions"], nil
 }

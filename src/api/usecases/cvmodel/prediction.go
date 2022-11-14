@@ -18,14 +18,14 @@ func NewPrediction(restClient interfaces.CVModelRestClient, storage interfaces.S
 }
 
 func (p *Prediction) CalculateEmbedding(dogID int64, imgsUrl string) error {
-	imgs, err := p.storage.GetImgs(imgsUrl)
+	_, err := p.storage.GetImgs(imgsUrl)
 	if err != nil {
 		return err
 	}
 
-	if err = p.cvModel.CalculateEmbedding(dogID, imgs); err != nil {
-		return err
-	}
+	//if err = p.cvModel.CalculateEmbedding(dogID, imgs); err != nil {
+	//	return err
+	//}
 
 	return nil
 }
