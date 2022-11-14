@@ -62,8 +62,7 @@ func (c *CVModelClient) CalculateEmbedding() ([]int8, error) {
 			//img.SetRGBA(ix, iy, color.RGBA{R: s2[ir], G: s2[ig], B: s2[ib], A: 255})
 		}
 	}
-
-	res, err := Post(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), vector)
+	res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), vector)
 	if err != nil {
 		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 		log.Printf(msg)
