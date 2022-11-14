@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	baseURL              = "http://161.35.228.212:8051"
+	baseURL              = "https://161.35.228.212:8051"
 	calculateEmbedding   = "/v1/models/model:predict"
 	searchSimilarDogsURL = "/get_neighbors"
 	OK                   = 200
@@ -62,7 +62,10 @@ func (c *CVModelClient) CalculateEmbedding() ([]int8, error) {
 			//img.SetRGBA(ix, iy, color.RGBA{R: s2[ir], G: s2[ig], B: s2[ib], A: 255})
 		}
 	}
-	res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), vector)
+	body := map[string]interface{}{
+		"instances": vector,
+	}
+	res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), body)
 	if err != nil {
 		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 		log.Printf(msg)
