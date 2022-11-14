@@ -17,7 +17,7 @@ func NewPossibleMatchPersister(connection *db.Connection) *PossibleMatchPersiste
 }
 
 func (pmp *PossibleMatchPersister) AddPossibleMatch(dogID uint, possibleDogID uint) error {
-	query := "INSERT INTO tpms_prod.possible_matches(dog_id, possible_dog_id, ack) VALUES (?, ?, 'PENDING')"
+	query := "INSERT INTO tpms_prod.possible_matches(dog_id, possible_dog_id, ack) VALUES (?, ?, 0)"
 	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
 	if err != nil {
 		log.Printf("[PossibleMatchPersister.AddPossibleMatch] error inserting possible match: %s", err.Error())
@@ -28,7 +28,7 @@ func (pmp *PossibleMatchPersister) AddPossibleMatch(dogID uint, possibleDogID ui
 }
 func (pmp *PossibleMatchPersister) UpdateAck(dogID uint, possibleDogID uint, ack model.Ack) error {
 	query := "UPDATE tpms_prod.possible_matches SET ack = ? WHERE dog_id = ? AND possible_dog_id = ?"
-	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
+	_, err := pmp.connection.DB.Exec(query, ack.Int(), dogID, possibleDogID)
 	if err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack)
 	values := make([]interface{}, len(acks)+2)
 	values[0], values[1] = id, id
 	for i, ack := range acks {
-		values[i+2] = ack.String()
+		values[i+2] = ack.Int()
 	}
 
 	query := "SELECT * FROM tpms_prod.possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?" + strings.Repeat(",?", len(acks)-1) + ")"

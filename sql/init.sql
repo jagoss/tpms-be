@@ -39,9 +39,9 @@ CREATE TABLE IF NOT EXISTS `dogs`
 
 CREATE TABLE IF NOT EXISTS `possible_matches`
 (
-    `dog_id`          BIGINT                                   NOT NULL,
-    `possible_dog_id` BIGINT                                   NOT NULL,
-    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED') NOT NULL,
+    `dog_id`          BIGINT NOT NULL,
+    `possible_dog_id` BIGINT NOT NULL,
+    `ack`             INT    NOT NULL,
     PRIMARY KEY (`dog_id`, `possible_dog_id`)
 );
 
@@ -85,8 +85,8 @@ CREATE TABLE IF NOT EXISTS `dogs`
 );
 CREATE TABLE IF NOT EXISTS `possible_matches`
 (
-    `dog_id`          BIGINT                                   NOT NULL,
-    `possible_dog_id` BIGINT                                   NOT NULL,
-    `ack`             ENUM ('PENDING', 'ACCEPTED', 'REJECTED') NOT NULL,
+    `dog_id`          BIGINT NOT NULL,
+    `possible_dog_id` BIGINT NOT NULL,
+    `ack`             INT    NOT NULL,
     PRIMARY KEY (`dog_id`, `possible_dog_id`)
 );
