@@ -49,12 +49,12 @@ func (c *CVModelClient) CalculateEmbedding() (*Tensor, error) {
 	//}
 	// display the fields
 	fmt.Printf(":: size: length %v  capacity %v\n", len(s2), cap(s2))
-	var vector [224][224][3]int8
+	var vector [224][224][3]int
 	//img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for ix := 0; ix < width; ix++ {
 		for iy := 0; iy < height; iy++ {
 			for iz := 0; iz < 3; iz++ {
-				vector[ix][iy][iz] = int8(rand.Intn(255))
+				vector[ix][iy][iz] = rand.Intn(255)
 			}
 			//ir := to1D(ix, iy, 0)
 			//ig := to1D(ix, iy, 1)
@@ -76,7 +76,7 @@ func (c *CVModelClient) CalculateEmbedding() (*Tensor, error) {
 }
 
 type Tensor struct {
-	T [224][224][3]int8
+	T [224][224][3]int
 }
 
 func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
