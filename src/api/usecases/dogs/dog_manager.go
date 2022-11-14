@@ -117,9 +117,6 @@ func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, er
 		}
 	}
 
-	log.Printf("All found dogs: %v", foundDogs)
-	log.Printf("All owned dogs: %v", userOwnedDogs)
-
 	return userOwnedDogs, foundDogs, nil
 }
 

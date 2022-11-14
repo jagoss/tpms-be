@@ -91,6 +91,8 @@ func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack)
 	}
 
 	query := "SELECT * FROM possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?" + strings.Repeat(",?", len(acks)-1) + ")"
+	log.Printf("query: %s", query)
+	log.Printf("args: %v", values)
 	rows, err := pmp.connection.DB.Query(query, values...)
 	if err != nil {
 		return nil, err
