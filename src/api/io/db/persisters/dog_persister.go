@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const columns = "id, name, breed, age, size, coat_color, coat_length, tail_length, ear, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at, deleted_at"
+const columns = "id, name, breed, age, size, coat_color, coat_length, tail_length, ear, additional_info, is_lost, owner_id, host_id, latitude, longitude, img_url, created_at, deleted_at"
 
 type DogPersister struct {
 	connection *db.Connection
@@ -142,39 +142,41 @@ func (dp *DogPersister) SetLostDog(id uint, lat float64, lng float64) error {
 
 func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) model.Dog {
 	return model.Dog{ID: dogModel.ID,
-		Name:       dogModel.Name,
-		Breed:      dogModel.Breed,
-		Size:       dogModel.Size,
-		Age:        dogModel.Age,
-		CoatColor:  dogModel.CoatColor,
-		CoatLength: dogModel.CoatLength,
-		TailLength: dogModel.TailLength,
-		Ear:        dogModel.Ear,
-		IsLost:     dogModel.IsLost,
-		Owner:      owner,
-		Host:       host,
-		Latitude:   dogModel.Latitude,
-		Longitude:  dogModel.Longitude,
-		ImgUrl:     dogModel.ImgUrl,
-		CreateAt:   dogModel.CreateAt,
+		Name:           dogModel.Name,
+		Breed:          dogModel.Breed,
+		Size:           dogModel.Size,
+		Age:            dogModel.Age,
+		CoatColor:      dogModel.CoatColor,
+		CoatLength:     dogModel.CoatLength,
+		TailLength:     dogModel.TailLength,
+		Ear:            dogModel.Ear,
+		IsLost:         dogModel.IsLost,
+		AdditionalInfo: dogModel.AdditionalInfo,
+		Owner:          owner,
+		Host:           host,
+		Latitude:       dogModel.Latitude,
+		Longitude:      dogModel.Longitude,
+		ImgUrl:         dogModel.ImgUrl,
+		CreateAt:       dogModel.CreateAt,
 	}
 }
 
 func mapToDogModel(dog model.Dog) model.DogModel {
 	dogModel := model.DogModel{
-		Name:       dog.Name,
-		Breed:      dog.Breed,
-		Size:       dog.Size,
-		Age:        dog.Age,
-		CoatColor:  dog.CoatColor,
-		CoatLength: dog.CoatLength,
-		TailLength: dog.TailLength,
-		Ear:        dog.Ear,
-		IsLost:     dog.IsLost,
-		Latitude:   dog.Latitude,
-		Longitude:  dog.Longitude,
-		ImgUrl:     dog.ImgUrl,
-		CreateAt:   dog.CreateAt,
+		Name:           dog.Name,
+		Breed:          dog.Breed,
+		Size:           dog.Size,
+		Age:            dog.Age,
+		CoatColor:      dog.CoatColor,
+		CoatLength:     dog.CoatLength,
+		TailLength:     dog.TailLength,
+		Ear:            dog.Ear,
+		AdditionalInfo: dog.AdditionalInfo,
+		IsLost:         dog.IsLost,
+		Latitude:       dog.Latitude,
+		Longitude:      dog.Longitude,
+		ImgUrl:         dog.ImgUrl,
+		CreateAt:       dog.CreateAt,
 	}
 	if dog.ID != 0 {
 		dogModel.ID = dog.ID
@@ -199,8 +201,12 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 	for rows.Next() {
 		var dog model.DogModel
 		var deleteDate sql.NullTime
-		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
+		var additionalInfo sql.NullString
+		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &additionalInfo, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
 			return nil, err
+		}
+		if additionalInfo.Valid {
+			dog.AdditionalInfo = additionalInfo.String
 		}
 		if deleteDate.Valid {
 			dog.DeleteAt = deleteDate.Time
@@ -224,8 +230,12 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 func parseToDogModel(row *sql.Row) (*model.DogModel, error) {
 	var dog model.DogModel
 	var deleteDate sql.NullTime
-	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
+	var additionalInfo sql.NullString
+	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &additionalInfo, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
 		return nil, err
+	}
+	if additionalInfo.Valid {
+		dog.AdditionalInfo = additionalInfo.String
 	}
 	if deleteDate.Valid {
 		dog.DeleteAt = deleteDate.Time

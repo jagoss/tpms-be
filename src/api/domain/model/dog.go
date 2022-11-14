@@ -180,44 +180,46 @@ const (
 )
 
 type Dog struct {
-	ID         int64
-	Name       string
-	Breed      Breed
-	Age        Age
-	Size       Size
-	CoatColor  CoatColor
-	CoatLength CoatLength
-	TailLength TailLength
-	Ear        Ear
-	IsLost     bool
-	Owner      *User
-	Host       *User
-	Latitude   float64
-	Longitude  float64
-	ImgUrl     string
-	Embedding  string
-	CreateAt   time.Time
+	ID             int64
+	Name           string
+	Breed          Breed
+	Age            Age
+	Size           Size
+	CoatColor      CoatColor
+	CoatLength     CoatLength
+	TailLength     TailLength
+	Ear            Ear
+	IsLost         bool
+	AdditionalInfo string
+	Owner          *User
+	Host           *User
+	Latitude       float64
+	Longitude      float64
+	ImgUrl         string
+	Embedding      string
+	CreateAt       time.Time
 }
 
 type DogModel struct {
-	ID         int64
-	Name       string
-	Breed      Breed
-	Age        Age
-	Size       Size
-	CoatColor  CoatColor
-	CoatLength CoatLength
-	TailLength TailLength
-	Ear        Ear
-	IsLost     bool
-	OwnerID    string
-	HostID     string
-	Latitude   float64
-	Longitude  float64
-	ImgUrl     string
-	Embedding  string
-	CreateAt   time.Time
-	DeleteAt   time.Time
+	ID             int64
+	Name           string
+	Breed          Breed
+	Age            Age
+	Size           Size
+	CoatColor      CoatColor
+	CoatLength     CoatLength
+	TailLength     TailLength
+	Ear            Ear
+	IsLost         bool
+	AdditionalInfo string
+	OwnerID        string
+	HostID         string
+	Latitude       float64
+	Longitude      float64
+	ImgUrl         string
+	Embedding      string
+	CreateAt       time.Time
+	DeleteAt       time.Time
 }
 
 type Breed int
@@ -1009,41 +1011,43 @@ func ParseEar(ear string) Ear {
 }
 
 type DogResponse struct {
-	ID         string  `json:"id"`
-	Name       string  `json:"name"`
-	Breed      string  `json:"breed"`
-	Age        string  `json:"age"`
-	Size       string  `json:"size"`
-	CoatColor  string  `json:"coatColor"`
-	CoatLength string  `json:"coatLength"`
-	TailLength string  `json:"tailLength"`
-	Ear        string  `json:"ear"`
-	IsLost     bool    `json:"isLost"`
-	Owner      string  `json:"owner"`
-	Host       string  `json:"host"`
-	Latitude   float64 `json:"latitude"`
-	Longitude  float64 `json:"longitude"`
-	ImgsUrl    string  `json:"imgsUrl"`
-	ProfileImg string  `json:"profileImg"`
+	ID             string  `json:"id"`
+	Name           string  `json:"name"`
+	Breed          string  `json:"breed"`
+	Age            string  `json:"age"`
+	Size           string  `json:"size"`
+	CoatColor      string  `json:"coatColor"`
+	CoatLength     string  `json:"coatLength"`
+	TailLength     string  `json:"tailLength"`
+	Ear            string  `json:"ear"`
+	AdditionalInfo string  `json:"additionalInfo"`
+	IsLost         bool    `json:"isLost"`
+	Owner          string  `json:"owner"`
+	Host           string  `json:"host"`
+	Latitude       float64 `json:"latitude"`
+	Longitude      float64 `json:"longitude"`
+	ImgsUrl        string  `json:"imgsUrl"`
+	ProfileImg     string  `json:"profileImg"`
 }
 
 type DogRequest struct {
-	ID         string   `json:"id"`
-	Name       string   `json:"name"`
-	Breed      string   `json:"breed"`
-	Age        string   `json:"age"`
-	Size       string   `json:"size"`
-	CoatColor  string   `json:"coatColor"`
-	CoatLength string   `json:"coatLength"`
-	TailLength string   `json:"tailLength"`
-	Ear        string   `json:"ear"`
-	IsLost     bool     `json:"isLost"`
-	Owner      string   `json:"owner"`
-	Host       string   `json:"host"`
-	Latitude   float64  `json:"latitude"`
-	Longitude  float64  `json:"longitude"`
-	ImgUrl     string   `json:"imgUrl"`
-	Imgs       []string `json:"imgs"`
+	ID             string   `json:"id"`
+	Name           string   `json:"name"`
+	Breed          string   `json:"breed"`
+	Age            string   `json:"age"`
+	Size           string   `json:"size"`
+	CoatColor      string   `json:"coatColor"`
+	CoatLength     string   `json:"coatLength"`
+	TailLength     string   `json:"tailLength"`
+	Ear            string   `json:"ear"`
+	AdditionalInfo string   `json:"additionalInfo"`
+	IsLost         bool     `json:"isLost"`
+	Owner          string   `json:"owner"`
+	Host           string   `json:"host"`
+	Latitude       float64  `json:"latitude"`
+	Longitude      float64  `json:"longitude"`
+	ImgUrl         string   `json:"imgUrl"`
+	Imgs           []string `json:"imgs"`
 }
 
 type PossibleMatch struct {

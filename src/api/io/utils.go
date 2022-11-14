@@ -35,18 +35,19 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 
 func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 	dog := &model.Dog{
-		Name:       reqDog.Name,
-		Breed:      model.ParseBreed(reqDog.Breed),
-		Age:        model.ParseAge(reqDog.Age),
-		Size:       model.ParseSize(reqDog.Size),
-		CoatColor:  model.ParseCoatColor(reqDog.CoatColor),
-		CoatLength: model.ParseCoatLength(reqDog.CoatLength),
-		TailLength: model.ParseTailLength(reqDog.TailLength),
-		Ear:        model.ParseEar(reqDog.Ear),
-		IsLost:     reqDog.IsLost,
-		Latitude:   reqDog.Latitude,
-		Longitude:  reqDog.Longitude,
-		ImgUrl:     reqDog.ImgUrl,
+		Name:           reqDog.Name,
+		Breed:          model.ParseBreed(reqDog.Breed),
+		Age:            model.ParseAge(reqDog.Age),
+		Size:           model.ParseSize(reqDog.Size),
+		CoatColor:      model.ParseCoatColor(reqDog.CoatColor),
+		CoatLength:     model.ParseCoatLength(reqDog.CoatLength),
+		TailLength:     model.ParseTailLength(reqDog.TailLength),
+		Ear:            model.ParseEar(reqDog.Ear),
+		AdditionalInfo: reqDog.AdditionalInfo,
+		IsLost:         reqDog.IsLost,
+		Latitude:       reqDog.Latitude,
+		Longitude:      reqDog.Longitude,
+		ImgUrl:         reqDog.ImgUrl,
 	}
 	if reqDog.Owner != "" {
 		dog.Owner = &model.User{ID: reqDog.Owner}
@@ -69,19 +70,20 @@ func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 
 func MapToDogResponse(dog *model.Dog, bucket interfaces.Storage) *model.DogResponse {
 	response := &model.DogResponse{
-		ID:         strconv.Itoa(int(dog.ID)),
-		Name:       dog.Name,
-		Breed:      dog.Breed.String(),
-		Age:        dog.Age.String(),
-		Size:       dog.Size.String(),
-		CoatColor:  dog.CoatColor.String(),
-		CoatLength: dog.CoatLength.String(),
-		TailLength: dog.TailLength.String(),
-		Ear:        dog.Ear.String(),
-		IsLost:     dog.IsLost,
-		Latitude:   dog.Latitude,
-		Longitude:  dog.Longitude,
-		ImgsUrl:    dog.ImgUrl,
+		ID:             strconv.Itoa(int(dog.ID)),
+		Name:           dog.Name,
+		Breed:          dog.Breed.String(),
+		Age:            dog.Age.String(),
+		Size:           dog.Size.String(),
+		CoatColor:      dog.CoatColor.String(),
+		CoatLength:     dog.CoatLength.String(),
+		TailLength:     dog.TailLength.String(),
+		Ear:            dog.Ear.String(),
+		AdditionalInfo: dog.AdditionalInfo,
+		IsLost:         dog.IsLost,
+		Latitude:       dog.Latitude,
+		Longitude:      dog.Longitude,
+		ImgsUrl:        dog.ImgUrl,
 	}
 
 	if dog.Owner != nil {
