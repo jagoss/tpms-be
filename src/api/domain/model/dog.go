@@ -1067,6 +1067,19 @@ func (a Ack) String() string {
 	}
 }
 
+func (a Ack) Int() int {
+	switch a {
+	case Pending:
+		return 0
+	case Accepted:
+		return 1
+	case Rejected:
+		return 2
+	default:
+		return 0
+	}
+}
+
 func ParseAck(ack string) Ack {
 	switch strings.ToUpper(ack) {
 	case "ACCEPTED":
