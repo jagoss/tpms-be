@@ -120,7 +120,7 @@ func (d *DogManager) GetAllUserDogs(userID string) ([]model.Dog, []model.Dog, er
 	log.Printf("All found dogs: %v", foundDogs)
 	log.Printf("All owned dogs: %v", userOwnedDogs)
 
-	return foundDogs, userOwnedDogs, nil
+	return userOwnedDogs, foundDogs, nil
 }
 
 func (d *DogManager) SetDogAsLost(id uint, lat float64, lng float64) (*model.Dog, error) {
