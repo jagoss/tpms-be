@@ -84,13 +84,14 @@ func (pmp *PossibleMatchPersister) RemovePossibleDogMatches(possibleDogID uint) 
 }
 
 func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack) ([]model.PossibleMatch, error) {
-	var parsedAcks []int
-	for _, ack := range acks {
-		parsedAcks = append(parsedAcks, ack.Int())
+	values := make([]interface{}, len(acks)+2)
+	values[0], values[1] = id, id
+	for i, ack := range acks {
+		values[i+2] = ack
 	}
 
 	query := "SELECT * FROM possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?" + strings.Repeat(",?", len(acks)-1) + ")"
-	rows, err := pmp.connection.DB.Query(query, id, id, acks)
+	rows, err := pmp.connection.DB.Query(query, values...)
 	if err != nil {
 		return nil, err
 	}
