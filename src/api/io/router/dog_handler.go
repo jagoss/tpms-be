@@ -466,13 +466,15 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
 	id := c.Param("id")
 	acksStrings, exists := c.GetQueryArray("acks")
-	if exists {
+
+	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "Variable missing",
 			"message": "Missing acks",
 		})
 		return
 	}
+
 	var acks []model.Ack
 	for _, ack := range acksStrings {
 		acks = append(acks, model.ParseAck(ack))
