@@ -62,16 +62,16 @@ func (c *CVModelClient) CalculateEmbedding() (*Tensor, error) {
 			//img.SetRGBA(ix, iy, color.RGBA{R: s2[ir], G: s2[ig], B: s2[ib], A: 255})
 		}
 	}
-	body := map[string]interface{}{
-		"instances": vector,
-	}
-	res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), body)
-	if err != nil {
-		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
-		log.Printf(msg)
-		return nil, fmt.Errorf(msg)
-	}
-	log.Printf("%v", res)
+	//body := map[string]interface{}{
+	//	"instances": vector,
+	//}
+	//res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), body)
+	//if err != nil {
+	//	msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
+	//	log.Printf(msg)
+	//	return nil, fmt.Errorf(msg)
+	//}
+	//log.Printf("%v", res)
 	return &Tensor{vector}, nil
 }
 
