@@ -100,7 +100,7 @@ func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack)
 	var resultList []model.PossibleMatch
 	for rows.Next() {
 		var pm model.PossibleMatch
-		if err := rows.Scan(id); err != nil {
+		if err := rows.Scan(&pm.DogID, &pm.PossibleDogID, &pm.Ack); err != nil {
 			return nil, err
 		}
 		resultList = append(resultList, pm)
