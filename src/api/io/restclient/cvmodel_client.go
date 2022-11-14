@@ -26,7 +26,7 @@ func NewCVModelRestClient(client *http.Client) *CVModelClient {
 }
 
 func (c *CVModelClient) CalculateDogEmbedding(tensor model.Tensor) ([]float64, error) {
-	res, err := Post(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), tensor.Values)
+	res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), tensor.Values)
 	if err != nil {
 		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 		log.Printf(msg)
