@@ -136,6 +136,10 @@ func Post(url string, body interface{}) ([]int8, error) {
 		return nil, err
 	}
 	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		log.Printf(err.Error())
+		return nil, err
+	}
 	if response.StatusCode != OK {
 		return nil, fmt.Errorf("status code %s: %v", response.Status, response.Body)
 	}
@@ -146,13 +150,13 @@ func Post(url string, body interface{}) ([]int8, error) {
 	//	return nil, err
 	//}
 
-	bytes, err := io.ReadAll(response.Body)
+	bytesRes, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
 	_ = response.Body.Close()
 
 	var respBody map[string][]int8
-	_ = json.Unmarshal(bytes, &respBody)
+	_ = json.Unmarshal(bytesRes, &respBody)
 	return respBody["predictions"], nil
 }
