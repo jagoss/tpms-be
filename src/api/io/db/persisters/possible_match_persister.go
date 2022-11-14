@@ -87,7 +87,7 @@ func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack)
 	values := make([]interface{}, len(acks)+2)
 	values[0], values[1] = id, id
 	for i, ack := range acks {
-		values[i+2] = ack
+		values[i+2] = ack.String()
 	}
 
 	query := "SELECT * FROM tpms_prod.possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?" + strings.Repeat(",?", len(acks)-1) + ")"
