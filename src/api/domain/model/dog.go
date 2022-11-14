@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql/driver"
 	"strings"
 	"time"
 )
@@ -1093,6 +1092,3 @@ func ParseAck(ack string) Ack {
 		return Pending
 	}
 }
-
-func (a *Ack) Scan(value interface{}) error { *a = Ack(value.(int8)); return nil }
-func (a Ack) Value() (driver.Value, error)  { return int8(a), nil }
