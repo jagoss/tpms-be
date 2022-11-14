@@ -26,7 +26,10 @@ func NewCVModelRestClient(client *http.Client) *CVModelClient {
 }
 
 func (c *CVModelClient) CalculateDogEmbedding(tensor model.Tensor) ([]float64, error) {
-	res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), tensor.Values)
+	body := map[string]interface{}{
+		"instances": tensor.Values,
+	}
+	res, err := Post(fmt.Sprintf("%s%s", baseURL, calculateEmbedding), body)
 	if err != nil {
 		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 		log.Printf(msg)
@@ -89,21 +92,24 @@ func (c *CVModelClient) put(url string, reqBody *CVRequest) error {
 }
 
 func Post(url string, body interface{}) ([]float64, error) {
+	log.Printf("request body: %v", body)
 	reqBodyJson, _ := json.Marshal(body)
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(reqBodyJson))
 	if err != nil {
 		log.Printf(err.Error())
 		return nil, err
 	}
-	if response.StatusCode != OK {
-		return nil, fmt.Errorf("status code %s: %v", response.Status, response.Body)
-	}
-
 	bytesRes, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
 	_ = response.Body.Close()
+
+	if response.StatusCode != OK {
+		var respBody map[string][]interface{}
+		_ = json.Unmarshal(bytesRes, &respBody)
+		return nil, fmt.Errorf("status code %s: %v", response.Status, respBody)
+	}
 
 	var respBody map[string][]float64
 	_ = json.Unmarshal(bytesRes, &respBody)
