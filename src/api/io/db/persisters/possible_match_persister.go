@@ -106,13 +106,14 @@ func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack)
 		resultList = append(resultList, pm)
 	}
 
+	log.Printf("result list: %v", resultList)
+
 	if resultList == nil || len(resultList) == 0 {
 		return make([]model.PossibleMatch, 0), nil
 	}
 	if err != nil {
 		return nil, err
 	}
-
 	return resultList, nil
 }
 
