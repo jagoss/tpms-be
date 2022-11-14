@@ -17,7 +17,7 @@ func NewPossibleMatchPersister(connection *db.Connection) *PossibleMatchPersiste
 }
 
 func (pmp *PossibleMatchPersister) AddPossibleMatch(dogID uint, possibleDogID uint) error {
-	query := "INSERT INTO possible_matches(dog_id, possible_dog_id, ack) VALUES (?, ?, 'PENDING')"
+	query := "INSERT INTO tpms_prod.possible_matches(dog_id, possible_dog_id, ack) VALUES (?, ?, 'PENDING')"
 	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
 	if err != nil {
 		log.Printf("[PossibleMatchPersister.AddPossibleMatch] error inserting possible match: %s", err.Error())
@@ -27,7 +27,7 @@ func (pmp *PossibleMatchPersister) AddPossibleMatch(dogID uint, possibleDogID ui
 
 }
 func (pmp *PossibleMatchPersister) UpdateAck(dogID uint, possibleDogID uint, ack model.Ack) error {
-	query := "UPDATE possible_matches SET ack = ? WHERE dog_id = ? AND possible_dog_id = ?"
+	query := "UPDATE tpms_prod.possible_matches SET ack = ? WHERE dog_id = ? AND possible_dog_id = ?"
 	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func (pmp *PossibleMatchPersister) UpdateAck(dogID uint, possibleDogID uint, ack
 	return nil
 }
 func (pmp *PossibleMatchPersister) Delete(dogID uint, possibleDogID uint) error {
-	query := "DELETE FROM possible_matches WHERE dog_id = ? AND possible_dog_id = ?"
+	query := "DELETE FROM tpms_prod.possible_matches WHERE dog_id = ? AND possible_dog_id = ?"
 	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (pmp *PossibleMatchPersister) Delete(dogID uint, possibleDogID uint) error 
 }
 
 func (pmp *PossibleMatchPersister) RemovePossibleMatchesForDog(dogID uint) ([]model.PossibleMatch, error) {
-	query := "SELECT * FROM possible_matches WHERE dog_id = ?"
+	query := "SELECT * FROM tpms_prod.possible_matches WHERE dog_id = ?"
 	rows, err := pmp.connection.DB.Query(query, dogID)
 	if err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (pmp *PossibleMatchPersister) RemovePossibleMatchesForDog(dogID uint) ([]mo
 		return nil, err
 	}
 
-	deleteQuery := "DELETE FROM possible_matches WHERE dog_id IN (?)"
+	deleteQuery := "DELETE FROM tpms_prod.possible_matches WHERE dog_id IN (?)"
 	_, err = pmp.connection.DB.Exec(deleteQuery, dogID)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (pmp *PossibleMatchPersister) RemovePossibleMatchesForDog(dogID uint) ([]mo
 
 // RemovePossibleDogMatches Remove entries where given id is the possibleDogID
 func (pmp *PossibleMatchPersister) RemovePossibleDogMatches(possibleDogID uint) ([]model.PossibleMatch, error) {
-	query := "SELECT * FROM possible_matches WHERE possible_dog_id = ?"
+	query := "SELECT * FROM tpms_prod.possible_matches WHERE possible_dog_id = ?"
 	rows, err := pmp.connection.DB.Query(query, possibleDogID)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (pmp *PossibleMatchPersister) RemovePossibleDogMatches(possibleDogID uint) 
 		return nil, err
 	}
 
-	deleteQuery := "DELETE FROM possible_matches WHERE possible_dog_id IN (?)"
+	deleteQuery := "DELETE FROM tpms_prod.possible_matches WHERE possible_dog_id IN (?)"
 	_, err = pmp.connection.DB.Exec(deleteQuery, possibleDogID)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack)
 		values[i+2] = ack
 	}
 
-	query := "SELECT * FROM possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?" + strings.Repeat(",?", len(acks)-1) + ")"
+	query := "SELECT * FROM tpms_prod.possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?" + strings.Repeat(",?", len(acks)-1) + ")"
 	log.Printf("query: %s", query)
 	log.Printf("args: %v", values)
 	rows, err := pmp.connection.DB.Query(query, values...)
