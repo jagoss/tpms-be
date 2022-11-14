@@ -5,6 +5,7 @@ import (
 	"be-tpms/src/api/io/db"
 	"database/sql"
 	"log"
+	"strings"
 )
 
 type PossibleMatchPersister struct {
@@ -88,8 +89,8 @@ func (pmp *PossibleMatchPersister) GetPossibleMatches(id uint, acks []model.Ack)
 		parsedAcks = append(parsedAcks, ack.Int())
 	}
 
-	query := "SELECT * FROM possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?)"
-	rows, err := pmp.connection.DB.Query(query, id, id, parsedAcks)
+	query := "SELECT * FROM possible_matches WHERE (dog_id = ? OR possible_dog_id = ?) AND ack IN (?" + strings.Repeat(",?", len(acks)-1) + ")"
+	rows, err := pmp.connection.DB.Query(query, id, id, acks)
 	if err != nil {
 		return nil, err
 	}
