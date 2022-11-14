@@ -465,7 +465,7 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 // @Router      /dog/:id/possible [get]
 func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
 	id := c.Param("id")
-	acksStrings, exists := c.GetQueryArray("ack")
+	acksStrings, exists := c.GetQueryArray("acks")
 	if exists {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "Variable missing",
@@ -477,7 +477,6 @@ func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
 	for _, ack := range acksStrings {
 		acks = append(acks, model.ParseAck(ack))
 	}
-	log.Printf("acks: %v", acks)
 
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
