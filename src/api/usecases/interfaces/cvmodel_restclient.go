@@ -1,9 +1,10 @@
 package interfaces
 
-import "be-tpms/src/api/io/restclient"
+import (
+	"be-tpms/src/api/domain/model"
+)
 
 type CVModelRestClient interface {
-	//CalculateEmbedding(id int64, imgs []string) error
-	CalculateEmbedding() (*restclient.Tensor, error)
+	CalculateDogEmbedding(tensor model.Tensor) ([]float64, error)
 	SearchSimilarDog(dogID int64) ([]uint, error)
 }

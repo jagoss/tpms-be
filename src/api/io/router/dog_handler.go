@@ -525,7 +525,7 @@ func GetSimilarDogPrediction(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	predictionService := cvmodel.NewPrediction(env.CVModelRestClient, env.Storage)
+	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
 	dogID, _ := strconv.ParseUint(id, 10, 64)
 	resultList, err := predictionService.FindMatches(uint(dogID), env.DogPersister)
 	if err != nil {
@@ -610,8 +610,9 @@ func GenerarteEmbedding(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
-	result, err := env.CVModelRestClient.CalculateEmbedding()
+	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
+	dogID, _ := strconv.ParseUint(id, 10, 64)
+	err := predictionService.CalculateEmbedding(uint(dogID))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
@@ -620,5 +621,5 @@ func GenerarteEmbedding(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result.T)
+	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Embedding calculated for dog %s", id)})
 }

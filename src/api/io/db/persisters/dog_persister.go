@@ -137,7 +137,15 @@ func (dp *DogPersister) SetLostDog(id uint, lat float64, lng float64) error {
 		return err
 	}
 	return nil
+}
 
+func (dp *DogPersister) UpdateEmbedding(dogID uint, embedding string) error {
+	stm := "UDPATE tmps_prod.dogs SET embedding = ? WHERE id = ?"
+	_, err := dp.connection.DB.Exec(stm, dogID, embedding)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) model.Dog {
