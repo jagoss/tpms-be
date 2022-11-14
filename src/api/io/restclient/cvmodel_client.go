@@ -130,10 +130,21 @@ func (c *CVModelClient) put(url string, reqBody *CVRequest) error {
 
 func Post(url string, body interface{}) ([]int8, error) {
 	reqBodyJson, _ := json.Marshal(body)
-	response, err := http.Post(url, "application/json", bytes.NewBuffer(reqBodyJson))
+	request, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(reqBodyJson))
+	request.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return nil, err
 	}
+	response, err := http.DefaultClient.Do(request)
+	if response.StatusCode != OK {
+		return nil, fmt.Errorf("status code %s: %v", response.Status, response.Body)
+	}
+
+	//reqBodyJson, _ := json.Marshal(body)
+	//response, err := http.Post(url, "application/json", bytes.NewBuffer(reqBodyJson))
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	bytes, err := io.ReadAll(response.Body)
 	if err != nil {
