@@ -620,5 +620,5 @@ func GenerarteEmbedding(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result.T)
 }

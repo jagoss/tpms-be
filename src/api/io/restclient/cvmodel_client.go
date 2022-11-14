@@ -35,7 +35,7 @@ func NewCVModelRestClient(client *http.Client) *CVModelClient {
 //	return nil
 //}
 
-func (c *CVModelClient) CalculateEmbedding() ([][][]int8, error) {
+func (c *CVModelClient) CalculateEmbedding() (*Tensor, error) {
 	const (
 		width  = 224
 		height = 224
@@ -49,7 +49,7 @@ func (c *CVModelClient) CalculateEmbedding() ([][][]int8, error) {
 	//}
 	// display the fields
 	fmt.Printf(":: size: length %v  capacity %v\n", len(s2), cap(s2))
-	var vector [][][]int8
+	var vector [224][224][3]int8
 	//img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for ix := 0; ix < width; ix++ {
 		for iy := 0; iy < height; iy++ {
@@ -72,7 +72,11 @@ func (c *CVModelClient) CalculateEmbedding() ([][][]int8, error) {
 		return nil, fmt.Errorf(msg)
 	}
 	log.Printf("%v", res)
-	return vector, nil
+	return &Tensor{vector}, nil
+}
+
+type Tensor struct {
+	T [224][224][3]int8
 }
 
 func (c *CVModelClient) SearchSimilarDog(dogID int64) ([]uint, error) {
