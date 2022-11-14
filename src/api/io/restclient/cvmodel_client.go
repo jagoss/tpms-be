@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"image"
-	"image/color"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 )
 
@@ -37,30 +36,34 @@ func NewCVModelRestClient(client *http.Client) *CVModelClient {
 //}
 
 func (c *CVModelClient) CalculateEmbedding() ([]int8, error) {
-	var (
-		width  = 244
-		height = 244
+	const (
+		width  = 224
+		height = 224
 	)
 	s2 := make([]uint8, width*height*3)
 
 	// ...read from hdf5...
 
-	to1D := func(x, y, z int) int {
-		return (z * height * width) + (y * width) + x
-	}
+	//to1D := func(x, y, z int) int {
+	//    return (z * height * width) + (y * width) + x
+	//}
 	// display the fields
 	fmt.Printf(":: size: length %v  capacity %v\n", len(s2), cap(s2))
-
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	vector := [height][width][3]int8{}
+	//img := image.NewRGBA(image.Rect(0, 0, width, height))
 	for ix := 0; ix < width; ix++ {
 		for iy := 0; iy < height; iy++ {
-			ir := to1D(ix, iy, 0)
-			ig := to1D(ix, iy, 1)
-			ib := to1D(ix, iy, 2)
-			img.SetRGBA(ix, iy, color.RGBA{R: s2[ir], G: s2[ig], B: s2[ib], A: 255})
+			for iz := 0; iz < 3; iz++ {
+				vector[ix][iy][iz] = int8(rand.Intn(255))
+			}
+			//ir := to1D(ix, iy, 0)
+			//ig := to1D(ix, iy, 1)
+			//ib := to1D(ix, iy, 2)
+			//img.SetRGBA(ix, iy, color.RGBA{R: s2[ir], G: s2[ig], B: s2[ib], A: 255})
 		}
 	}
-	res, err := Post(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), img)
+
+	res, err := Post(fmt.Sprintf("%s/%s", baseURL, calculateEmbedding), vector)
 	if err != nil {
 		msg := fmt.Sprintf("[cvmodelrestclient.CalculateEmbedding] %s", err.Error())
 		log.Printf(msg)
