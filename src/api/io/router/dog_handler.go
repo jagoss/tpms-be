@@ -477,6 +477,7 @@ func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
 	for _, ack := range acksStrings {
 		acks = append(acks, model.ParseAck(ack))
 	}
+	log.Printf("acks: %v", acks)
 
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
