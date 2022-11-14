@@ -54,7 +54,7 @@ func (c *CVModelClient) CalculateEmbedding() (*Tensor, error) {
 	for iz := 0; iz < 3; iz++ {
 		for ix := 0; ix < width; ix++ {
 			for iy := 0; iy < height; iy++ {
-				vector[ix][iy][iz] = rand.Intn(255)
+				vector[iz][ix][iy] = rand.Intn(255)
 
 				//ir := to1D(ix, iy, 0)
 				//ig := to1D(ix, iy, 1)
