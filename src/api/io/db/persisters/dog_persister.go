@@ -59,8 +59,12 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 
 func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
 	conditions := "id in (?" + strings.Repeat(", ?", len(ids)-1) + ")"
+	var values []interface{}
+	for _, id := range ids {
+		values = append(values, id)
+	}
 	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE %s", columns, conditions)
-	rows, err := dp.connection.DB.Query(query, ids)
+	rows, err := dp.connection.DB.Query(query, values...)
 	if err != nil {
 		return nil, err
 	}
