@@ -34,7 +34,9 @@ func (up *UserPersister) GetUser(userID string) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	if len(users) == 0 {
+		return nil, fmt.Errorf("error: user does not exist")
+	}
 	user := users[0]
 	return &user, nil
 }
