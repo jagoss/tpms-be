@@ -150,13 +150,11 @@ func (dp *DogPersister) UpdateEmbedding(dogID uint, embedding string) error {
 }
 
 func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVector, error) {
-	query, user := "", ""
+	query := ""
 	if dog.Owner != nil {
-		user = dog.Owner.ID
 		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND host_id != ''"
 	}
 	if dog.Host != nil {
-		user = dog.Host.ID
 		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND owner_id != ''"
 	}
 	log.Printf("Query: %s", query)
