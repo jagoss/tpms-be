@@ -112,7 +112,7 @@ func mapTo8bitValue(val uint32) uint8 {
 }
 
 func top5Dogs(desireDogVector []float64, compareVectors []model.DogVector) []uint {
-	topDogs := make([]DogSimilarity, 5)
+	var topDogs []DogSimilarity
 	for _, vector := range compareVectors {
 		topDogs = append(topDogs, DogSimilarity{DogID: vector.ID, Distance: calculateDistance(desireDogVector, vector.Vector)})
 		//topDogs = addToTop(vector.ID, calculateDistance(desireDogVector, vector.Vector), topDogs)
@@ -135,7 +135,7 @@ func top5Dogs(desireDogVector []float64, compareVectors []model.DogVector) []uin
 }
 
 func getIDList(dogs []DogSimilarity) []uint {
-	resultList := make([]uint, len(dogs))
+	var resultList []uint
 	for _, dog := range dogs {
 		resultList = append(resultList, dog.DogID)
 	}
