@@ -500,7 +500,7 @@ func GetPossibleMatchingDogs(c *gin.Context, env environment.Env) {
 		return
 	}
 	log.Printf("[GetPossibleMatchingDogs] result list: %v", possibleMatchingDogs)
-	c.JSON(http.StatusOK, possibleMatchingDogs)
+	c.JSON(http.StatusOK, io.PossibleMatchListDto(possibleMatchingDogs))
 }
 
 // GetSimilarDogPrediction godoc

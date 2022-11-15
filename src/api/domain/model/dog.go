@@ -1056,6 +1056,12 @@ type PossibleMatch struct {
 	Ack           Ack  `json:"ack"`
 }
 
+type PossibleMatchDto struct {
+	DogID         string `json:"dogId"`
+	PossibleDogID string `json:"possibleDogId"`
+	Ack           string `json:"ack"`
+}
+
 type Ack int
 
 func (a Ack) String() string {

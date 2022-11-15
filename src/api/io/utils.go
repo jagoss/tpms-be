@@ -137,3 +137,19 @@ func ToStringList(values []uint) []string {
 	}
 	return resultList
 }
+
+func PossibleMatchListDto(matches []model.PossibleMatch) []model.PossibleMatchDto {
+	resultList := make([]model.PossibleMatchDto, len(matches))
+	for _, pm := range matches {
+		resultList = append(resultList, PossibleMatchToDto(pm))
+	}
+	return resultList
+}
+
+func PossibleMatchToDto(match model.PossibleMatch) model.PossibleMatchDto {
+	return model.PossibleMatchDto{
+		DogID:         strconv.Itoa(int(match.DogID)),
+		PossibleDogID: strconv.Itoa(int(match.PossibleDogID)),
+		Ack:           match.Ack.String(),
+	}
+}
