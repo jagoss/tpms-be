@@ -143,6 +143,7 @@ func PossibleMatchListDto(matches []model.PossibleMatch) []model.PossibleMatchDt
 	for _, pm := range matches {
 		resultList = append(resultList, PossibleMatchToDto(pm))
 	}
+	log.Printf("possible match dto: %v", resultList)
 	return resultList
 }
 
