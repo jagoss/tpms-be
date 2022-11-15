@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 const (
@@ -111,9 +112,18 @@ func Post(url string, body interface{}) ([]float64, error) {
 		return nil, fmt.Errorf("status code %s: %v", response.Status, respBody)
 	}
 
-	var respBody map[string][]float64
+	var respBody map[string][]interface{}
 	_ = json.Unmarshal(bytesRes, &respBody)
 	log.Printf("response body: %v", respBody)
 
-	return respBody["predictions"], nil
+	return parseToFloat64(respBody["predictions"]), nil
+}
+
+func parseToFloat64(values []interface{}) []float64 {
+	var list []float64
+	for _, val := range values {
+		casted, _ := strconv.ParseFloat(fmt.Sprintf("%v", val), 64)
+		list = append(list, casted)
+	}
+	return list
 }
