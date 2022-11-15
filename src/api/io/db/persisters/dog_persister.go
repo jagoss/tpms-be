@@ -5,6 +5,7 @@ import (
 	"be-tpms/src/api/io/db"
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -151,7 +152,7 @@ func (dp *DogPersister) UpdateEmbedding(dogID uint, embedding string) error {
 func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVector, error) {
 	query := "SELECT id, embedding " +
 		"FROM tpms_prod.dogs " +
-		"WHERE id != ? AND is_lost = TRUE AND (? = '' AND owner_id != '') OR (? = '' AND host_id != '')"
+		"WHERE id != ? AND is_lost = TRUE AND ((? = '' AND owner_id != '') OR (? = '' AND host_id != ''))"
 	owner, host := "''", "''"
 	if dog.Owner != nil {
 		owner = dog.Owner.ID
@@ -159,6 +160,7 @@ func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVecto
 	if dog.Host != nil {
 		host = dog.Host.ID
 	}
+	log.Printf("ownerID: %s, hostID: %s", owner, host)
 	rows, err := dp.connection.DB.Query(query, dog.ID, owner, host)
 	if err != nil {
 		return nil, err
