@@ -102,7 +102,11 @@ func (p *Prediction) FindMatches(dogID uint) ([]model.Dog, error) {
 		return make([]model.Dog, 0), nil
 	}
 
-	dogs, _ := p.dogPersister.GetDogs(top5Dogs)
+	dogs, err := p.dogPersister.GetDogs(top5Dogs)
+	if err != nil {
+		log.Printf(err.Error())
+		return nil, err
+	}
 	log.Printf("dogs: %v", dogs)
 	return dogs, nil
 }

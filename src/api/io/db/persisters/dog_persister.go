@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -57,7 +58,8 @@ func (dp *DogPersister) GetDog(dogID uint) (*model.Dog, error) {
 }
 
 func (dp *DogPersister) GetDogs(ids []uint) ([]model.Dog, error) {
-	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE id in (?)", columns)
+	conditions := "id in (?" + strings.Repeat(", ?", len(ids)-1) + ")"
+	query := fmt.Sprintf("SELECT %s FROM tpms_prod.dogs WHERE %s", columns, conditions)
 	rows, err := dp.connection.DB.Query(query, ids)
 	if err != nil {
 		return nil, err
@@ -255,9 +257,9 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 		if dog.HostID != "" {
 			host, _ = up.GetUser(dog.HostID)
 		}
-
 		resultList = append(resultList, mapToDog(dog, owner, host))
 	}
+	log.Printf("[getDogs] dogs: %v", resultList)
 	if resultList == nil || len(resultList) == 0 {
 		return make([]model.Dog, 0), nil
 	}
