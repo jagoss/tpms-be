@@ -58,12 +58,14 @@ func (l *LostFoundDogs) GetMissingDogsInRadius(userLat float64, userLng float64,
 	if err != nil {
 		return nil, fmt.Errorf("[lostfounddogs.GetMissingDogsInRadius] error getting dogs: %s", err.Error())
 	}
+	log.Printf("all missing dogs: %v", missingDogs)
 	var dogsInRadio []model.Dog
 	for _, dog := range missingDogs {
 		if usecases.Distance(userLat, userLng, dog.Latitude, dog.Longitude) <= radius {
 			dogsInRadio = append(dogsInRadio, dog)
 		}
 	}
+	log.Printf("Dogs in radius %d: %v", radius, dogsInRadio)
 	return dogsInRadio, nil
 }
 
