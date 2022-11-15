@@ -174,7 +174,7 @@ func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVecto
 		}
 		result = append(result, model.DogVector{ID: dogVectorDto.ID, Vector: ToFloat64List(dogVectorDto.Vector.String)})
 	}
-	return nil, nil
+	return result, nil
 }
 
 func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) model.Dog {
