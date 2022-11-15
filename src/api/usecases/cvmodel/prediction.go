@@ -10,6 +10,7 @@ import (
 	"image"
 	"log"
 	"math"
+	"sort"
 )
 
 type Prediction struct {
@@ -113,10 +114,24 @@ func mapTo8bitValue(val uint32) uint8 {
 func top5Dogs(desireDogVector []float64, compareVectors []model.DogVector) []uint {
 	topDogs := make([]DogSimilarity, 5)
 	for _, vector := range compareVectors {
-		topDogs = addToTop(vector.ID, calculateDistance(desireDogVector, vector.Vector), topDogs)
+		topDogs = append(topDogs, DogSimilarity{DogID: vector.ID, Distance: calculateDistance(desireDogVector, vector.Vector)})
+		//topDogs = addToTop(vector.ID, calculateDistance(desireDogVector, vector.Vector), topDogs)
 	}
-	log.Printf("[top5Dogs] top5 dogs: %v", topDogs)
-	return getIDList(topDogs)
+	if len(topDogs) <= 5 {
+		return getIDList(topDogs)
+	}
+
+	sort.Slice(topDogs, func(i, j int) bool {
+		return topDogs[i].Distance > topDogs[j].Distance
+	})
+
+	var shortList []DogSimilarity
+	for i := 0; i < 5; i++ {
+		shortList = append(shortList, topDogs[i])
+	}
+
+	log.Printf("[top5Dogs] top5 dogs: %v", shortList)
+	return getIDList(shortList)
 }
 
 func getIDList(dogs []DogSimilarity) []uint {
