@@ -144,6 +144,9 @@ func PossibleMatchListDto(matches []model.PossibleMatch) []model.PossibleMatchDt
 		resultList = append(resultList, PossibleMatchToDto(pm))
 	}
 	log.Printf("possible match dto: %v", resultList)
+	if len(resultList) == 0 {
+		return make([]model.PossibleMatchDto, 0)
+	}
 	return resultList
 }
 
