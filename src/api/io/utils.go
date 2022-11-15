@@ -139,7 +139,7 @@ func ToStringList(values []uint) []string {
 }
 
 func PossibleMatchListDto(matches []model.PossibleMatch) []model.PossibleMatchDto {
-	resultList := make([]model.PossibleMatchDto, len(matches))
+	var resultList []model.PossibleMatchDto
 	for _, pm := range matches {
 		resultList = append(resultList, PossibleMatchToDto(pm))
 	}
