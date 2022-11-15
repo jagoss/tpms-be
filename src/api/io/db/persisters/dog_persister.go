@@ -152,7 +152,7 @@ func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVecto
 	query := "SELECT id, embedding " +
 		"FROM tpms_prod.dogs " +
 		"WHERE is_lost = TRUE AND (? == '' AND owner_id != '') OR (? == '' AND host_id != '')"
-	owner, host := "", ""
+	owner, host := "''", "''"
 	if dog.Owner != nil {
 		owner = dog.Owner.ID
 	}
