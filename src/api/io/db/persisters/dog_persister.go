@@ -166,7 +166,7 @@ func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVecto
 	var result []model.DogVector
 	for rows.Next() {
 		var dogVector model.DogVectorDto
-		if err := rows.Scan(&dogVector.ID, dogVector.Vector); err != nil {
+		if err := rows.Scan(&dogVector.ID, &dogVector.Vector); err != nil {
 			return nil, err
 		}
 		result = append(result, model.DogVector{ID: dogVector.ID, Vector: ToFloat64List(dogVector.Vector)})
