@@ -95,14 +95,14 @@ func (p *Prediction) FindMatches(dogID uint) ([]model.Dog, error) {
 
 	top5Dogs := top5Dogs(persisters.ToFloat64List(dog.Embedding), possibleMatchingDogs)
 
-	log.Printf("Top 5 matching dogs: %v", possibleMatchingDogs)
+	log.Printf("Top 5 matching dogs: %v", top5Dogs)
 
 	if len(top5Dogs) == 0 {
 		return make([]model.Dog, 0), nil
 	}
 
 	dogs, _ := p.dogPersister.GetDogs(top5Dogs)
-
+	log.Printf("dogs: %v", dogs)
 	return dogs, nil
 }
 
@@ -113,9 +113,9 @@ func mapTo8bitValue(val uint32) uint8 {
 func top5Dogs(desireDogVector []float64, compareVectors []model.DogVector) []uint {
 	topDogs := make([]DogSimilarity, 5)
 	for _, vector := range compareVectors {
-		addToTop(vector.ID, calculateDistance(desireDogVector, vector.Vector), topDogs)
+		topDogs = addToTop(vector.ID, calculateDistance(desireDogVector, vector.Vector), topDogs)
 	}
-
+	log.Printf("[top5Dogs] top5 dogs: %v", topDogs)
 	return getIDList(topDogs)
 }
 
@@ -135,21 +135,24 @@ func calculateDistance(vector1 []float64, vector2 []float64) float64 {
 	return math.Sqrt(distance)
 }
 
-func addToTop(id uint, distance float64, topDogs []DogSimilarity) {
+func addToTop(id uint, distance float64, topDogs []DogSimilarity) []DogSimilarity {
 	possibleMatch := DogSimilarity{id, distance}
 	if len(topDogs) < 5 {
 		topDogs = append(topDogs, possibleMatch)
-	} else {
-		var movingDog DogSimilarity
-		movingDog = possibleMatch
-		for _, topDog := range topDogs {
-			if possibleMatch.Distance < topDog.Distance {
-				tempVector := topDog
-				topDog = movingDog
-				movingDog = tempVector
-			}
+		log.Printf("[addToTop] added: %v", possibleMatch)
+		return topDogs
+	}
+	var movingDog *DogSimilarity
+	movingDog = &possibleMatch
+	for _, topDog := range topDogs {
+		if possibleMatch.Distance < topDog.Distance {
+			tempVector := topDog
+			topDog = *movingDog
+			movingDog = &tempVector
 		}
 	}
+
+	return topDogs
 }
 
 type DogSimilarity struct {
