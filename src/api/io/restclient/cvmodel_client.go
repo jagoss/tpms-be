@@ -93,7 +93,6 @@ func (c *CVModelClient) put(url string, reqBody *CVRequest) error {
 }
 
 func Post(url string, body interface{}) ([]float64, error) {
-	log.Printf("request body: %v", body)
 	reqBodyJson, _ := json.Marshal(body)
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(reqBodyJson))
 	if err != nil {
@@ -112,11 +111,11 @@ func Post(url string, body interface{}) ([]float64, error) {
 		return nil, fmt.Errorf("status code %s: %v", response.Status, respBody)
 	}
 
-	var respBody map[string][]interface{}
+	var respBody map[string][][]interface{}
 	_ = json.Unmarshal(bytesRes, &respBody)
 	log.Printf("response body: %v", respBody)
 
-	return parseToFloat64(respBody["predictions"]), nil
+	return parseToFloat64(respBody["predictions"][0]), nil
 }
 
 func parseToFloat64(values []interface{}) []float64 {
