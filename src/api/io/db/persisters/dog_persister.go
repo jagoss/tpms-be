@@ -150,18 +150,21 @@ func (dp *DogPersister) UpdateEmbedding(dogID uint, embedding string) error {
 }
 
 func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVector, error) {
-	query := "SELECT id, embedding " +
-		"FROM tpms_prod.dogs " +
-		"WHERE id != ? AND is_lost = TRUE AND ((? = '' AND owner_id != '') OR (? = '' AND host_id != ''))"
-	owner, host := "''", "''"
+	query, user := "", ""
 	if dog.Owner != nil {
-		owner = dog.Owner.ID
+		user = dog.Owner.ID
+		query = "SELECT id, embedding " +
+			"FROM tpms_prod.dogs " +
+			"WHERE id != ? AND is_lost = TRUE AND host_id != ''"
 	}
 	if dog.Host != nil {
-		host = dog.Host.ID
+		user = dog.Host.ID
+		query = "SELECT id, embedding " +
+			"FROM tpms_prod.dogs " +
+			"WHERE id != ? AND is_lost = TRUE AND host_id != ''"
 	}
-	log.Printf("ownerID: %s, hostID: %s", owner, host)
-	rows, err := dp.connection.DB.Query(query, dog.ID, owner, host)
+	log.Printf("Query: %s", query)
+	rows, err := dp.connection.DB.Query(query, dog.ID, user)
 	if err != nil {
 		return nil, err
 	}
