@@ -153,15 +153,11 @@ func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVecto
 	query, user := "", ""
 	if dog.Owner != nil {
 		user = dog.Owner.ID
-		query = "SELECT id, embedding " +
-			"FROM tpms_prod.dogs " +
-			"WHERE id != ? AND is_lost = TRUE AND host_id != ''"
+		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND host_id != ''"
 	}
 	if dog.Host != nil {
 		user = dog.Host.ID
-		query = "SELECT id, embedding " +
-			"FROM tpms_prod.dogs " +
-			"WHERE id != ? AND is_lost = TRUE AND host_id != ''"
+		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND owner_id != ''"
 	}
 	log.Printf("Query: %s", query)
 	rows, err := dp.connection.DB.Query(query, dog.ID, user)
