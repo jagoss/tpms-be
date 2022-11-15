@@ -87,11 +87,15 @@ func (p *Prediction) FindMatches(dogID uint) ([]model.Dog, error) {
 		return nil, err
 	}
 
+	log.Printf("Possible matching dogs from DB: %v", possibleMatchingDogs)
+
 	if possibleMatchingDogs == nil || len(possibleMatchingDogs) == 0 {
 		return make([]model.Dog, 0), nil
 	}
 
 	top5Dogs := top5Dogs(persisters.ToFloat64List(dog.Embedding), possibleMatchingDogs)
+
+	log.Printf("Top 5 matching dogs: %v", possibleMatchingDogs)
 
 	if len(top5Dogs) == 0 {
 		return make([]model.Dog, 0), nil
