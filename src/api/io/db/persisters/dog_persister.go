@@ -141,7 +141,7 @@ func (dp *DogPersister) SetLostDog(id uint, lat float64, lng float64) error {
 
 func (dp *DogPersister) UpdateEmbedding(dogID uint, embedding string) error {
 	query := "UPDATE tpms_prod.dogs SET embedding = ? WHERE id = ?"
-	_, err := dp.connection.DB.Exec(query, dogID, embedding)
+	_, err := dp.connection.DB.Exec(query, embedding, dogID)
 	if err != nil {
 		return err
 	}

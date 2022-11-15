@@ -66,7 +66,7 @@ func (p *Prediction) CalculateEmbedding(dogID uint) error {
 		return fmt.Errorf(msg)
 	}
 
-	err = p.dogPersister.UpdateEmbedding(uint(dogID), fmt.Sprintf("%v", embedding))
+	err = p.dogPersister.UpdateEmbedding(dogID, fmt.Sprintf("%v", embedding))
 	if err != nil {
 		return err
 	}
