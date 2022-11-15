@@ -2,6 +2,8 @@ basePath: /api/v1
 definitions:
   model.DogRequest:
     properties:
+      additionalInfo:
+        type: string
       age:
         type: string
       breed:
@@ -39,6 +41,8 @@ definitions:
     type: object
   model.DogResponse:
     properties:
+      additionalInfo:
+        type: string
       age:
         type: string
       breed:

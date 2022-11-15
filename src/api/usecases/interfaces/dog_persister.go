@@ -15,4 +15,5 @@ type DogPersister interface {
 	GetDogs(dogs []uint) ([]model.Dog, error)
 	SetLostDog(id uint, lat float64, lng float64) error
 	UpdateEmbedding(dogID uint, embedding string) error
+	GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVector, error)
 }

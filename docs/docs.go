@@ -2166,6 +2166,9 @@ const docTemplate = `{
         "model.DogRequest": {
             "type": "object",
             "properties": {
+                "additionalInfo": {
+                    "type": "string"
+                },
                 "age": {
                     "type": "string"
                 },
@@ -2222,6 +2225,9 @@ const docTemplate = `{
         "model.DogResponse": {
             "type": "object",
             "properties": {
+                "additionalInfo": {
+                    "type": "string"
+                },
                 "age": {
                     "type": "string"
                 },

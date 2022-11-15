@@ -148,6 +148,33 @@ func (dp *DogPersister) UpdateEmbedding(dogID uint, embedding string) error {
 	return nil
 }
 
+func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVector, error) {
+	query := "SELECT id, embedding " +
+		"FROM tpms_prod.dogs " +
+		"WHERE is_lost = TRUE AND (? == '' AND owner_id != '') OR (? == '' AND host_id != '')"
+	owner, host := "", ""
+	if dog.Owner != nil {
+		owner = dog.Owner.ID
+	}
+	if dog.Host != nil {
+		host = dog.Host.ID
+	}
+	rows, err := dp.connection.DB.Query(query, dog.ID, owner, host)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []model.DogVector
+	for rows.Next() {
+		var dogVector model.DogVectorDto
+		if err := rows.Scan(&dogVector.ID, dogVector.Vector); err != nil {
+			return nil, err
+		}
+		result = append(result, model.DogVector{ID: dogVector.ID, Vector: ToFloat64List(dogVector.Vector)})
+	}
+	return nil, nil
+}
+
 func mapToDog(dogModel model.DogModel, owner *model.User, host *model.User) model.Dog {
 	return model.Dog{ID: dogModel.ID,
 		Name:           dogModel.Name,

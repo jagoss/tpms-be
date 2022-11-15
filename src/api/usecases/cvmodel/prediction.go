@@ -2,12 +2,14 @@ package cvmodel
 
 import (
 	"be-tpms/src/api/domain/model"
+	"be-tpms/src/api/io/db/persisters"
 	"be-tpms/src/api/usecases/interfaces"
 	"bytes"
 	"encoding/base64"
 	"fmt"
 	"image"
 	"log"
+	"math"
 )
 
 type Prediction struct {
@@ -74,23 +76,79 @@ func (p *Prediction) CalculateEmbedding(dogID uint) error {
 	return nil
 }
 
-func (p *Prediction) FindMatches(dogID uint, persister interfaces.DogPersister) ([]model.Dog, error) {
-	similarDogs, err := p.cvModel.SearchSimilarDog(int64(dogID))
+func (p *Prediction) FindMatches(dogID uint) ([]model.Dog, error) {
+	dog, err := p.dogPersister.GetDog(dogID)
 	if err != nil {
 		return nil, err
 	}
-	if similarDogs == nil || len(similarDogs) == 0 {
+
+	possibleMatchingDogs, err := p.dogPersister.GetPossibleMatchingDog(dog)
+	if err != nil {
+		return nil, err
+	}
+
+	if possibleMatchingDogs == nil || len(possibleMatchingDogs) == 0 {
 		return make([]model.Dog, 0), nil
 	}
 
-	dogs, err := persister.GetDogs(similarDogs)
-	if err != nil {
-		return nil, err
+	top5Dogs := top5Dogs(persisters.ToFloat64List(dog.Embedding), possibleMatchingDogs)
+
+	if len(top5Dogs) == 0 {
+		return make([]model.Dog, 0), nil
 	}
+
+	dogs, _ := p.dogPersister.GetDogs(top5Dogs)
 
 	return dogs, nil
 }
 
 func mapTo8bitValue(val uint32) uint8 {
 	return uint8(val / (0x0100 + 1))
+}
+
+func top5Dogs(desireDogVector []float64, compareVectors []model.DogVector) []uint {
+	topDogs := make([]DogSimilarity, 5)
+	for _, vector := range compareVectors {
+		addToTop(vector.ID, calculateDistance(desireDogVector, vector.Vector), topDogs)
+	}
+
+	return getIDList(topDogs)
+}
+
+func getIDList(dogs []DogSimilarity) []uint {
+	resultList := make([]uint, len(dogs))
+	for _, dog := range dogs {
+		resultList = append(resultList, dog.DogID)
+	}
+	return resultList
+}
+
+func calculateDistance(vector1 []float64, vector2 []float64) float64 {
+	distance := float64(0)
+	for i := range vector1 {
+		distance += math.Pow(vector1[i]+vector2[i], 2)
+	}
+	return math.Sqrt(distance)
+}
+
+func addToTop(id uint, distance float64, topDogs []DogSimilarity) {
+	possibleMatch := DogSimilarity{id, distance}
+	if len(topDogs) < 5 {
+		topDogs = append(topDogs, possibleMatch)
+	} else {
+		var movingDog DogSimilarity
+		movingDog = possibleMatch
+		for _, topDog := range topDogs {
+			if possibleMatch.Distance < topDog.Distance {
+				tempVector := topDog
+				topDog = movingDog
+				movingDog = tempVector
+			}
+		}
+	}
+}
+
+type DogSimilarity struct {
+	DogID    uint
+	Distance float64
 }

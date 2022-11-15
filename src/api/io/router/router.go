@@ -127,7 +127,7 @@ func mapDogRoutes(env environment.Env) {
 		if !validUser(context) {
 			return
 		}
-		GetPossibleMatchingDog(context, env)
+		GetPossibleMatchingDogs(context, env)
 	})
 	dogRouter.GET("/:id/prediction", func(context *gin.Context) {
 		if !validUser(context) {

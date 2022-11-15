@@ -2159,6 +2159,9 @@
         "model.DogRequest": {
             "type": "object",
             "properties": {
+                "additionalInfo": {
+                    "type": "string"
+                },
                 "age": {
                     "type": "string"
                 },
@@ -2215,6 +2218,9 @@
         "model.DogResponse": {
             "type": "object",
             "properties": {
+                "additionalInfo": {
+                    "type": "string"
+                },
                 "age": {
                     "type": "string"
                 },

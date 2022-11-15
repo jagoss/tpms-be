@@ -76,21 +76,21 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	//predictionService := cvmodel.NewPrediction(env.CVModelRestClient, env.Storage)
-	//if err = predictionService.CalculateEmbedding(dog.ID, dog.ImgUrl); err != nil {
-	//	log.Printf("%v", err)
-	//	c.JSON(http.StatusInternalServerError, gin.H{
-	//		"error":   err.Error(),
-	//		"message": fmt.Sprintf("error calculating new dog %d vector: %v", dog.ID, err),
-	//	})
-	//	return
-	//}
-
 	if dog.IsLost {
 		notificationSender := messaging.NewMessageSender(env.NotificationSender, env.UserPersister)
 		if err = notificationSender.SendToEnabledUsers(dog); err != nil {
 			log.Printf("error notifying users")
 		}
+	}
+
+	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
+	if err = predictionService.CalculateEmbedding(uint(dog.ID)); err != nil {
+		log.Printf("%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error calculating new dog %d vector: %v", dog.ID, err),
+		})
+		return
 	}
 
 	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
@@ -449,7 +449,7 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 	c.JSON(http.StatusOK, gin.H{"delted": deleted})
 }
 
-// GetPossibleMatchingDog godoc
+// GetPossibleMatchingDogs godoc
 // @Summary Get possible matching dogs given dog id and ack status
 // @Schemes
 // @Description Given one dog ID return possible matching dogs and ack status of confirmation
@@ -463,7 +463,7 @@ func DeleteDog(c *gin.Context, env environment.Env) {
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
 // @Router      /dog/:id/possible [get]
-func GetPossibleMatchingDog(c *gin.Context, env environment.Env) {
+func GetPossibleMatchingDogs(c *gin.Context, env environment.Env) {
 	id := c.Param("id")
 	acksStrings, exists := c.GetQueryArray("acks")
 
@@ -527,7 +527,7 @@ func GetSimilarDogPrediction(c *gin.Context, env environment.Env) {
 	}
 	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
 	dogID, _ := strconv.ParseUint(id, 10, 64)
-	resultList, err := predictionService.FindMatches(uint(dogID), env.DogPersister)
+	resultList, err := predictionService.FindMatches(uint(dogID))
 	if err != nil {
 		log.Printf(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -598,6 +598,17 @@ func ReportDogAsMissing(c *gin.Context, env environment.Env) {
 	if err = notificationSender.SendToEnabledUsers(dog); err != nil {
 		log.Printf("error notifying users")
 	}
+
+	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
+	dogID, _ := strconv.ParseUint(id, 10, 64)
+	if err := predictionService.CalculateEmbedding(uint(dogID)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("could not update dog %s", id),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
 }
 
@@ -612,8 +623,7 @@ func GenerarteEmbedding(c *gin.Context, env environment.Env) {
 	}
 	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
 	dogID, _ := strconv.ParseUint(id, 10, 64)
-	err := predictionService.CalculateEmbedding(uint(dogID))
-	if err != nil {
+	if err := predictionService.CalculateEmbedding(uint(dogID)); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
 			"message": fmt.Sprintf("could not update dog %s", id),
