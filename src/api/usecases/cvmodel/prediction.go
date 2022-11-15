@@ -50,10 +50,12 @@ func (p *Prediction) CalculateEmbedding(dogID uint) error {
 	if err != nil {
 		return err
 	}
-	var tensor [batch][width][height][depth]uint32
+	var tensor [batch][width][height][depth]uint8
 	for ix := 0; ix < width; ix++ {
 		for iy := 0; iy < height; iy++ {
-			tensor[0][ix][iy][0], tensor[0][ix][iy][1], tensor[0][ix][iy][2], _ = img.At(ix, iy).RGBA()
+			img.ColorModel().Convert(img.At(ix, iy))
+			r, g, b, _ := img.At(ix, iy).RGBA()
+			tensor[0][ix][iy][0], tensor[0][ix][iy][1], tensor[0][ix][iy][2] = mapTo8bitValue(r), mapTo8bitValue(g), mapTo8bitValue(b)
 		}
 	}
 
@@ -87,4 +89,8 @@ func (p *Prediction) FindMatches(dogID uint, persister interfaces.DogPersister) 
 	}
 
 	return dogs, nil
+}
+
+func mapTo8bitValue(val uint32) uint8 {
+	return uint8(val / (0x0100 + 1))
 }
