@@ -1051,9 +1051,9 @@ type DogRequest struct {
 }
 
 type PossibleMatch struct {
-	DogID         uint
-	PossibleDogID uint
-	Ack           Ack
+	DogID         uint `json:"dogId"`
+	PossibleDogID uint `json:"possibleDogId"`
+	Ack           Ack  `json:"ack"`
 }
 
 type Ack int

@@ -489,7 +489,7 @@ func GetPossibleMatchingDogs(c *gin.Context, env environment.Env) {
 	}
 	lfDogs := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
 	dogID, _ := strconv.ParseUint(id, 10, 64)
-	dogIDs, err := lfDogs.GetPossibleMatchingDogs(uint(dogID), acks)
+	possibleMatchingDogs, err := lfDogs.GetPossibleMatchingDogs(uint(dogID), acks)
 
 	if err != nil {
 		log.Printf(err.Error())
@@ -499,8 +499,8 @@ func GetPossibleMatchingDogs(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
-	c.JSON(http.StatusOK, dogIDs)
+	log.Printf("[GetPossibleMatchingDogs] result list: %v", possibleMatchingDogs)
+	c.JSON(http.StatusOK, possibleMatchingDogs)
 }
 
 // GetSimilarDogPrediction godoc
