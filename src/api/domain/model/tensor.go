@@ -1,5 +1,7 @@
 package model
 
+import "database/sql"
+
 type Tensor struct {
 	Values [1][224][224][3]uint8
 }
@@ -11,5 +13,5 @@ type DogVector struct {
 
 type DogVectorDto struct {
 	ID     uint
-	Vector string
+	Vector sql.NullString
 }

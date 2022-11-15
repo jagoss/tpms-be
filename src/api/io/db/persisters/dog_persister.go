@@ -152,10 +152,10 @@ func (dp *DogPersister) UpdateEmbedding(dogID uint, embedding string) error {
 func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVector, error) {
 	query := ""
 	if dog.Owner != nil {
-		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND host_id != ''"
+		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND embedding IS NOT NULL AND host_id != ''"
 	}
 	if dog.Host != nil {
-		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND owner_id != ''"
+		query = "SELECT id, embedding FROM tpms_prod.dogs WHERE id != ? AND is_lost = TRUE AND embedding IS NOT NULL AND owner_id != ''"
 	}
 	log.Printf("Query: %s", query)
 	rows, err := dp.connection.DB.Query(query, dog.ID)
@@ -165,11 +165,14 @@ func (dp *DogPersister) GetPossibleMatchingDog(dog *model.Dog) ([]model.DogVecto
 
 	var result []model.DogVector
 	for rows.Next() {
-		var dogVector model.DogVectorDto
-		if err := rows.Scan(&dogVector.ID, &dogVector.Vector); err != nil {
+		var dogVectorDto model.DogVectorDto
+		if err := rows.Scan(&dogVectorDto.ID, &dogVectorDto.Vector); err != nil {
 			return nil, err
 		}
-		result = append(result, model.DogVector{ID: dogVector.ID, Vector: ToFloat64List(dogVector.Vector)})
+		if !dogVectorDto.Vector.Valid {
+			return nil, fmt.Errorf("nil embedding for dog %d", dogVectorDto.ID)
+		}
+		result = append(result, model.DogVector{ID: dogVectorDto.ID, Vector: ToFloat64List(dogVectorDto.Vector.String)})
 	}
 	return nil, nil
 }
