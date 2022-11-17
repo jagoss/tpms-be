@@ -72,16 +72,16 @@ func (l *LostFoundDogs) GetMissingDogsInRadius(userLat float64, userLng float64,
 func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, possibleDogsIDs []uint, sender interfaces.Messaging) error {
 	_, err := l.dogPersister.GetDog(dogID)
 	if err != nil {
-		return fmt.Errorf("error getting dog with id %d: %s", dogID, err.Error())
+		return fmt.Errorf("[PossibleMatchingDogs] error getting dog with id %d: %s", dogID, err.Error())
 	}
 	for _, id := range possibleDogsIDs {
 		dog, err := l.dogPersister.GetDog(id)
 		if err != nil {
-			return fmt.Errorf("error getting possible dog with id %d: %s", id, err.Error())
+			return fmt.Errorf("[PossibleMatchingDogs] error getting possible dog with id %d: %s", id, err.Error())
 		}
 
-		if err = l.possibleMatchPersister.AddPossibleMatch(dogID, id); err != nil {
-			log.Printf("%v", err)
+		if err := l.possibleMatchPersister.AddPossibleMatch(dogID, id); err != nil {
+			log.Printf("[PossibleMatchingDogs] %v", err)
 		} else {
 			send(dog, sender)
 		}

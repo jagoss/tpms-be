@@ -336,6 +336,7 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
 	err := lf.PossibleMatchingDogs(uint(dogIDU), matchingDogIDs, env.NotificationSender)
 	if err != nil {
+		log.Printf(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
 			"message": "error matching possible missing dogs",
