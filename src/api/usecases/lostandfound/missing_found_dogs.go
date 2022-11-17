@@ -90,18 +90,30 @@ func (l *LostFoundDogs) PossibleMatchingDogs(dogID uint, possibleDogsIDs []uint,
 }
 
 func (l *LostFoundDogs) AcknowledgePossibleDog(dogID uint, possibleDogID uint, sender interfaces.Messaging) error {
-	possibleDog, _ := l.dogPersister.GetDog(possibleDogID)
+	possibleDog, err := l.dogPersister.GetDog(possibleDogID)
+	if err != nil {
+		return err
+	}
 	dog, _ := l.dogPersister.GetDog(dogID)
+	if err != nil {
+		return err
+	}
+
+	var user string
+	if possibleDog.Owner != nil {
+		user = possibleDog.Owner.Name
+	} else {
+		user = possibleDog.Host.Name
+	}
 
 	data := map[string]string{
 		"title": fmt.Sprintf("Han confirmado tu perro!"),
-		"body":  fmt.Sprintf("Puede que %s tenga a %s", possibleDog.Owner.Name, dog.Name),
+		"body":  fmt.Sprintf("Puede que %s tenga a %s", user, dog.Name),
 	}
 	return l.updatePossibleDogMatch(dogID, possibleDogID, model.Accepted, data, sender)
 }
 
 func (l *LostFoundDogs) RejectPossibleDog(dogID uint, possibleDogID uint, sender interfaces.Messaging) error {
-	log.Printf("dogs to reject match: %d and %d", dogID, possibleDogID)
 	possibleDog, err := l.dogPersister.GetDog(possibleDogID)
 	if err != nil {
 		return err
@@ -223,11 +235,4 @@ func sendNotification(data map[string]string, user *model.User, sender interface
 	if err := sender.SendMessage(user.FCMToken, data); err != nil {
 		log.Printf("error sending push notification to user %s: %v", user.ID, err)
 	}
-}
-
-func getToken(dog *model.Dog) string {
-	if dog.Owner == nil {
-		return dog.Host.FCMToken
-	}
-	return dog.Owner.FCMToken
 }
