@@ -101,8 +101,15 @@ func (l *LostFoundDogs) AcknowledgePossibleDog(dogID uint, possibleDogID uint, s
 }
 
 func (l *LostFoundDogs) RejectPossibleDog(dogID uint, possibleDogID uint, sender interfaces.Messaging) error {
-	possibleDog, _ := l.dogPersister.GetDog(possibleDogID)
-	dog, _ := l.dogPersister.GetDog(dogID)
+	log.Printf("dogs to reject match: %d and %d", dogID, possibleDogID)
+	possibleDog, err := l.dogPersister.GetDog(possibleDogID)
+	if err != nil {
+		return err
+	}
+	dog, err := l.dogPersister.GetDog(dogID)
+	if err != nil {
+		return err
+	}
 
 	data := map[string]string{
 		"title": fmt.Sprintf("Han rechazado tu match"),
