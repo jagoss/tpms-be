@@ -145,9 +145,19 @@ func (l *LostFoundDogs) updatePossibleDogMatch(dogID uint, possibleDogID uint, a
 		}
 	}
 
-	dog, _ := l.dogPersister.GetDog(dogID)
+	dog, err := l.dogPersister.GetDog(possibleDogID)
+	if err != nil {
+		return err
+	}
 
-	if err := sender.SendMessage(dog.Owner.FCMToken, data); err != nil {
+	var userToken string
+	if dog.Owner != nil {
+		userToken = dog.Owner.FCMToken
+	} else {
+		userToken = dog.Host.FCMToken
+	}
+
+	if err := sender.SendMessage(userToken, data); err != nil {
 		log.Printf("error sending push notification to user %s: %v", dog.Owner.ID, err)
 	}
 
