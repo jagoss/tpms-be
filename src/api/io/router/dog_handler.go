@@ -353,8 +353,8 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 // @Tags        dog
 // @Accept      json
 // @Produce     json
-// @Param		dogID query string false "dog ID"
-// @Param		possibleDogID query string false "possible dog ID"
+// @Param		dogId query string false "dog ID"
+// @Param		possibleDogId query string false "possible dog ID"
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}

@@ -944,13 +944,13 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "dog ID",
-                        "name": "dogID",
+                        "name": "dogId",
                         "in": "query"
                     },
                     {
                         "type": "string",
                         "description": "possible dog ID",
-                        "name": "possibleDogID",
+                        "name": "possibleDogId",
                         "in": "query"
                     }
                 ],
@@ -2284,10 +2284,10 @@ const docTemplate = `{
                 "ack": {
                     "type": "integer"
                 },
-                "dogID": {
+                "dogId": {
                     "type": "integer"
                 },
-                "possibleDogID": {
+                "possibleDogId": {
                     "type": "integer"
                 }
             }

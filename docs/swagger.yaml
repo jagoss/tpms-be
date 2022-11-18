@@ -80,9 +80,9 @@ definitions:
     properties:
       ack:
         type: integer
-      dogID:
+      dogId:
         type: integer
-      possibleDogID:
+      possibleDogId:
         type: integer
     type: object
   model.User:
@@ -809,11 +809,11 @@ paths:
       parameters:
       - description: dog ID
         in: query
-        name: dogID
+        name: dogId
         type: string
       - description: possible dog ID
         in: query
-        name: possibleDogID
+        name: possibleDogId
         type: string
       produces:
       - application/json
