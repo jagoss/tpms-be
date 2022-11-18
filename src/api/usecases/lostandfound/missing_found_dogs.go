@@ -94,7 +94,7 @@ func (l *LostFoundDogs) AcknowledgePossibleDog(dogID uint, possibleDogID uint, s
 	if err != nil {
 		return err
 	}
-	dog, _ := l.dogPersister.GetDog(dogID)
+	dog, err := l.dogPersister.GetDog(dogID)
 	if err != nil {
 		return err
 	}
@@ -132,14 +132,12 @@ func (l *LostFoundDogs) RejectPossibleDog(dogID uint, possibleDogID uint, sender
 
 func (l *LostFoundDogs) updatePossibleDogMatch(dogID uint, possibleDogID uint, ack model.Ack, data map[string]string, sender interfaces.Messaging) error {
 	if ack == model.Accepted {
-		err := l.possibleMatchPersister.UpdateAck(dogID, possibleDogID, ack)
-		if err != nil {
+		if err := l.possibleMatchPersister.UpdateAck(dogID, possibleDogID, ack); err != nil {
 			return fmt.Errorf("[LostFoundDogs.updatePossibleDogMatch] error updating ack dog %d wiht dog %d: %v",
 				dogID, possibleDogID, err)
 		}
 	} else {
-		err := l.possibleMatchPersister.Delete(dogID, possibleDogID)
-		if err != nil {
+		if err := l.possibleMatchPersister.Delete(dogID, possibleDogID); err != nil {
 			return fmt.Errorf("[LostFoundDogs.updatePossibleDogMatch] error deleting possible match with dogs dog %d wiht dog %d: %v",
 				dogID, possibleDogID, err)
 		}
