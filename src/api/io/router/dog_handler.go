@@ -362,7 +362,26 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 // @Router      /dog/possible [put]
 func AckPossibleDog(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
-	dogID, possibleDogID := q.Get("dogID"), q.Get("possibleDogID")
+	dogID, possibleDogID := q.Get("dogId"), q.Get("possibleDogId")
+	if dogID == "" {
+		msg := "missing dogId"
+		log.Printf(msg)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing query param",
+			"message": msg,
+		})
+		return
+	}
+	if dogID == "" {
+		msg := "missing possibleDogId"
+		log.Printf(msg)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing query param",
+			"message": msg,
+		})
+		return
+	}
+
 	dogIDInt, _ := strconv.Atoi(dogID)
 	possibleDogIDInt, _ := strconv.Atoi(possibleDogID)
 
