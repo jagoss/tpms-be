@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -156,4 +157,17 @@ func PossibleMatchToDto(match model.PossibleMatch) model.PossibleMatchDto {
 		PossibleDogID: strconv.Itoa(int(match.PossibleDogID)),
 		Ack:           match.Ack.String(),
 	}
+}
+
+func ToArray(t interface{}) []string {
+	var result []string
+	switch reflect.TypeOf(t).Kind() {
+	case reflect.Slice:
+		s := reflect.ValueOf(t)
+
+		for i := 0; i < s.Len(); i++ {
+			result = append(result, s.Index(i).String())
+		}
+	}
+	return result
 }

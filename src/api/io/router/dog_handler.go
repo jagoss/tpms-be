@@ -9,6 +9,7 @@ import (
 	"be-tpms/src/api/usecases/lostandfound"
 	"be-tpms/src/api/usecases/messaging"
 	"be-tpms/src/api/usecases/users"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
@@ -302,39 +303,59 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 // @Tags        dog
 // @Accept      json
 // @Produce     json
-// @Param		dogID query string false "dog ID"
-// @Param		possibleDogs query []string false "possible matching dogs"
+// @Param		dogId body string false "dog ID"
+// @Param		possibleDogs body []string false "possible matching dogs"
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
 // @Success     200 {object} object{message=string}
 // @Router      /dog/possible [post]
 func PossibleMatch(c *gin.Context, env environment.Env) {
-	dogID, exists := c.GetQuery("dogId")
-	if !exists {
+	jsonBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Printf("error reading request body: %v", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading request body!",
+		})
+		return
+	}
+	var body map[string]interface{}
+	err = json.Unmarshal(jsonBody, &body)
+	if err != nil {
+		log.Printf("unmarshalling error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error unmarshalling request body!",
+		})
+		return
+	}
+	if body["dogId"] == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "missing dogId",
-			"message": "missing argument",
+			"message": "missing key value",
 		})
 		return
 	}
-	possibleDogsArr, exists := c.GetQueryArray("possibleDogs")
-	if !exists {
+	if body["possibleDogs"] == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "missing possibleDogs",
-			"message": "missing argument",
+			"error":   "missing possibleDogId",
+			"message": "missing key value",
 		})
 		return
 	}
-	log.Printf("possibleDogs: %s", possibleDogsArr)
-	dogIDU, _ := strconv.ParseUint(dogID, 10, 64)
+	dogID, possibleDogIDs := fmt.Sprintf("%v", body["dogId"]), io.ToArray(body["possibleDogs"])
+	dogIDInt, _ := strconv.Atoi(dogID)
+
+	log.Printf("possibleDogs: %s", possibleDogIDs)
 	var matchingDogIDs []uint
-	for _, matchingDogID := range possibleDogsArr {
+	for _, matchingDogID := range possibleDogIDs {
 		id, _ := strconv.Atoi(matchingDogID)
 		matchingDogIDs = append(matchingDogIDs, uint(id))
 	}
+
 	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
-	err := lf.PossibleMatchingDogs(uint(dogIDU), matchingDogIDs, env.NotificationSender)
+	err = lf.PossibleMatchingDogs(uint(dogIDInt), matchingDogIDs, env.NotificationSender)
 	if err != nil {
 		log.Printf(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -353,41 +374,53 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 // @Tags        dog
 // @Accept      json
 // @Produce     json
-// @Param		dogId query string false "dog ID"
-// @Param		possibleDogId query string false "possible dog ID"
+// @Param		dogId body string false "dog ID"
+// @Param		possibleDogId body string false "possible dog ID"
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		500 {object} object{error=string,message=string}
 // @Success     200 {object} object{message=string}
 // @Router      /dog/possible [put]
 func AckPossibleDog(c *gin.Context, env environment.Env) {
-	q := c.Request.URL.Query()
-	dogID, possibleDogID := q.Get("dogId"), q.Get("possibleDogId")
-	if dogID == "" {
-		msg := "missing dogId"
-		log.Printf(msg)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "missing query param",
-			"message": msg,
+	jsonBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Printf("error reading request body: %v", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading request body!",
 		})
 		return
 	}
-	if dogID == "" {
-		msg := "missing possibleDogId"
-		log.Printf(msg)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "missing query param",
-			"message": msg,
+	var body map[string]interface{}
+	err = json.Unmarshal(jsonBody, &body)
+	if err != nil {
+		log.Printf("unmarshalling error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error unmarshalling request body!",
 		})
 		return
 	}
-
+	if body["dogId"] == nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing dogId",
+			"message": "missing key value",
+		})
+		return
+	}
+	if body["possibleDogId"] == nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing possibleDogId",
+			"message": "missing key value",
+		})
+		return
+	}
+	dogID, possibleDogID := fmt.Sprintf("%v", body["dogId"]), fmt.Sprintf("%v", body["possibleDogId"])
 	dogIDInt, _ := strconv.Atoi(dogID)
 	possibleDogIDInt, _ := strconv.Atoi(possibleDogID)
 
 	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
-	err := lf.AcknowledgePossibleDog(uint(dogIDInt), uint(possibleDogIDInt), env.NotificationSender)
-	if err != nil {
+	if err := lf.AcknowledgePossibleDog(uint(dogIDInt), uint(possibleDogIDInt), env.NotificationSender); err != nil {
 		log.Printf(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
