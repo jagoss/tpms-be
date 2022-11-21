@@ -346,10 +346,11 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
+	log.Printf("[PossibleMatch] request body: %v", &body)
 	dogID, possibleDogIDs := fmt.Sprintf("%v", body["dogId"]), io.ToArray(body["possibleDogs"])
 	dogIDInt, _ := strconv.Atoi(dogID)
 
-	log.Printf("possibleDogs: %s", possibleDogIDs)
+	log.Printf("possibleDogs: %v", &possibleDogIDs)
 	var matchingDogIDs []uint
 	for _, matchingDogID := range possibleDogIDs {
 		id, _ := strconv.Atoi(matchingDogID)
