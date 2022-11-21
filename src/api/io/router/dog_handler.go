@@ -331,6 +331,7 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		return
 	}
 	if body["dogId"] == nil {
+		log.Printf("status code 400: missing dogId")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "missing dogId",
 			"message": "missing key value",
@@ -338,8 +339,9 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		return
 	}
 	if body["possibleDogs"] == nil {
+		log.Printf("status code 400: missing possibleDogs")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "missing possibleDogId",
+			"error":   "missing possibleDogs",
 			"message": "missing key value",
 		})
 		return
@@ -402,6 +404,7 @@ func AckPossibleDog(c *gin.Context, env environment.Env) {
 		return
 	}
 	if body["dogId"] == nil {
+		log.Printf("status code 400: missing dogId")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "missing dogId",
 			"message": "missing key value",
@@ -409,6 +412,7 @@ func AckPossibleDog(c *gin.Context, env environment.Env) {
 		return
 	}
 	if body["possibleDogId"] == nil {
+		log.Printf("status code 400: missing possibleDogId")
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "missing possibleDogId",
 			"message": "missing key value",
