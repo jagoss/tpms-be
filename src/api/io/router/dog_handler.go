@@ -330,6 +330,9 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
+
+	log.Printf("[PossibleMatch] request body: %v", &body)
+
 	if body["dogId"] == nil {
 		log.Printf("status code 400: missing dogId")
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -346,7 +349,7 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	log.Printf("[PossibleMatch] request body: %v", &body)
+
 	dogID, possibleDogIDs := fmt.Sprintf("%v", body["dogId"]), io.ToArray(body["possibleDogs"])
 	dogIDInt, _ := strconv.Atoi(dogID)
 
