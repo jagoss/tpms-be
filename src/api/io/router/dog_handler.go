@@ -303,7 +303,7 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 // @Tags        dog
 // @Accept      json
 // @Produce     json
-// @Param		dogId body string false "dog ID"
+// @Param		dogID body string false "dog ID"
 // @Param		possibleDogs body []string false "possible matching dogs"
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
@@ -333,10 +333,10 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 
 	log.Printf("[PossibleMatch] request body: %v", &body)
 
-	if body["dogId"] == nil {
-		log.Printf("status code 400: missing dogId")
+	if body["dogID"] == nil {
+		log.Printf("status code 400: missing dogID")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "missing dogId",
+			"error":   "missing dogID",
 			"message": "missing key value",
 		})
 		return
@@ -350,7 +350,7 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	dogID, possibleDogIDs := fmt.Sprintf("%v", body["dogId"]), io.ToArray(body["possibleDogs"])
+	dogID, possibleDogIDs := fmt.Sprintf("%v", body["dogID"]), io.ToArray(body["possibleDogs"])
 	dogIDInt, _ := strconv.Atoi(dogID)
 
 	log.Printf("possibleDogs: %v", &possibleDogIDs)
