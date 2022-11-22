@@ -164,9 +164,9 @@ func ToArray(t interface{}) []string {
 	log.Printf("[io.ToArray] type: %v", reflect.TypeOf(t).Kind())
 	switch reflect.TypeOf(t).Kind() {
 	case reflect.Slice:
-		s := t.([]string)
+		s := t.([]interface{})
 		for i := 0; i < len(s); i++ {
-			result = append(result, s[i])
+			result = append(result, fmt.Sprintf("%s", s[i]))
 		}
 		break
 	case reflect.String:
