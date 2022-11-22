@@ -161,12 +161,12 @@ func PossibleMatchToDto(match model.PossibleMatch) model.PossibleMatchDto {
 
 func ToArray(t interface{}) []string {
 	var result []string
-	log.Printf("[ToArray] type: %v", reflect.TypeOf(t).Kind())
+	log.Printf("[io.ToArray] type: %v", reflect.TypeOf(t).Kind())
 	switch reflect.TypeOf(t).Kind() {
 	case reflect.Slice:
-		s := reflect.ValueOf(t)
-		for i := 0; i < s.Len(); i++ {
-			result = append(result, s.Index(i).String())
+		s := t.([]string)
+		for i := 0; i < len(s); i++ {
+			result = append(result, s[i])
 		}
 		break
 	case reflect.String:
@@ -174,5 +174,6 @@ func ToArray(t interface{}) []string {
 		s = strings.Replace(strings.Replace(s, "[", "", 1), "]", "", 1)
 		result = strings.Split(s, ",")
 	}
+	log.Printf("[io.ToArray] result: %s", result)
 	return result
 }
