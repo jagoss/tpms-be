@@ -350,7 +350,7 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 		return
 	}
 
-	dogID, possibleDogIDs := fmt.Sprintf("%v", body["dogID"]), io.ToArray(body["possibleDogs"])
+	dogID, possibleDogIDs := fmt.Sprintf("%v", body["dogId"]), io.ToArray(body["possibleDogs"])
 	dogIDInt, _ := strconv.Atoi(dogID)
 
 	log.Printf("possibleDogs: %v", &possibleDogIDs)
