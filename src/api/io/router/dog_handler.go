@@ -333,10 +333,10 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 
 	log.Printf("[PossibleMatch] request body: %v", &body)
 
-	if body["dogID"] == nil {
+	if body["dogId"] == nil {
 		log.Printf("status code 400: missing dogID")
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "missing dogID",
+			"error":   "missing dogId",
 			"message": "missing key value",
 		})
 		return
