@@ -161,8 +161,8 @@ func GetUser(c *gin.Context, env environment.Env) {
 // @Failure		500 {object} object{error=string,message=string}
 // @Router      /user/:id [get]
 func GetUserContactInfo(c *gin.Context, env environment.Env) {
-	userID, exists := c.Get("id")
-	if !exists {
+	userID := c.Param("id")
+	if userID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   "Variable missing",
 			"message": "Missing user ID",
