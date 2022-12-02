@@ -29,6 +29,7 @@ func (pmp *PossibleMatchPersister) AddPossibleMatch(dogID uint, possibleDogID ui
 func (pmp *PossibleMatchPersister) UpdateAck(dogID uint, possibleDogID uint, ack model.Ack) error {
 	query := "UPDATE tpms_prod.possible_matches SET ack = ? WHERE dog_id = ? AND possible_dog_id = ?"
 	log.Printf("[UpdateAck] stm: %s", query)
+	log.Printf("[UpdateAck] query values: %d, %d, %d", ack.Int(), dogID, possibleDogID)
 	_, err := pmp.connection.DB.Exec(query, ack.Int(), dogID, possibleDogID)
 	if err != nil {
 		log.Printf("[UpdateAck] error executing stm: %s", err.Error())

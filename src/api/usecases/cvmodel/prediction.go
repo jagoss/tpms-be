@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"github.com/nfnt/resize"
 	"image"
 	"log"
 	"math"
@@ -49,7 +50,8 @@ func (p *Prediction) CalculateEmbedding(dogID uint) error {
 	}
 	imgByte, _ := base64.StdEncoding.DecodeString(imgs[0])
 	byteReader := bytes.NewReader(imgByte)
-	img, _, err := image.Decode(byteReader)
+	orImage, _, err := image.Decode(byteReader)
+	img := resize.Resize(width, height, orImage, resize.Lanczos3)
 	if err != nil {
 		return err
 	}
@@ -112,7 +114,7 @@ func (p *Prediction) FindMatches(dogID uint) ([]model.Dog, error) {
 }
 
 func mapTo8bitValue(val uint32) uint8 {
-	return uint8(val / (0x0100 + 1))
+	return uint8(val / 0x0101)
 }
 
 func top5Dogs(desireDogVector []float64, compareVectors []model.DogVector) []uint {

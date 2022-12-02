@@ -99,6 +99,8 @@ func (l *LostFoundDogs) AcknowledgePossibleDog(dogID uint, possibleDogID uint, s
 		return err
 	}
 
+	log.Printf("dog: %s; possible dog: %s", dog.Name, possibleDog.Name)
+
 	var user string
 	if possibleDog.Owner != nil {
 		user = possibleDog.Owner.Name
