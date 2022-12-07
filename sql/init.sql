@@ -33,9 +33,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `embedding`       LONGTEXT,
     `created_at`      DATETIME    NOT NULL,
     `deleted_at`      DATETIME,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `possible_matches`
@@ -60,6 +58,7 @@ CREATE TABLE IF NOT EXISTS users
     `longitude` DOUBLE,
     PRIMARY KEY (`id`)
 );
+
 CREATE TABLE IF NOT EXISTS `dogs`
 (
     `id`              BIGINT      NOT NULL AUTO_INCREMENT,
@@ -71,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `coat_length`     int         NOT NULL,
     `tail_length`     int         NOT NULL,
     `ear`             int         NOT NULL,
-    `is_lost`         boolean,
+    `is_lost`         BOOLEAN,
     `owner_id`        VARCHAR(255),
     `host_id`         VARCHAR(255),
     `latitude`        DOUBLE,
@@ -81,9 +80,7 @@ CREATE TABLE IF NOT EXISTS `dogs`
     `embedding`       LONGTEXT,
     `created_at`      DATETIME    NOT NULL,
     `deleted_at`      DATETIME,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_owner_id` FOREIGN KEY (`owner_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT `fk_host_id` FOREIGN KEY (`host_id`) REFERENCES users (`id`) ON UPDATE CASCADE ON DELETE SET NULL
+    PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `possible_matches`
 (
