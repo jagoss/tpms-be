@@ -16,10 +16,14 @@ type Env struct {
 	UserPersister          interfaces.UserPersister
 	DogPersister           interfaces.DogPersister
 	PossibleMatchPersister interfaces.PossibleMatchPersister
+	PostPersister          interfaces.PostPersister
 	Storage                interfaces.Storage
 }
 
-func InitEnv(firebaseApp *firebase.App, firebaseAuth auth.Client, notificationSender interfaces.Messaging, restClient *http.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister, dogPersister interfaces.DogPersister, possibleMatchPersister interfaces.PossibleMatchPersister, storage interfaces.Storage) *Env {
+func InitEnv(firebaseApp *firebase.App, firebaseAuth auth.Client, notificationSender interfaces.Messaging,
+	restClient *http.Client, cvModelClient interfaces.CVModelRestClient, userPersister interfaces.UserPersister,
+	dogPersister interfaces.DogPersister, possibleMatchPersister interfaces.PossibleMatchPersister,
+	postPersister interfaces.PostPersister, storage interfaces.Storage) *Env {
 	return &Env{
 		FirebaseApp:            firebaseApp,
 		FirebaseAuth:           firebaseAuth,
@@ -29,6 +33,7 @@ func InitEnv(firebaseApp *firebase.App, firebaseAuth auth.Client, notificationSe
 		UserPersister:          userPersister,
 		DogPersister:           dogPersister,
 		PossibleMatchPersister: possibleMatchPersister,
+		PostPersister:          postPersister,
 		Storage:                storage,
 	}
 }

@@ -141,6 +141,25 @@ func (d *DogManager) SetDogAsLost(id uint, lat float64, lng float64) (*model.Dog
 	return updateDog, nil
 }
 
+func (d *DogManager) RegisterPostDog(post *model.Post, image string) (*model.Dog, error) {
+	dummyDog := &model.Dog{
+		Name:   post.Title,
+		IsLost: true,
+	}
+	imgsPath, err := d.AddImgs(dummyDog, []string{image})
+	if err != nil {
+		return nil, err
+	}
+
+	dummyDog.ImgUrl = imgsPath
+	dog, err := d.dogPersister.InsertDog(dummyDog)
+	if err != nil {
+		return nil, fmt.Errorf("[dogmanager.RegisterPostDog] error registing dog: %v", err)
+	}
+
+	return dog, nil
+}
+
 func setHostAndOwner(dog *model.Dog, userManager interfaces.UserManager) error {
 	if dog.Owner != nil {
 		owner, err := userManager.Get(dog.Owner.ID)
