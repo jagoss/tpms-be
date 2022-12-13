@@ -143,7 +143,7 @@ func GetPost(c *gin.Context, env environment.Env) {
 // @Router      /post [get]
 func GetAllPost(c *gin.Context, env environment.Env) {
 	postManager := posts.NewPostManager(env.PostPersister)
-	posts, err := postManager.GetAllPost()
+	postsList, err := postManager.GetAllPost()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error":   err.Error(),
@@ -151,5 +151,5 @@ func GetAllPost(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, io.MapToPostResponseList(posts))
+	c.JSON(http.StatusOK, io.MapToPostResponseList(postsList))
 }

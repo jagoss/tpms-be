@@ -299,7 +299,7 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 // PossibleMatch godoc
 // @Summary    Mark dog as possible dog
 // @Schemes
-// @Description	Mark dog as possible match and notify host of that dog.
+// @Description	Mark dog as possible match and notify host of that dog if exists.
 // @Tags        dog
 // @Accept      json
 // @Produce     json
@@ -374,9 +374,9 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 }
 
 // AckPossibleDog godoc
-// @Summary Acknowledge possible dog as dog
+// @Summary Acknowledge possible dog as the dog
 // @Schemes
-// @Description	Acknowledge that possible dog is missing dog
+// @Description	Acknowledge that possible dog is the missing dog
 // @Tags        dog
 // @Accept      json
 // @Produce     json
