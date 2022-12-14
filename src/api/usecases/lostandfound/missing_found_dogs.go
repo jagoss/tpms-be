@@ -12,6 +12,7 @@ type LostFoundDogs struct {
 	dogPersister           interfaces.DogPersister
 	userPersister          interfaces.UserPersister
 	possibleMatchPersister interfaces.PossibleMatchPersister
+	postPersister          interfaces.PostPersister
 }
 
 func NewLostFoundDogs(dogPersister interfaces.DogPersister, userPersister interfaces.UserPersister, possibleMatchPersister interfaces.PossibleMatchPersister) LostFoundDogs {
@@ -44,6 +45,13 @@ func (l *LostFoundDogs) ReuniteDog(dogID uint, matchingDogID uint, sender interf
 	err = l.notifyDogsHosters(dog.Name, dogIDsRemoved, sender)
 	if err != nil {
 		return nil, err
+	}
+
+	if possibleDog.Owner == nil && possibleDog.Host == nil {
+		_, err := l.postPersister.DeleteByDogId(possibleDog.ID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return dog, nil
@@ -232,7 +240,8 @@ func send(dog *model.Dog, sender interfaces.Messaging) {
 			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),
 		}
 		sendNotification(data, dog.Owner, sender)
-	} else {
+	}
+	if dog.Host != nil {
 		data := map[string]string{
 			"title": fmt.Sprintf("Parece que hay un posible dueño de %s!", dog.Name),
 			"body":  fmt.Sprintf("Confirma la imagen para ver si es %s", dog.Name),

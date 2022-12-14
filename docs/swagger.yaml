@@ -85,6 +85,36 @@ definitions:
       possibleDogId:
         type: integer
     type: object
+  model.PostRequest:
+    properties:
+      dog:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      location:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  model.PostResponse:
+    properties:
+      dog:
+        type: string
+      id:
+        type: string
+      image:
+        type: string
+      location:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
   model.User:
     properties:
       FCMToken:
@@ -742,18 +772,20 @@ paths:
     post:
       consumes:
       - application/json
-      description: Mark dog as possible match and notify host of that dog.
+      description: Mark dog as possible match and notify host of that dog if exists.
       parameters:
       - description: dog ID
-        in: query
+        in: body
         name: dogID
-        type: string
-      - description: possible matching dogs
-        in: query
-        items:
+        schema:
           type: string
+      - description: possible matching dogs
+        in: body
         name: possibleDogs
-        type: array
+        schema:
+          items:
+            type: string
+          type: array
       produces:
       - application/json
       responses:
@@ -805,16 +837,18 @@ paths:
     put:
       consumes:
       - application/json
-      description: Acknowledge that possible dog is missing dog
+      description: Acknowledge that possible dog is the missing dog
       parameters:
       - description: dog ID
-        in: query
+        in: body
         name: dogId
-        type: string
+        schema:
+          type: string
       - description: possible dog ID
-        in: query
+        in: body
         name: possibleDogId
-        type: string
+        schema:
+          type: string
       produces:
       - application/json
       responses:
@@ -860,7 +894,72 @@ paths:
                 message:
                   type: string
               type: object
-      summary: Acknowledge possible dog as dog
+      summary: Acknowledge possible dog as the dog
+      tags:
+      - dog
+  /dog/scrapper:
+    post:
+      consumes:
+      - application/json
+      description: Register new dog from scrapper search
+      parameters:
+      - description: dog
+        in: body
+        name: dog
+        schema:
+          $ref: '#/definitions/model.DogRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.DogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Register new dog from scrapper search
       tags:
       - dog
   /img:
@@ -933,6 +1032,176 @@ paths:
       summary: Ping
       tags:
       - ping
+  /post:
+    get:
+      consumes:
+      - application/json
+      description: Get all post given its ID
+      parameters:
+      - description: post ID
+        in: path
+        name: post
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Get all post given its ID
+      tags:
+      - posts
+    post:
+      consumes:
+      - application/json
+      description: Register new post
+      parameters:
+      - description: post
+        in: body
+        name: dog
+        schema:
+          $ref: '#/definitions/model.PostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "422":
+          description: Unprocessable Entity
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Register new post
+      tags:
+      - posts
+  /post/:id:
+    get:
+      consumes:
+      - application/json
+      description: Get post given its ID
+      parameters:
+      - description: post ID
+        in: path
+        name: post
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - type: object
+            - properties:
+                error:
+                  type: string
+                message:
+                  type: string
+              type: object
+      summary: Get post given its ID
+      tags:
+      - posts
   /user:
     get:
       consumes:

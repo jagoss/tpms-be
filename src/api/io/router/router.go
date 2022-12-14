@@ -18,6 +18,7 @@ const (
 	userPath    = "/user"
 	dogPath     = "/dog"
 	imgPath     = "/img"
+	postPath    = "/post"
 	swaggerPath = "/swagger"
 )
 
@@ -31,19 +32,19 @@ func Run(env environment.Env, port string) error {
 	return err
 }
 
-//armar grupos
 func mapHandlers(env environment.Env) {
 	mapPingRoutes()
 	mapSwaggerRoutes()
 	mapUserRoutes(env)
 	mapDogRoutes(env)
 	mapImgsRoutes(env)
+	mapPostsRoutes(env)
 }
 
 func SetupRunEnv(env environment.Env) {
 	log.Print("[package:router] Configuring routes...")
 	configureRoute(env)
-	log.Printf("[package:router] Listening on routes: %s, %s, %s, %s", pingPath, userPath, dogPath, imgPath)
+	log.Printf("[package:router] Listening on routes: %s, %s, %s, %s, %s", pingPath, userPath, dogPath, imgPath, postPath)
 }
 
 func configureRoute(env environment.Env) *gin.Engine {
@@ -68,6 +69,9 @@ func mapDogRoutes(env environment.Env) {
 			return
 		}
 		RegisterNewDog(context, env)
+	})
+	dogRouter.POST("/scrapper", func(context *gin.Context) {
+		RegisterNewScrapperDog(context, env)
 	})
 	dogRouter.GET("/:id", func(context *gin.Context) {
 		if !validUser(context) {
@@ -180,6 +184,28 @@ func mapUserRoutes(env environment.Env) {
 	})
 	userRouter.POST("/:id/notification", func(context *gin.Context) {
 		SendNotif(context, env)
+	})
+}
+
+func mapPostsRoutes(env environment.Env) {
+	postRouter := router.Group(basePath + postPath)
+	postRouter.POST("", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		RegisterNewPost(context, env)
+	})
+	postRouter.GET("/:id", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetPost(context, env)
+	})
+	postRouter.GET("", func(context *gin.Context) {
+		if !validUser(context) {
+			return
+		}
+		GetAllPost(context, env)
 	})
 }
 

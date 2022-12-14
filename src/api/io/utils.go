@@ -34,6 +34,15 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 	return &dog, nil
 }
 
+func DeserializePost(input []byte) (*model.PostRequest, error) {
+	var dog model.PostRequest
+	err := json.Unmarshal(input, &dog)
+	if err != nil {
+		return nil, err
+	}
+	return &dog, nil
+}
+
 func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
 	dog := &model.Dog{
 		Name:           reqDog.Name,
@@ -176,4 +185,33 @@ func ToArray(t interface{}) []string {
 	}
 	log.Printf("[io.ToArray] result: %s", result)
 	return result
+}
+
+func MapFromPostRequest(postReq *model.PostRequest) *model.Post {
+	return &model.Post{
+		Url:      postReq.Url,
+		Title:    postReq.Title,
+		Location: postReq.Location,
+	}
+}
+
+func MapToPostResponse(post *model.Post) *model.PostResponse {
+	return &model.PostResponse{
+		Id:       strconv.FormatInt(post.Id, 10),
+		DogId:    strconv.FormatInt(post.DogId, 10),
+		Url:      post.Url,
+		Title:    post.Title,
+		Location: post.Location,
+	}
+}
+
+func MapToPostResponseList(posts []model.Post) []model.PostResponse {
+	if len(posts) == 0 {
+		return make([]model.PostResponse, 0)
+	}
+	var postsResp []model.PostResponse
+	for _, post := range posts {
+		postsResp = append(postsResp, *MapToPostResponse(&post))
+	}
+	return postsResp
 }

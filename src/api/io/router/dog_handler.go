@@ -299,7 +299,7 @@ func GetMissingDogsList(c *gin.Context, env environment.Env) {
 // PossibleMatch godoc
 // @Summary    Mark dog as possible dog
 // @Schemes
-// @Description	Mark dog as possible match and notify host of that dog.
+// @Description	Mark dog as possible match and notify host of that dog if exists.
 // @Tags        dog
 // @Accept      json
 // @Produce     json
@@ -374,9 +374,9 @@ func PossibleMatch(c *gin.Context, env environment.Env) {
 }
 
 // AckPossibleDog godoc
-// @Summary Acknowledge possible dog as dog
+// @Summary Acknowledge possible dog as the dog
 // @Schemes
-// @Description	Acknowledge that possible dog is missing dog
+// @Description	Acknowledge that possible dog is the missing dog
 // @Tags        dog
 // @Accept      json
 // @Produce     json
@@ -694,4 +694,62 @@ func GenerarteEmbedding(c *gin.Context, env environment.Env) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("Embedding calculated for dog %s", id)})
+}
+
+// RegisterNewScrapperDog godoc
+// @Summary Register new dog from scrapper search
+// @Schemes
+// @Description Register new dog from scrapper search
+// @Tags        dog
+// @Accept      json
+// @Produce     json
+// @Param		dog body model.DogRequest false  "dog"
+// @Success     200 {object} model.DogResponse
+// @Failure		400 {object} object{error=string,message=string}
+// @Failure		401 {object} object{error=string,message=string}
+// @Failure		422 {object} object{error=string,message=string}
+// @Failure		500 {object} object{error=string,message=string}
+// @Router      /dog/scrapper [post]
+func RegisterNewScrapperDog(c *gin.Context, env environment.Env) {
+	jsonBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Printf("error reading request body: %v", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading request body!",
+		})
+		return
+	}
+	reqDog, err := io.DeserializeDog(jsonBody)
+	if err != nil {
+		log.Printf("error unmarshalling dog body: %v", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading dog body!",
+		})
+		return
+	}
+	dog, imgs := io.MapFromDogRequest(reqDog)
+	if dog == nil && imgs == nil {
+		log.Printf("error mapping dog request when parsing uint")
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   "error parsing uint",
+			"message": "error parsing dogRequest to dog!",
+		})
+		return
+	}
+
+	userManager := users.NewUserManager(env.UserPersister)
+	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
+	dog, err = dogManager.Register(dog, imgs, userManager)
+	if err != nil {
+		log.Printf("%v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": fmt.Sprintf("error inserting new dog: %v", err),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, io.MapToDogResponse(dog, env.Storage))
 }

@@ -44,6 +44,16 @@ CREATE TABLE IF NOT EXISTS `possible_matches`
     PRIMARY KEY (`dog_id`, `possible_dog_id`)
 );
 
+CREATE TABLE IF NOT EXISTS `posts`
+(
+    `id`       BIGINT       NOT NULL AUTO_INCREMENT,
+    `dog_id`   BIGINT       NOT NULL,
+    `url`      varchar(500) NOT NULL,
+    `title`    varchar(250) NOT NULL,
+    `location` varchar(250) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
 CREATE DATABASE IF NOT EXISTS tpms_test;
 USE tpms_test;
 CREATE TABLE IF NOT EXISTS users
@@ -88,4 +98,14 @@ CREATE TABLE IF NOT EXISTS `possible_matches`
     `possible_dog_id` BIGINT NOT NULL,
     `ack`             INT    NOT NULL,
     PRIMARY KEY (`dog_id`, `possible_dog_id`)
+);
+
+CREATE TABLE IF NOT EXISTS `posts`
+(
+    `id`       BIGINT       NOT NULL AUTO_INCREMENT,
+    `dog_id`   BIGINT       NOT NULL,
+    `url`      varchar(500) NOT NULL,
+    `title`    varchar(250) NOT NULL,
+    `location` varchar(250) NOT NULL,
+    PRIMARY KEY (`id`)
 );
