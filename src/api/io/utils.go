@@ -34,13 +34,13 @@ func DeserializeDog(input []byte) (*model.DogRequest, error) {
 	return &dog, nil
 }
 
-func DeserializePost(input []byte) (*model.PostRequest, error) {
-	var dog model.PostRequest
-	err := json.Unmarshal(input, &dog)
+func DeserializePosts(input []byte) ([]model.PostRequest, error) {
+	var posts []model.PostRequest
+	err := json.Unmarshal(input, &posts)
 	if err != nil {
 		return nil, err
 	}
-	return &dog, nil
+	return posts, nil
 }
 
 func MapFromDogRequest(reqDog *model.DogRequest) (*model.Dog, []string) {
@@ -193,6 +193,17 @@ func MapFromPostRequest(postReq *model.PostRequest) *model.Post {
 		Title:    postReq.Title,
 		Location: postReq.Location,
 	}
+}
+
+func MapFromPostRequestList(postReqList []model.PostRequest) []model.Post {
+	if postReqList == nil || len(postReqList) == 0 {
+		return make([]model.Post, 0)
+	}
+	var resultList []model.Post
+	for _, p := range postReqList {
+		resultList = append(resultList, *MapFromPostRequest(&p))
+	}
+	return resultList
 }
 
 func MapToPostResponse(post *model.Post) *model.PostResponse {

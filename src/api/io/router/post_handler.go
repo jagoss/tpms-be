@@ -21,8 +21,8 @@ import (
 // @Tags        posts
 // @Accept      json
 // @Produce     json
-// @Param		dog body model.PostRequest false  "post"
-// @Success     200 {object} model.PostResponse
+// @Param		dog body []model.PostRequest false  "post"
+// @Success     200 {object} object{message=string}
 // @Failure		400 {object} object{error=string,message=string}
 // @Failure		401 {object} object{error=string,message=string}
 // @Failure		422 {object} object{error=string,message=string}
@@ -38,7 +38,7 @@ func RegisterNewPost(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	reqPost, err := io.DeserializePost(jsonBody)
+	reqPostList, err := io.DeserializePosts(jsonBody)
 	if err != nil {
 		log.Printf("error unmarshalling post body: %v", err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -47,8 +47,8 @@ func RegisterNewPost(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	post := io.MapFromPostRequest(reqPost)
-	if post == nil {
+	postsList := io.MapFromPostRequestList(reqPostList)
+	if postsList == nil {
 		log.Printf("error mapping dog request when parsing uint")
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"error":   "error parsing uint",
@@ -56,41 +56,41 @@ func RegisterNewPost(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
-	dog, err := dogManager.RegisterPostDog(post, reqPost.Image)
-	if err != nil {
-		log.Printf("%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   err.Error(),
-			"message": fmt.Sprintf("error inserting new dog: %v", err),
-		})
-		return
-	}
+	for i, post := range postsList {
+		dog, err := dogManager.RegisterPostDog(&post, reqPostList[i].Image)
+		if err != nil {
+			log.Printf("%v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   err.Error(),
+				"message": fmt.Sprintf("error inserting new dog: %v", err),
+			})
+			return
+		}
 
-	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
-	if err = predictionService.CalculateEmbedding(uint(dog.ID)); err != nil {
-		log.Printf("%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   err.Error(),
-			"message": fmt.Sprintf("error calculating new dog %d vector: %v", dog.ID, err),
-		})
-		return
-	}
+		predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
+		if err = predictionService.CalculateEmbedding(uint(dog.ID)); err != nil {
+			log.Printf("%v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   err.Error(),
+				"message": fmt.Sprintf("error calculating new dog %d vector: %v", dog.ID, err),
+			})
+			return
+		}
 
-	post.DogId = dog.ID
-	postManager := posts.NewPostManager(env.PostPersister)
-	post, err = postManager.RegisterPost(post)
-	if err != nil {
-		log.Printf("%v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   err.Error(),
-			"message": fmt.Sprintf("error persisting post: %s", err.Error()),
-		})
-		return
+		post.DogId = dog.ID
+		postManager := posts.NewPostManager(env.PostPersister)
+		_, err = postManager.RegisterPost(&post)
+		if err != nil {
+			log.Printf("%v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error":   err.Error(),
+				"message": fmt.Sprintf("error persisting post: %s", err.Error()),
+			})
+			return
+		}
 	}
-
-	c.JSON(http.StatusOK, io.MapToPostResponse(post))
+	c.JSON(http.StatusOK, gin.H{"message": "postsList added successful"})
 }
 
 // GetPost godoc

@@ -1618,7 +1618,10 @@ const docTemplate = `{
                         "name": "dog",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/model.PostRequest"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.PostRequest"
+                            }
                         }
                     }
                 ],
@@ -1626,7 +1629,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.PostResponse"
+                            "allOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {

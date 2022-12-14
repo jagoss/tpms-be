@@ -1094,14 +1094,21 @@ paths:
         in: body
         name: dog
         schema:
-          $ref: '#/definitions/model.PostRequest'
+          items:
+            $ref: '#/definitions/model.PostRequest'
+          type: array
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.PostResponse'
+            allOf:
+            - type: object
+            - properties:
+                message:
+                  type: string
+              type: object
         "400":
           description: Bad Request
           schema:
