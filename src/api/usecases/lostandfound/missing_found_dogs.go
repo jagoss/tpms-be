@@ -137,6 +137,7 @@ func (l *LostFoundDogs) RejectPossibleDog(dogID uint, possibleDogID uint, sender
 		"title": fmt.Sprintf("Han rechazado tu match"),
 		"body":  fmt.Sprintf("Parece que %s no era %s. Sigamos buscando!", possibleDog.Name, dog.Name),
 	}
+	log.Printf("going to delete rejected pair")
 	return l.updatePossibleDogMatch(dogID, possibleDogID, model.Rejected, data, sender)
 }
 
@@ -147,6 +148,7 @@ func (l *LostFoundDogs) updatePossibleDogMatch(dogID uint, possibleDogID uint, a
 				dogID, possibleDogID, err)
 		}
 	} else {
+		log.Printf("delete dogID %d, possibleDogID %d", dogID, possibleDogID)
 		if err := l.possibleMatchPersister.Delete(dogID, possibleDogID); err != nil {
 			return fmt.Errorf("[LostFoundDogs.updatePossibleDogMatch] error deleting possible match with dogs dog %d wiht dog %d: %v",
 				dogID, possibleDogID, err)

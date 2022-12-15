@@ -462,6 +462,7 @@ func RejectPossibleDog(c *gin.Context, env environment.Env) {
 	lf := lostandfound.NewLostFoundDogs(env.DogPersister, env.UserPersister, env.PossibleMatchPersister)
 	err := lf.RejectPossibleDog(uint(dogIDInt), uint(possibleDogIDInt), env.NotificationSender)
 	if err != nil {
+		log.Printf("error: %s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error":   err.Error(),
 			"message": "error matching possible missing dogs",

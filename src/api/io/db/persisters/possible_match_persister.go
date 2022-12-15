@@ -39,6 +39,7 @@ func (pmp *PossibleMatchPersister) UpdateAck(dogID uint, possibleDogID uint, ack
 }
 func (pmp *PossibleMatchPersister) Delete(dogID uint, possibleDogID uint) error {
 	query := "DELETE FROM tpms_prod.possible_matches WHERE dog_id = ? AND possible_dog_id = ?"
+	log.Printf("[Delete] query: %s", query)
 	_, err := pmp.connection.DB.Exec(query, dogID, possibleDogID)
 	if err != nil {
 		return err
