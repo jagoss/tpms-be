@@ -206,23 +206,27 @@ func MapFromPostRequestList(postReqList []model.PostRequest) []model.Post {
 	return resultList
 }
 
-func MapToPostResponse(post *model.Post) *model.PostResponse {
-	return &model.PostResponse{
+func MapToPostResponse(post *model.Post, name string, img string, bucket interfaces.Storage) *model.PostResponse {
+	p := model.PostResponse{
 		Id:       strconv.FormatInt(post.Id, 10),
 		DogId:    strconv.FormatInt(post.DogId, 10),
+		DogName:  name,
 		Url:      post.Url,
 		Title:    post.Title,
 		Location: post.Location,
 	}
+	imgArray, _ := bucket.GetImgs(img)
+	p.Image = imgArray[0]
+	return &p
 }
 
-func MapToPostResponseList(posts []model.Post) []model.PostResponse {
+func MapToPostResponseList(posts []model.Post, dogList []model.Dog, bucket interfaces.Storage) []model.PostResponse {
 	if len(posts) == 0 {
 		return make([]model.PostResponse, 0)
 	}
 	var postsResp []model.PostResponse
-	for _, post := range posts {
-		postsResp = append(postsResp, *MapToPostResponse(&post))
+	for i, post := range posts {
+		postsResp = append(postsResp, *MapToPostResponse(&post, dogList[i].Name, dogList[i].ImgUrl, bucket))
 	}
 	return postsResp
 }

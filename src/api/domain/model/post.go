@@ -30,6 +30,7 @@ type PostRequest struct {
 type PostResponse struct {
 	Id       string `json:"id"`
 	DogId    string `json:"dog"`
+	DogName  string `json:"dog_name"`
 	Image    string `json:"image"`
 	Url      string `json:"url"`
 	Title    string `json:"title"`

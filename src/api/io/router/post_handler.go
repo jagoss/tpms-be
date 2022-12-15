@@ -1,6 +1,7 @@
 package router
 
 import (
+	"be-tpms/src/api/domain/model"
 	"be-tpms/src/api/environment"
 	"be-tpms/src/api/io"
 	"be-tpms/src/api/usecases/cvmodel"
@@ -125,7 +126,9 @@ func GetPost(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, io.MapToPostResponse(post))
+	dmanager := dogs.NewDogManager(env.DogPersister, env.Storage)
+	dog, _ := dmanager.Get(uint(post.DogId))
+	c.JSON(http.StatusOK, io.MapToPostResponse(post, dog.Name, dog.ImgUrl, env.Storage))
 }
 
 // GetAllPost godoc
@@ -151,5 +154,11 @@ func GetAllPost(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, io.MapToPostResponseList(postsList))
+	manager := dogs.NewDogManager(env.DogPersister, env.Storage)
+	var dogsList []model.Dog
+	for _, p := range postsList {
+		d, _ := manager.Get(uint(p.DogId))
+		dogsList = append(dogsList, *d)
+	}
+	c.JSON(http.StatusOK, io.MapToPostResponseList(postsList, dogsList, env.Storage))
 }
