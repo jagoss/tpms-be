@@ -208,7 +208,7 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Router      /dog/found [put]
 func DogReUnited(c *gin.Context, env environment.Env) {
 	q := c.Request.URL.Query()
-	dogID, possibleDogID := q.Get("dogID"), q.Get("possibleDogID")
+	dogID, possibleDogID := q.Get("dogId"), q.Get("possibleDogId")
 	dogIDInt, _ := strconv.Atoi(dogID)
 	possibleDogIDInt, _ := strconv.Atoi(possibleDogID)
 
