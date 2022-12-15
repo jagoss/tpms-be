@@ -245,7 +245,9 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 		var dog model.DogModel
 		var deleteDate sql.NullTime
 		var additionalInfo sql.NullString
-		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &additionalInfo, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
+		var ownerID sql.NullString
+		var hostID sql.NullString
+		if err := rows.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &additionalInfo, &dog.IsLost, &ownerID, &hostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
 			return nil, err
 		}
 		if additionalInfo.Valid {
@@ -255,11 +257,11 @@ func (dp *DogPersister) parseDogs(rows *sql.Rows) ([]model.Dog, error) {
 			dog.DeleteAt = deleteDate.Time
 		}
 		var owner, host *model.User
-		if dog.OwnerID != "" {
-			owner, _ = up.GetUser(dog.OwnerID)
+		if ownerID.Valid && ownerID.String != "" {
+			owner, _ = up.GetUser(ownerID.String)
 		}
-		if dog.HostID != "" {
-			host, _ = up.GetUser(dog.HostID)
+		if hostID.Valid && hostID.String != "" {
+			host, _ = up.GetUser(hostID.String)
 		}
 		resultList = append(resultList, mapToDog(dog, owner, host))
 	}
@@ -274,7 +276,9 @@ func parseToDogModel(row *sql.Row) (*model.DogModel, error) {
 	var dog model.DogModel
 	var deleteDate sql.NullTime
 	var additionalInfo sql.NullString
-	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &additionalInfo, &dog.IsLost, &dog.OwnerID, &dog.HostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
+	var ownerID sql.NullString
+	var hostID sql.NullString
+	if err := row.Scan(&dog.ID, &dog.Name, &dog.Breed, &dog.Age, &dog.Size, &dog.CoatColor, &dog.CoatLength, &dog.TailLength, &dog.Ear, &additionalInfo, &dog.IsLost, &ownerID, &hostID, &dog.Latitude, &dog.Longitude, &dog.ImgUrl, &dog.CreateAt, &deleteDate); err != nil {
 		return nil, err
 	}
 	if additionalInfo.Valid {
@@ -282,6 +286,13 @@ func parseToDogModel(row *sql.Row) (*model.DogModel, error) {
 	}
 	if deleteDate.Valid {
 		dog.DeleteAt = deleteDate.Time
+	}
+
+	if ownerID.Valid && ownerID.String != "" {
+		dog.OwnerID = ownerID.String
+	}
+	if hostID.Valid && hostID.String != "" {
+		dog.HostID = hostID.String
 	}
 
 	return &dog, nil
