@@ -124,10 +124,13 @@ func (l *LostFoundDogs) AcknowledgePossibleDog(dogID uint, possibleDogID uint, s
 }
 
 func (l *LostFoundDogs) RejectPossibleDog(dogID uint, possibleDogID uint, sender interfaces.Messaging) error {
+	log.Printf("possible dog: %d", possibleDogID)
 	possibleDog, err := l.dogPersister.GetDog(possibleDogID)
 	if err != nil {
 		return err
 	}
+
+	log.Printf("dog: %d", dogID)
 	dog, err := l.dogPersister.GetDog(dogID)
 	if err != nil {
 		return err
