@@ -207,8 +207,42 @@ func UpdateDog(c *gin.Context, env environment.Env) {
 // @Failure		500 {object} object{error=string,message=string}
 // @Router      /dog/found [put]
 func DogReUnited(c *gin.Context, env environment.Env) {
-	q := c.Request.URL.Query()
-	dogID, possibleDogID := q.Get("dogId"), q.Get("possibleDogId")
+	jsonBody, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		log.Printf("error reading request body: %v", err)
+		c.JSON(http.StatusUnprocessableEntity, gin.H{
+			"error":   err.Error(),
+			"message": "error reading request body!",
+		})
+		return
+	}
+	var body map[string]interface{}
+	err = json.Unmarshal(jsonBody, &body)
+	if err != nil {
+		log.Printf("unmarshalling error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   err.Error(),
+			"message": "error unmarshalling request body!",
+		})
+		return
+	}
+	if body["dogId"] == nil {
+		log.Printf("status code 400: missing dogId")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing dogId",
+			"message": "missing key value",
+		})
+		return
+	}
+	if body["possibleDogId"] == nil {
+		log.Printf("status code 400: missing possibleDogId")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "missing possibleDogId",
+			"message": "missing key value",
+		})
+		return
+	}
+	dogID, possibleDogID := fmt.Sprintf("%v", body["dogId"]), fmt.Sprintf("%v", body["possibleDogId"])
 	dogIDInt, _ := strconv.Atoi(dogID)
 	possibleDogIDInt, _ := strconv.Atoi(possibleDogID)
 
