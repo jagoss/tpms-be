@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `users`
     `id`        VARCHAR(255) NOT NULL,
     `email`     VARCHAR(255) NOT NULL,
     `phone`     VARCHAR(40)  NOT NULL,
-    `fmt_token` VARCHAR(255),
+    `fcm_token` VARCHAR(255),
     `name`      VARCHAR(255) NOT NULL,
     `optout`    BOOLEAN DEFAULT FALSE,
     `latitude`  DOUBLE,

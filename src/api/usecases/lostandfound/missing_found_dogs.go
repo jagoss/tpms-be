@@ -137,7 +137,7 @@ func (l *LostFoundDogs) RejectPossibleDog(dogID uint, possibleDogID uint, sender
 		"title": fmt.Sprintf("Han rechazado tu match"),
 		"body":  fmt.Sprintf("Parece que %s no era %s. Sigamos buscando!", possibleDog.Name, dog.Name),
 	}
-	return l.updatePossibleDogMatch(dogID, possibleDogID, model.Accepted, data, sender)
+	return l.updatePossibleDogMatch(dogID, possibleDogID, model.Rejected, data, sender)
 }
 
 func (l *LostFoundDogs) updatePossibleDogMatch(dogID uint, possibleDogID uint, ack model.Ack, data map[string]string, sender interfaces.Messaging) error {
