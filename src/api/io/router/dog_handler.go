@@ -64,7 +64,7 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
+	log.Printf("registring dog")
 	userManager := users.NewUserManager(env.UserPersister)
 	dogManager := dogs.NewDogManager(env.DogPersister, env.Storage)
 	dog, err = dogManager.Register(dog, imgs, userManager)
@@ -76,14 +76,14 @@ func RegisterNewDog(c *gin.Context, env environment.Env) {
 		})
 		return
 	}
-
+	log.Printf("go to send notifications")
 	if dog.IsLost {
 		notificationSender := messaging.NewMessageSender(env.NotificationSender, env.UserPersister)
 		if err = notificationSender.SendToEnabledUsers(dog); err != nil {
 			log.Printf("error notifying users")
 		}
 	}
-
+	log.Printf("dog register, calculating embdding")
 	predictionService := cvmodel.NewPrediction(env.DogPersister, env.CVModelRestClient, env.Storage)
 	if err = predictionService.CalculateEmbedding(uint(dog.ID)); err != nil {
 		log.Printf("%v", err)
