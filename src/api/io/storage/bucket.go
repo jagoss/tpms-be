@@ -24,9 +24,9 @@ func NewBucket() *Storage {
 	key := os.Getenv("ACCESS_KEY") // Access key pair. You can create access key pairs using the control panel or API.
 	secret := os.Getenv("SPACE_SECRET")
 	s3Config := &aws.Config{
-		Credentials: credentials.NewStaticCredentials(key, secret, ""), // Specifies your credentials.
-		Endpoint:    aws.String("https://nyc3.digitaloceanspaces.com"), // Find your endpoint in the control panel, under Settings. Prepend "https://".
-		Region:      aws.String("nyc3"),                                // Must be "us-east-1" when creating new Spaces. Otherwise, use the region in your endpoint, such as "nyc3".
+		Credentials: credentials.NewStaticCredentials(key, secret, "dop_v1_a314eee22d5a211f6c9972897be81bc51deb5e90d774adb53b225033e84e508e"), // Specifies your credentials.
+		Endpoint:    aws.String("https://nyc3.digitaloceanspaces.com"),                                                                        // Find your endpoint in the control panel, under Settings. Prepend "https://".
+		Region:      aws.String("nyc3"),                                                                                                       // Must be "us-east-1" when creating new Spaces. Otherwise, use the region in your endpoint, such as "nyc3".
 	}
 
 	// Step 3: The new session validates your request and directs it to your Space's specified endpoint using the AWS SDK.
